@@ -11,7 +11,7 @@ The Magic Book Project is an open source project funded by New York University's
 
 ### `new`
 
-Creates a new project folder with dummy content and a basic theme. 
+Creates a new project skeleton inside the current directory. 
 
 ```bash
 magicbook new myproject
