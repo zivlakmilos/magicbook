@@ -19,10 +19,26 @@ A project requires a `magicbook.json` file to specify configuration settings. Mo
 
     },
     "html" : {
-      
+
     }
   }
 }
+```
+
+`plugins`. Array of globs specifying plugin files to include in the build process.
+
+`layout`. Layout view used for the build. This layout can use the asset helpers to include JS and CSS files.
+
+Possible folder layout:
+
+```
+/assets/
+  /images
+  /javascripts
+  /stylesheets
+  /fonts
+/layouts
+/texts
 ```
 
 
