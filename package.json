@@ -1,14 +1,15 @@
 {
+  "repository": "https://github.com/magicbookproject/magicbook.git",
   "version": "0.0.1",
   "name": "magicbook",
   "description": "The magic book project is an open source framework for creating digital and print books",
   "author": "magicbookproject",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.6.1",
+    "yargs": "^4.3.1"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "preferGlobal": true,
   "bin": {
     "magicbook": "src/index.js"

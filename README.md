@@ -4,7 +4,7 @@ The Magic Book Project is an open source project funded by New York University's
 
 ## Configuration
 
-A project requires a `magicbook.json` file to specify configuration settings. Most of these config settings can be overridden in the settings for each format.
+To specify options for your project, you can create a file called `magicbook.json` in your project folder. In this file, you can use the following config settings, and most of these can be overridden in the settings for each format.
 
 `files`. Array of globs specifying the files to build.
 
@@ -29,28 +29,7 @@ A project requires a `magicbook.json` file to specify configuration settings. Mo
 
 `layout`. Layout view used for the build. This layout can use the asset helpers to include JS and CSS files.
 
-Possible folder layout:
-
-```
-/assets/
-  /images
-  /javascripts
-  /stylesheets
-  /fonts
-/layouts
-/texts
-```
-
-
 ## Commands
-
-### `new`
-
-Creates a new project skeleton inside the current directory.
-
-```bash
-magicbook new myproject
-```
 
 ### `build`
 
@@ -60,5 +39,6 @@ Builds the book.
 magicbook build
 ```
 
+- `--config` allows you to specify the relative path to a configuration file
 - `--prod` adds fingerprints to all assets.
 - `--watch` will continously monitor files for changes and recompile
