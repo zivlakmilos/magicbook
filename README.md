@@ -2,6 +2,14 @@
 
 The Magic Book Project is an open source project funded by New York University's Interactive Telecommunications Program. It aims to be the best free tool for creating print and digital books from a single source.
 
+This project operates under a few assumptions:
+
+- You want to write your book in a single source (markdown)
+- You want to be able to export this source to many different formats (website, pdf, epub, mobi)
+- You want your source to be completely free of format-specific markup
+- You want to use CSS to design the look of your book
+- You want to use JavaScript to add interactivity to digital formats
+- You want an easy way to define custom elements that can look and behave differently in every format
 
 ## Getting Started
 
