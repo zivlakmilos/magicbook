@@ -7,9 +7,9 @@ var argv = require('yargs').argv;
 var cmd = argv._[0];
 
 // Prepare config
-// Command line gets first priority
-// JSON config gets second priority
-// Defaults get third priority
+// - Command line gets first priority
+// - JSON config gets second priority
+// - Defaults get third priority
 var config = _.pick(argv, ['files']);;
 var configJSON = {};
 try {
