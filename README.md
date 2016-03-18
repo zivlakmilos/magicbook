@@ -5,7 +5,7 @@ The Magic Book Project is an open source project funded by New York University's
 
 ## Getting Started
 
-First install the magic book project package:
+First install the `magicbook` package:
 
 ```
 npm install magicbook -g
