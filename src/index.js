@@ -28,7 +28,7 @@ _.defaults(config, configJSON, {
 
 // Run build process
 if(cmd == "build") {
-  build(argv, config);
+  build(config);
 }
 
 // This command does not exist

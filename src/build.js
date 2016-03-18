@@ -3,9 +3,10 @@ var vfs = require('vinyl-fs');
 var through = require('through2');
 var marked = require('marked');
 var gutil = require('gulp-util');
+var rimraf = require('rimraf');
 
 function destination(config, format) {
-  return process.cwd() + "/" + config.destination.replace(":format", format);
+  return config.destination.replace(":format", format);
 }
 
 function isMarkdown(file) {
@@ -30,11 +31,15 @@ function markdown() {
 	});
 }
 
-module.exports = function(argv, config) {
+module.exports = function(config) {
 
-  vfs.src(config.files)
+  var folderGlob = destination(config, "") + "+(html|pdf|mobi|epub)"
+  rimraf(folderGlob, function() {
+    vfs.src(config.files)
+      .pipe(markdown())
+      .pipe(vfs.dest(destination(config, "html")))
+      .on('finish', config.success);
+  });
 
-    // html
-    .pipe(markdown())
-    .pipe(vfs.dest(destination(config, "html")));
+
 }

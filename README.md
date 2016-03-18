@@ -38,3 +38,8 @@ magicbook build
 - `--config` allows you to specify the relative path to a configuration file
 - `--prod` adds fingerprints to all assets.
 - `--watch` will continously monitor files for changes and recompile
+
+
+## Running the tests
+
+`npm test`
