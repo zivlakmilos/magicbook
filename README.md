@@ -27,7 +27,7 @@ You can specify the files to build by adding a `files` array to your `magicbook.
 
 You can set the files property to be a single glob.
 
-```
+```json
 {
   "files" : "content/*.md"
 }
@@ -35,7 +35,7 @@ You can set the files property to be a single glob.
 
 You can set the files array to be an array of globs.
 
-```
+```json
 {
   "files" : [
     "content/chapter1/*.md",
@@ -46,7 +46,7 @@ You can set the files array to be an array of globs.
 
 Using an array, you can also specify each of the files you want to build.
 
-```
+```json
 {
   "files" : [
     "content/first-file.md",
@@ -70,7 +70,7 @@ build/
 
 You can change this setting in the JSON config.
 
-```
+```json
 {
   "destination" : "my/other/folder/:format"
 }
@@ -78,7 +78,7 @@ You can change this setting in the JSON config.
 
 You can also override the destination per format.
 
-```
+```json
 {
   "destination" : "my/other/folder/:format",
   "formats" : {
