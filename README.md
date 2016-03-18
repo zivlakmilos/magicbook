@@ -28,40 +28,62 @@ You can specify the files to build by adding a `files` array to your `magicbook.
 You can set the files property to be a single glob.
 
 ```
+{
   "files" : "content/*.md"
+}
 ```
 
 You can set the files array to be an array of globs.
 
 ```
+{
   "files" : [
     "content/chapter1/*.md",
     "content/chapter2/*.md"
   ]
+}
 ```
 
 Using an array, you can also specify each of the files you want to build.
 
 ```
+{
   "files" : [
     "content/first-file.md",
     "content/second-file.md",
     "content/third-file.md"
   ]
+}
 ```
 
-`destination`. Specifies where to put the build files. Defaults to `build/:format`, where `:format` will be replaced with the name of each format. If used inside a format setting, it sets the folder for that format only.
+### Destination
 
-`formats`. Object with keys for each build format.
+`destination` specifies where to put the output formats. Because there are multiple output formats, the default destination is `build/:format`, which will create the following folders:
 
-```json
+```
+build/
+  html/
+  pdf/
+  epub/
+  mobi/
+```
+
+You can change this setting in the JSON config.
+
+```
 {
+  "destination" : "my/other/folder/:format"
+}
+```
+
+You can also override the destination per format.
+
+```
+{
+  "destination" : "my/other/folder/:format",
   "formats" : {
-    "pdf" : {
-
-    },
     "html" : {
-
+      "destination" : "my/third/folder/html"
     }
   }
 }
