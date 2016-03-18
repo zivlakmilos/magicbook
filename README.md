@@ -125,6 +125,24 @@ Like most other settings, you can set the layout for each format.
 }
 ```
 
+### Stylesheets
+
+Magicbook comes with built-in SCSS functionality, where you can use the following tag in your layout files to include a compiled version of the SCSS file.
+
+```html
+<link rel="stylesheet" href="{% css styles %}">
+```
+
+If you have no `stylesheets` setting, this will look for `stylesheets/styles.scss`. You can change this behavior by adding a `stylesheets` property with the name of another folder.
+
+```json
+{
+  "stylesheets" : "assets/css"
+}
+```
+
+The layout example above will now look for `assets/css/styles.scss`.
+
 ## Commands
 
 ### `build`
@@ -136,9 +154,6 @@ magicbook build
 ```
 
 - `--config` allows you to specify the relative path to a configuration file
-- `--prod` adds fingerprints to all assets.
-- `--watch` will continously monitor files for changes and recompile
-
 
 ## Running the tests
 

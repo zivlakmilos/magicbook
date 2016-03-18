@@ -1,0 +1,4 @@
+- Add support for SCSS
+- Add support for JS
+- Add support for images and image resizing
+- Add next/prev functionality

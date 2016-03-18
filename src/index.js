@@ -23,7 +23,8 @@ catch(e) {
 
 _.defaults(config, configJSON, {
   "files" : "content/*.md",
-  "destination" : "build/:format"
+  "destination" : "build/:format",
+  "stylesheets" : "stylesheets"
 });
 
 // Run build process
