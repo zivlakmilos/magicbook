@@ -127,21 +127,19 @@ Like most other settings, you can set the layout for each format.
 
 ### Stylesheets
 
-Magicbook comes with built-in SCSS functionality, where you can use the following tag in your layout files to include a compiled version of the SCSS file.
+Magicbook comes with built-in SCSS functionality, where you can use built-in Liquid filters to automatically generate compiled version of your SCSS files. The following snippet shows how to use the `css` filter to look for a file called `styles.scss` in your `stylesheets` folder, and compile a file called `styles.css` into the `assets` folder of each of your formats.
 
 ```html
-<link rel="stylesheet" href="{% css styles %}">
+<link rel="stylesheet" href="{{ 'styles' | css }}">
 ```
 
-If you have no `stylesheets` setting, this will look for `stylesheets/styles.scss`. You can change this behavior by adding a `stylesheets` property with the name of another folder.
+You can change the default search directory by using the `stylesheets` setting in the your config. The following setting will have magicbook look for a file located in `assets/css/styles.scss`.
 
 ```json
 {
   "stylesheets" : "assets/css"
 }
 ```
-
-The layout example above will now look for `assets/css/styles.scss`.
 
 ## Commands
 

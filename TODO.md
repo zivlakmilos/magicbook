@@ -1,4 +1,5 @@
-- Add support for SCSS
+- Watch support
 - Add support for JS
 - Add support for images and image resizing
 - Add next/prev functionality
+- Add support for digesting CSS and JS files
