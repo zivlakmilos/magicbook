@@ -141,7 +141,7 @@ You can change the default search directory by using the `stylesheets` setting i
 }
 ```
 
-In this SCSS file, you can use `@import` to split up your CSS into separate modules.
+In this SCSS file, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats.
 
 ## Commands
 
