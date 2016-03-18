@@ -32,7 +32,6 @@ function markdown() {
 }
 
 module.exports = function(config) {
-
   var folderGlob = destination(config, "") + "+(html|pdf|mobi|epub)"
   rimraf(folderGlob, function() {
     vfs.src(config.files)
@@ -40,6 +39,4 @@ module.exports = function(config) {
       .pipe(vfs.dest(destination(config, "html")))
       .on('finish', config.success);
   });
-
-
 }
