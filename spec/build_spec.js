@@ -76,4 +76,12 @@ describe("Build", function() {
 
   });
 
+  describe("Destination", function() {
+
+    it("should use main destination");
+
+    it("should prioritize format destination");
+
+  });
+
 });

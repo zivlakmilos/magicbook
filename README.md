@@ -89,6 +89,42 @@ You can also override the destination per format.
 }
 ```
 
+### Layout
+
+Like most web frameworks, magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
+
+```html
+<html>
+  <head>
+    <title>My Book</title>
+  </head>
+  <body>
+    {{ content }}
+  </body>
+</html>
+```
+
+To specify a layout to use, you can use the `layout` property in the JSON config.
+
+```json
+{
+  "layout" : "layouts/main.html"
+}
+```
+
+Like most other settings, you can set the layout for each format.
+
+```json
+{
+  "layout" : "layouts/main.html",
+  "formats" : {
+    "html" : {
+      "layout" : "layouts/website.html"
+    }
+  }
+}
+```
+
 ## Commands
 
 ### `build`
