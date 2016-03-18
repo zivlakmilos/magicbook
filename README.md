@@ -19,7 +19,7 @@ magicbook new mynewproject
 
 ## Configuration
 
-To specify configuration for your project, you can create a file called `magicbook.json` in your project folder. In this file, you can set all of the following config settings. Most of these settings can also be set when running `magicbook` on the command line.
+To specify configuration for your project, you can create a file called `magicbook.json` in your project folder. In this file, you can set all of the following config settings. Most of these settings can also be overridden with command line arguments, including the name of the config file. See the documentation further down for command line arguments.
 
 ### Files
 
