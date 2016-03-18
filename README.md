@@ -8,7 +8,7 @@ To specify options for your project, you can create a file called `magicbook.jso
 
 `files`. Array of globs specifying the files to build.
 
-`destination`. Specifies where to put the build files. Defaults to `build/:format`. If used inside a format setting, it sets the folder for that format only.
+`destination`. Specifies where to put the build files. Defaults to `build/:format`, where `:format` will be replaced with the name of each format. If used inside a format setting, it sets the folder for that format only.
 
 `formats`. Object with keys for each build format.
 
@@ -24,10 +24,6 @@ To specify options for your project, you can create a file called `magicbook.jso
   }
 }
 ```
-
-`plugins`. Array of globs specifying plugin files to include in the build process.
-
-`layout`. Layout view used for the build. This layout can use the asset helpers to include JS and CSS files.
 
 ## Commands
 
