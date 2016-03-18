@@ -13,7 +13,9 @@ var cmd = argv._[0];
 var config = _.pick(argv, ['files']);;
 var configJSON = {};
 try {
-  configJSON = JSON.parse(fs.readFileSync(argv.config || './magicbook.json'));
+  var configFile = argv.config || 'magicbook.json';
+  configJSON = JSON.parse(fs.readFileSync(process.cwd() + "/" + configFile));
+  console.log("Config file detected: " + configFile)
 }
 catch(e) {
   console.log("No config file detected")
