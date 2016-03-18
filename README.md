@@ -133,13 +133,15 @@ Magicbook comes with built-in SCSS functionality, where you can use built-in Liq
 <link rel="stylesheet" href="{{ 'styles' | css }}">
 ```
 
-You can change the default search directory by using the `stylesheets` setting in the your config. The following setting will have magicbook look for a file located in `assets/css/styles.scss`.
+You can change the default search directory by using the `stylesheets` setting in your config. The following setting will have magicbook look for a file located in `assets/css/styles.scss`.
 
 ```json
 {
   "stylesheets" : "assets/css"
 }
 ```
+
+In this SCSS file, you can use `@import` to split up your CSS into separate modules.
 
 ## Commands
 
