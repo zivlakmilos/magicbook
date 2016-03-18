@@ -14,7 +14,7 @@ npm install magicbook -g
 TODO: Then run the new project generator:
 
 ```
-magicbook new mynewproject
+magicbook new myproject
 ```
 
 ## Configuration
