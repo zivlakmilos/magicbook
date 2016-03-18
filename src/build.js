@@ -10,7 +10,8 @@ var tinyliquid = require('tinyliquid');
 // Get build destination for a single format
 // Returns: string
 function destination(config, format) {
-  return config.destination.replace(":format", format);
+  var dest = _.get(config, "formats." + format + ".destination") || config.destination;
+  return dest.replace(":format", format);
 }
 
 // Check whether a vinyl file is a markdown file

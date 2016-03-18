@@ -78,9 +78,21 @@ describe("Build", function() {
 
   describe("Destination", function() {
 
-    it("should use main destination");
-
-    it("should prioritize format destination");
+    it("should prioritize format destination", function(done) {
+      build({
+        files: "spec/support/book1/content/*.md",
+        destination: "spec/support/book1/build/another/:format",
+        formats: {
+          html : {
+            destination: "spec/support/book1/build/myhtml",
+          }
+        },
+        success: function() {
+          expect(buildContent("myhtml/first-chapter.html")).toMatch("Heading</h1>");
+          done();
+        }
+      });
+    });
 
   });
 
