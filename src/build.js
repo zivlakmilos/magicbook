@@ -5,7 +5,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var vfs = require('vinyl-fs');
 var through = require('through2');
-var marked = require('marked');
+var kramed = require('kramed');
 var gutil = require('gulp-util');
 var rimraf = require('rimraf');
 var tinyliquid = require('tinyliquid');
@@ -13,14 +13,10 @@ var sass = require('node-sass');
 var mkdirp = require('mkdirp');
 var path = require('path');
 
-// Static variables
+// Variables
 // --------------------------------------------
 
 var assetFolder = "assets";
-
-// Caching variables
-// --------------------------------------------
-
 var layoutCache = {};
 var cssCache = {};
 
@@ -110,12 +106,12 @@ function assignLayout(file, layout, config, format, cb) {
 function markdown() {
   return through.obj(function (file, enc, cb) {
     if(isMarkdown(file)) {
-      marked(file.contents.toString(), {}, function (err, data) {
+      kramed(file.contents.toString(), function (err, content) {
         if (err) {
           console.log("markdown encountered an error");
           return;
         }
-        file.contents = new Buffer(data);
+        file.contents = new Buffer(content);
         file.path = gutil.replaceExtension(file.path, '.html');
         cb(null, file);
       });
@@ -158,6 +154,37 @@ function layouts(config, format) {
 // --------------------------------------------
 
 module.exports = function(config) {
+
+  // kramed default options
+  kramed.setOptions({
+    mathjax: false
+  });
+
+  // load plugins
+  if(_.isArray(config.plugins)) {
+
+    _.each(config.plugins, function(plugin) {
+
+      var loadedPlugin;
+
+      // try to load the plugin as a local file to this
+      // folder
+      try {
+        var localPlugin = path.join(__dirname, 'plugins', plugin + '.js');
+        fs.lstatSync(localPlugin);
+        loadedPlugin = require(localPlugin);
+      }
+      catch (e) {
+        console.log(e)
+        // TODO: try to load the plugin as a file in book
+        // TODO: try to load the plugin as node package
+      }
+
+      if(loadedPlugin && _.get(loadedPlugin, "hooks.init")) {
+        loadedPlugin.hooks.init(kramed);
+      }
+    });
+  }
 
   // delete the build folders
   var folderGlob = destination(config, "") + "+(html|pdf|mobi|epub)"
