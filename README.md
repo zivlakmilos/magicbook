@@ -151,7 +151,36 @@ You can change the default search directory by using the `stylesheets` setting i
 
 In this SCSS file, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats.
 
-## Commands
+
+## Plugins
+
+You can enable extra functionality in the build process by using plugins. `magicbook` comes with a bunch of built-in plugins, and it's also possible to write custom plugins for your book, either by putting plugin files in the book itself (TODO) or by adding existing plugins via NPM (TODO).
+
+### Mathjax
+
+The mathjax plugin allows you to write math equations in markdown, and automatically convert these to MathML to be rendered by Mathjax in the output formats.
+
+First enable the mathjax plugin, by adding it to your config plugins array.
+
+```json
+{
+  "plugins" : [
+    "mathjax"
+  ]
+}
+```
+
+Then you can write inline and block math equations in your markdown.
+
+```md
+This is an inline equation: $$5 + 5$$. The following is a block equation:
+
+$$$
+5 + 5
+$$$
+```
+
+## Command line
 
 ### `build`
 
