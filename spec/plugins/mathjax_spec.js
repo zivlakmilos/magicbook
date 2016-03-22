@@ -5,7 +5,8 @@ describe("Math plugin", function() {
     it("should not convert $$ to mathjax", function(done) {
       var uid = triggerBuild({
         success: function() {
-          expect(buildContent(uid, "html/first-chapter.html")).not.toMatch("<script type=\"math/tex\">")
+          expect(buildContent(uid, "html/first-chapter.html")).toMatch("\\$\\$")
+          expect(buildContent(uid, "html/first-chapter.html")).not.toMatch("<math>")
           done();
         }
       });
@@ -19,7 +20,8 @@ describe("Math plugin", function() {
       var uid = triggerBuild({
         plugins: [ 'mathjax' ],
         success: function() {
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("<script type=\"math/tex\">")
+          expect(buildContent(uid, "html/first-chapter.html")).toMatch("<math>")
+          expect(buildContent(uid, "html/first-chapter.html")).not.toMatch("\\$\\$")
           done();
         }
       });

@@ -5,8 +5,8 @@ module.exports = {
 
   hooks: {
 
-    init: function(kramed) {
-      kramed.setOptions({ mathjax: true });
+    init: function(md) {
+      md.use(require('markdown-it-math'));
     }
 
     // preMarkdown
