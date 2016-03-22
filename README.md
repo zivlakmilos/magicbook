@@ -180,6 +180,8 @@ $$$
 $$$
 ```
 
+The plugin will automatically include the required JavaScript libraries for the different formats.
+
 ## Command line
 
 ### `build`
