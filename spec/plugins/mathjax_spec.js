@@ -4,6 +4,7 @@ describe("Math plugin", function() {
 
     it("should not convert $$ to mathjax", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         success: function() {
           expect(buildContent(uid, "html/first-chapter.html")).toMatch("\\$\\$")
           expect(buildContent(uid, "html/first-chapter.html")).not.toMatch("<math>")
@@ -18,6 +19,7 @@ describe("Math plugin", function() {
 
     it("should convert $$ to mathjax", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         plugins: [ 'mathjax' ],
         success: function() {
           expect(buildContent(uid, "html/first-chapter.html")).toMatch("<math>")

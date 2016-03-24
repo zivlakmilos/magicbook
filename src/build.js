@@ -16,7 +16,6 @@ var path = require('path');
 // Variables
 // --------------------------------------------
 
-var md = new MarkdownIt();
 var assetFolder = "assets";
 var layoutCache = {};
 var cssCache = {};
@@ -99,12 +98,40 @@ function assignLayout(file, layout, config, format, cb) {
   });
 }
 
+function loadPlugins(config, md, format) {
+
+  var pluginsArray = _.get(config, "formats." + format + ".plugins") || config.plugins;
+
+  if(_.isArray(pluginsArray)) {
+
+    _.each(config.plugins, function(plugin) {
+
+      var loadedPlugin;
+
+      // try to load the plugin as a local plugin
+      try {
+        var localPlugin = path.join(__dirname, 'plugins', plugin + '.js');
+        fs.lstatSync(localPlugin);
+        loadedPlugin = require(localPlugin);
+      }
+      catch (e) {
+        // TODO: try to load the plugin as a file in book
+        // TODO: try to load the plugin as node package
+      }
+
+      if(loadedPlugin && _.get(loadedPlugin, "hooks.init")) {
+        loadedPlugin.hooks.init(md);
+      }
+    });
+  }
+}
+
 // Pipes
 // --------------------------------------------
 
 // through2 function to convert a markdown file to html
 // Returns: Vinyl filestream
-function markdown() {
+function markdown(md) {
   return through.obj(function (file, enc, cb) {
     if(isMarkdown(file)) {
       file.contents = new Buffer(md.render(file.contents.toString()));
@@ -148,45 +175,35 @@ function layouts(config, format) {
 
 module.exports = function(config) {
 
-  // load plugins
-  if(_.isArray(config.plugins)) {
-
-    _.each(config.plugins, function(plugin) {
-
-      var loadedPlugin;
-
-      // try to load the plugin as a local plugin
-      try {
-        var localPlugin = path.join(__dirname, 'plugins', plugin + '.js');
-        fs.lstatSync(localPlugin);
-        loadedPlugin = require(localPlugin);
-      }
-      catch (e) {
-        // TODO: try to load the plugin as a file in book
-        // TODO: try to load the plugin as node package
-      }
-
-      if(loadedPlugin && _.get(loadedPlugin, "hooks.init")) {
-        loadedPlugin.hooks.init(md);
-      }
-    });
+  // default to all formats
+  if(!_.isArray(config.enabledFormats)) {
+    config.enabledFormats = ["html", "pdf", "epub", "mobi"];
   }
 
-  // delete the build folders
-  var folderGlob = destination(config, "") + "+(html|pdf|mobi|epub)"
+  // delete the build format folders
+  var folderGlob = destination(config, "") + "+(" + config.enabledFormats.join("|") +")";
   rimraf(folderGlob, function() {
 
-    // preprocessing that needs to happen for all formats
-    var stream = vfs.src(config.files)
-      .pipe(markdown());
+    // run build for each format
+    _.each(config.enabledFormats, function(format) {
 
-    // html
-    var htmlStream = stream
-      .pipe(duplicate())
-      .pipe(layouts(config, "html"))
-      .pipe(vfs.dest(destination(config, "html")))
-      .on('finish', function() {
-        config.success("html")
-      });
+      // ee create a converter for each format, as each format
+      // can have different markdown settings.
+      var md = new MarkdownIt();
+
+      // we load plugins per format. This should probably return
+      // the plugins so we can call their hooks, but we don't do
+      // that right now.
+      loadPlugins(config, md, format);
+
+      var stream = vfs.src(config.files)
+        .pipe(markdown(md))
+        .pipe(layouts(config, format))
+        .pipe(vfs.dest(destination(config, format)))
+        .on('finish', function() {
+          config.success(format)
+        });
+    });
+
   });
 }

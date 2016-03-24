@@ -13,6 +13,7 @@ describe("All Formats", function() {
 
     it("should convert markdown files", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         success: function() {
           expect(buildContent(uid, "html/first-chapter.html")).toMatch("First Heading</h1>");
           expect(buildContent(uid, "html/second-chapter.html")).toMatch("Second Heading</h1>");
@@ -27,6 +28,7 @@ describe("All Formats", function() {
 
     it("should ignore layout", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         success: function() {
           expect(buildContent(uid, "html/first-chapter.html")).not.toMatch("Main layout");
           expect(buildContent(uid, "html/first-chapter.html")).toMatch("First Heading</h1>");
@@ -39,6 +41,7 @@ describe("All Formats", function() {
 
     it("should use main layout", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         layout: "spec/support/book/layouts/main.html",
         success: function() {
           expect(buildContent(uid, "html/first-chapter.html")).toMatch("Main layout");
@@ -52,6 +55,7 @@ describe("All Formats", function() {
 
     it("should prioritize format layout", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         layout: "spec/support/book/layouts/main.html",
         formats: {
           html : {
@@ -74,6 +78,7 @@ describe("All Formats", function() {
 
     it("should prioritize format destination", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         formats: {
           html : {
             destination: "spec/support/book/tmp/abcdef/myhtml",
@@ -92,6 +97,7 @@ describe("All Formats", function() {
 
     it("should use stylesheet location", function(done) {
       var uid = triggerBuild({
+        enabledFormats: ["html"],
         stylesheets: "spec/support/book/stylesheets",
         layout: "spec/support/book/layouts/assets.html",
         success: function() {
