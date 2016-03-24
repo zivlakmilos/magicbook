@@ -9,6 +9,7 @@
     "test": "jasmine"
   },
   "dependencies": {
+    "event-stream": "^3.3.2",
     "gulp-util": "^3.0.7",
     "lodash": "^4.6.1",
     "markdown-it": "^6.0.0",

@@ -93,23 +93,4 @@ describe("All Formats", function() {
 
   });
 
-  describe("SCSS", function() {
-
-    it("should use stylesheet location", function(done) {
-      var uid = triggerBuild({
-        enabledFormats: ["html"],
-        stylesheets: "spec/support/book/stylesheets",
-        layout: "spec/support/book/layouts/assets.html",
-        success: function() {
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("<link rel=\"stylesheet\" href=\"assets/styles.css\">");
-          expect(buildContent(uid, "html/assets/styles.css")).toMatch("color: red;");
-          done();
-        }
-      });
-    });
-
-    it('should digest css files')
-
-  });
-
 });

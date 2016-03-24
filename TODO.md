@@ -1,5 +1,7 @@
 ## MUST
 
+- write docs around javascripts and stylesheets plugins
+
 - Watch support
 - Views
 - Add PDF

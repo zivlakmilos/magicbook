@@ -20,42 +20,6 @@ var assetFolder = "assets";
 var layoutCache = {};
 var cssCache = {};
 
-// Liquid Filters
-// --------------------------------------------
-
-var liquidFilters = {
-
-};
-
-var liquidAsyncFilters = {
-
-  // Filter to take a string with the filename of a scss file in
-  // the stylesheets folder, and create a css file from it and
-  // return the new name.
-  css : function(src, cb, context) {
-    var inFile = context._locals.stylesheets + "/" + src + ".scss";
-    if(!cssCache[inFile]) {
-      var dest = destination(context._locals, context._locals.format);
-      var outFile = dest + "/" + assetFolder + "/" + src + ".css";
-      sass.render({
-          file: inFile,
-          outFile: outFile
-        },
-        function(err, result) {
-          if(err) return console.log("Error compiling sass", err);
-          createFile(outFile, result.css, function() {
-            cssCache[inFile] = path.relative(dest, outFile);
-            cb(null, cssCache[inFile]);
-          });
-        }
-      );
-    }
-    else {
-      cb(null, cssCache[inFile]);
-    }
-  }
-}
-
 // Helpers
 // --------------------------------------------
 
@@ -83,15 +47,8 @@ function isMarkdown(file) {
 }
 
 // Applies the tinyliquid template layout to the file
-function assignLayout(file, layout, config, format, cb) {
-  var context = tinyliquid.newContext({
-    locals: _.extend({
-      content: file.contents.toString(),
-      format: format
-    }, config),
-    filters: liquidFilters,
-    asyncFilters: liquidAsyncFilters
-  });
+function assignLayout(file, layout, locals, cb) {
+  var context = tinyliquid.newContext({ locals: locals });
   layout(context, function(err) {
     file.contents = new Buffer(context.getBuffer());
     cb(null, file);
@@ -100,11 +57,11 @@ function assignLayout(file, layout, config, format, cb) {
 
 function loadPlugins(config, md, format) {
 
-  var pluginsArray = _.get(config, "formats." + format + ".plugins") || config.plugins;
+  var plugins = [];
+  var pluginsArray = _.get(config, "formats." + format + ".plugins") || config.plugins || ["stylesheets", "javascripts"];
 
   if(_.isArray(pluginsArray)) {
-
-    _.each(config.plugins, function(plugin) {
+    _.each(pluginsArray, function(plugin) {
 
       var loadedPlugin;
 
@@ -119,11 +76,34 @@ function loadPlugins(config, md, format) {
         // TODO: try to load the plugin as node package
       }
 
-      if(loadedPlugin && _.get(loadedPlugin, "hooks.init")) {
-        loadedPlugin.hooks.init(md);
+      if(loadedPlugin) {
+        plugins.push(loadedPlugin);
       }
     });
   }
+
+  return plugins;
+}
+
+// Hooks
+// --------------------------------------------
+
+// Function to add plugin hooks as pipes in the stream chain.
+function hook(stream, plugins, name, format, payload) {
+
+  // loop through each of plugins
+  _.each(plugins, function(plugin) {
+
+    // if the plugin has this hook
+    if(_.get(plugin, "hooks." + name)) {
+
+      // create a new pipe with the plugin hook function. This means that the
+      // plugin hook must return a through2 object.
+      stream = stream.pipe(plugin.hooks[name].apply(this, [format, payload]));
+    }
+  });
+
+  return stream;
 }
 
 // Pipes
@@ -152,16 +132,26 @@ function duplicate() {
 // Assigns layouts to the files in the stream.
 // Prioritizes format layout over main layout.
 function layouts(config, format) {
+
+  // find the layout to use for this format
   var layout = _.get(config, "formats." + format + ".layout") || config.layout;
+
   return through.obj(function(file, enc, cb) {
     if(layout) {
+
+      // create the object to pass into liquid for this file
+      var locals = _.extend({
+        content: file.contents.toString(),
+        format: format
+      }, config)
+
       if(layoutCache[layout]) {
-        assignLayout(file, layoutCache[layout], config, format, cb);
+        assignLayout(file, layoutCache[layout], locals, cb);
       } else {
         fs.readFile(layout, function (err, data) {
           if (err) { return console.log(err); }
           layoutCache[layout] = tinyliquid.compile(data.toString());
-          assignLayout(file, layoutCache[layout], config, format, cb);
+          assignLayout(file, layoutCache[layout], locals, cb);
         });
       }
     } else {
@@ -187,17 +177,23 @@ module.exports = function(config) {
     // run build for each format
     _.each(config.enabledFormats, function(format) {
 
-      // ee create a converter for each format, as each format
+      // we create a converter for each format, as each format
       // can have different markdown settings.
       var md = new MarkdownIt();
 
-      // we load plugins per format. This should probably return
-      // the plugins so we can call their hooks, but we don't do
-      // that right now.
-      loadPlugins(config, md, format);
+      // we load plugins per format as each format can have
+      // different plugins.
+      var plugins = loadPlugins(config, md, format);
 
-      var stream = vfs.src(config.files)
-        .pipe(markdown(md))
+      // create our stream
+      var stream = vfs.src(config.files);
+
+      // hook: init
+      stream = hook(stream, plugins, "init", format, { config: config, md: md})
+        .pipe(markdown(md));
+
+      // hook: html
+      stream = hook(stream, plugins, "html", format, { config: config })
         .pipe(layouts(config, format))
         .pipe(vfs.dest(destination(config, format)))
         .on('finish', function() {
