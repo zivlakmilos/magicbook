@@ -1,4 +1,4 @@
-describe("Math plugin", function() {
+describe("Katex plugin", function() {
 
   describe("When disabled", function() {
 
@@ -29,7 +29,7 @@ describe("Math plugin", function() {
       });
     });
 
-    it("should include katex.css in stylesheets files array", function(done) {
+    it("should include katex.css in the stylesheets", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         plugins: [ 'katex', 'stylesheets' ],
@@ -39,10 +39,6 @@ describe("Math plugin", function() {
         }
       });
     });
-
-    it("PDF?");
-    it("EPUB?");
-    it("MOBI?");
   });
 
 });

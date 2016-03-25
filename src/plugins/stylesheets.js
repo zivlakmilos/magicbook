@@ -90,11 +90,11 @@ module.exports = {
       }
 
       // finish
-      stream
-        .pipe(vfs.dest(stylesheetsFolder))
+      stream.pipe(vfs.dest(stylesheetsFolder))
         .on('finish', function() {
           cb(null);
         });
+
     } else {
       cb(null);
     }

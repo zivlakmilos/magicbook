@@ -102,9 +102,7 @@ describe("Stylesheets plugin", function() {
       });
     });
 
-    // it("should use stylesheets destination folder")
-    //
-    // it("should insert the stylesheets in the layout")
+    it("should insert the stylesheets in the layout");
 
   });
 
