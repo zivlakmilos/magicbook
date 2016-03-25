@@ -145,7 +145,7 @@ Like most other settings, you can set the layout for each format.
 
 ## Plugins
 
-Almost all functionality in `magicbook` is written via plugins. Some plugins come enabled by default, while others need to be enabled to work. It's easy to write custom plugins for your book, either by putting plugin files in the book itself (TODO) or by adding existing plugins via NPM (TODO).
+Almost all functionality in `magicbook` is written via plugins. Some plugins are enabled by default, while others needs a configuration setting to work. It's easy to write custom plugins for your book, either by putting plugin files in the book itself (TODO) or by adding existing plugins via NPM (TODO).
 
 ## Stylesheets
 
