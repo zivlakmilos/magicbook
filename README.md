@@ -11,7 +11,7 @@ This project operates under a few assumptions:
 - You want to use JavaScript to add interactivity to digital formats
 - You want an easy way to define custom elements that can look and behave differently in every format
 
-Although there's a small number of open source publishing frameworks, it's very hard to find something that is flexible enough to create modern, interactive books for the web.
+Although a small number of open source publishing frameworks already exists, it's very hard to find frameworks that are flexible enough to create modern, interactive books for the web while supporting print-ready PDF export too.
 
 ## Getting Started
 
