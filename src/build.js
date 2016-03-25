@@ -1,6 +1,7 @@
 // Require
 // --------------------------------------------
 
+var helpers = require('./helpers');
 var _ = require('lodash');
 var fs = require('fs');
 var vfs = require('vinyl-fs');
@@ -17,9 +18,7 @@ var async = require('async');
 // Variables
 // --------------------------------------------
 
-var assetFolder = "assets";
 var layoutCache = {};
-var cssCache = {};
 
 var defaultFormats = ["html", "epub", "mobi", "pdf"];
 var defaultPlugins = ["stylesheets", "javascripts"];
@@ -35,18 +34,6 @@ function createFile(filename, content, cb) {
       cb();
     });
   });
-}
-
-// Get build destination for a single format
-// Returns: string
-function destination(config, format) {
-  return config.destination.replace(":format", format);
-}
-
-// Check whether a vinyl file is a markdown file
-// Returns: boolean
-function isMarkdown(file) {
-  return file.path.match(/\.md$/) || file.path.match(/\.markdown$/);
 }
 
 // Applies the tinyliquid template layout to the file
@@ -141,7 +128,7 @@ function hook(stream, plugins, name, format, payload) {
 // Returns: Vinyl filestream
 function markdown(md) {
   return through.obj(function (file, enc, cb) {
-    if(isMarkdown(file)) {
+    if(helpers.isMarkdown(file)) {
       file.contents = new Buffer(md.render(file.contents.toString()));
       file.path = gutil.replaceExtension(file.path, '.html');
     }
@@ -195,18 +182,20 @@ module.exports = function(config) {
     config.enabledFormats = defaultFormats;
   }
 
-  // delete the build format folders
-  var folderGlob = destination(config, "") + "+(" + config.enabledFormats.join("|") +")";
-  rimraf(folderGlob, function() {
+  // run build for each format
+  _.each(config.enabledFormats, function(format) {
 
-    // run build for each format
-    _.each(config.enabledFormats, function(format) {
+    // make a config object that consists of the format config,
+    // with the main config (without the formats object) merged on top of it.
+    var formatConfig = _.get(config, "formats." + format) || {};
+    _.defaults(formatConfig, config)
+    delete formatConfig.formats;
 
-      // make a config object that consists of the format config,
-      // with the main config (without the formats object) merged on top of it.
-      var formatConfig = _.get(config, "formats." + format) || {};
-      _.defaults(formatConfig, config)
-      delete formatConfig.formats;
+    // figure out the build folder for this format
+    var destination = helpers.destination(formatConfig.destination, format);
+
+    // delete everything in build folder
+    rimraf(destination, function() {
 
       // we create a converter for each format, as each format
       // can have different markdown settings.
@@ -229,12 +218,11 @@ module.exports = function(config) {
         // hook: html
         stream = hook(stream, plugins, "html", format, { config: formatConfig })
           .pipe(layouts(formatConfig, format))
-          .pipe(vfs.dest(destination(formatConfig, format)))
+          .pipe(vfs.dest(destination))
           .on('finish', function() {
-            config.success(format)
+            config.success(format);
           });
       });
     });
-
   });
 }

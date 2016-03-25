@@ -191,7 +191,15 @@ To use this CSS in each format, you can insert the compiled CSS in the layout us
 </html>
 ```
 
-In SCSS files, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats.
+In SCSS files, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats. You can specify the destination folder for the assets, by using the `destination` property. It defaults to `/assets`.
+
+```json
+{
+  "stylesheets" : {
+    "destination" : "customfolder"
+  }
+}
+```
 
 For each CSS file in the array, `magicbook` will add a `<link>` tag in the final format. If you're building a website for deployment, there's a number of built-in options you might consider.
 
@@ -205,12 +213,12 @@ The `compress` property will remove whitespace from the CSS file, resulting in m
 }
 ```
 
-The `bundle` option will combine all the files in the `stylesheets` array into a single CSS file in the output. This, combined with the `compress` option, is recommended to improve the loading speed of a production website.
+The `bundle` option will combine all the files in the `stylesheets` array into a single CSS file in the output. This, combined with the `compress` option, is recommended to improve the loading speed of a production website. You can set it to `true` or the desired name of the bundle.
 
 ```json
 {
   "stylesheets" : {
-    "bundle" : true
+    "bundle" : "mybundle.css"
   }
 }
 ```

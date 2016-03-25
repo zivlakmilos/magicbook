@@ -1,16 +1,53 @@
-/*var through = require('through2');
 var _ = require('lodash');
+var vfs = require('vinyl-fs');
+var gutil = require('gulp-util');
 
+// through2 function to convert a scss file to css
+// Returns: Vinyl filestream
+function scss() {
+  return through.obj(function (file, enc, cb) {
+    if(isScss(file)) {
+      sass.render({ file: file.path }, function(err, result) {
+        file.contents = result.css;
+        file.path = gutil.replaceExtension(file.path, '.css');
+        cb(err, result);
+      });
+    } else {
+      cb(null, file);
+    }
+	});
+}
+/*
 module.exports = {
 
   setup: function(format, config, md, cb) {
 
     // get the stylesheets needed for this format
-    var stylesheets = _.get(payload.config, "stylesheets.files");
+    var stylesheets = _.get(config, "stylesheets.files");
 
-    // we load them
+    // if the array exists
+    if(stylesheets) {
 
-    // we transfer them to the build folder
+      //var stream = vfs.src(stylesheets)
+      //  .pipe(scss());
+
+      // compress
+
+      // digest
+      //if(_.)
+
+      // bundle (use filename if not true)
+
+      // finish
+      // stream
+      //   .pipe(vfs.dest(destination(formatConfig, format)))
+      //   .on('finish', function() {
+      //     cb(null);
+      //   });
+
+    } else {
+      cb(null);
+    }
   }
 
 }*/
