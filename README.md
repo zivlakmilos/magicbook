@@ -178,7 +178,7 @@ You can also override this setting per format, as shown here:
 }
 ```
 
-To link use this CSS in your build formats, you can insert the compiled CSS in the layout using the `{{ css }}` tag.
+To use this CSS in each format, you can insert the compiled CSS in the layout using the `{{ css }}` tag.
 
 ```html
 <html>
