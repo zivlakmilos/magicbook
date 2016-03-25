@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var rimraf = require('rimraf');
 
-afterAll(function(done) {
+beforeAll(function(done) {
   rimraf("spec/support/book/tmp/*", function() {
     done();
   });

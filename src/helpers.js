@@ -3,7 +3,6 @@ module.exports = {
   // Get build destination for a single format
   // Returns: string
   destination: function(dest, format) {
-    console.log(dest.replace(":format", format))
     return dest.replace(":format", format);
   },
 
