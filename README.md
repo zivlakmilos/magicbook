@@ -193,6 +193,40 @@ To use this CSS in each format, you can insert the compiled CSS in the layout us
 
 In SCSS files, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats.
 
+For each CSS file in the array, `magicbook` will add a `<link>` tag in the final format. If you're building a website for deployment, there's a number of built-in options you might consider.
+
+The `compress` property will remove whitespace from the CSS file, resulting in much smaller file sizes.
+
+```json
+{
+  "stylesheets" : {
+    "compress" : true
+  }
+}
+```
+
+The `bundle` option will combine all the files in the `stylesheets` array into a single CSS file in the output. This, combined with the `compress` option, is recommended to improve the loading speed of a production website.
+
+```json
+{
+  "stylesheets" : {
+    "bundle" : true
+  }
+}
+```
+
+The `digest` option will add a the md5 checksum of the file content to the filename, in order to allow you to set high caching headers if the website lives behind a CDN.
+
+```json
+{
+  "stylesheets" : {
+    "digest" : true
+  }
+}
+```
+
+
+
 ### Mathjax
 
 This plugin is **disabled by default**. The mathjax plugin allows you to write math equations in markdown, and automatically convert these to MathML to be rendered by Mathjax in the output formats.

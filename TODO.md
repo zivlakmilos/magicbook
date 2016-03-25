@@ -1,6 +1,7 @@
 ## MUST
 
 - stylesheets should be object in config
+  - compress, bundle, digest
 
 - Watch support
 - Views
