@@ -19,8 +19,39 @@ describe("Stylesheets plugin", function() {
       });
     });
 
-    //
-    // it("should compile SCSS files to regular CSS files");
+    it("should use custom stylesheets destination folder", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        stylesheets: {
+          destination: "myassets/css",
+          files: [
+            "spec/support/book/stylesheets/styles.css",
+          ]
+        },
+        success: function() {
+          expect(buildPath(uid, "html/myassets/css/styles.css")).toExist();
+          done();
+        }
+      });
+    });
+
+    it("should compress stylesheets", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        stylesheets: {
+          compress: true,
+          files: [
+            "spec/support/book/stylesheets/styles.css",
+          ]
+        },
+        success: function() {
+          expect(buildPath(uid, "html/assets/styles.css")).toHaveContent("color:green");
+          done();
+        }
+      });
+    });
+
+    // it("should use stylesheets destination folder")
     //
     // it("should insert the stylesheets in the layout")
     //

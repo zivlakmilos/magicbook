@@ -5,6 +5,16 @@ var through = require('through2');
 var helpers = require('../helpers');
 var path = require('path');
 var sass = require('node-sass');
+var CleanCSS = require('clean-css');
+
+function compress() {
+  return through.obj(function(file, enc, cb) {
+    new CleanCSS().minify(file.contents, function (err, minified) {
+      file.contents = new Buffer(minified.styles);
+      cb(err, file);
+    });
+  });
+}
 
 // through2 function to convert a scss file to css
 // Returns: Vinyl filestream
@@ -34,10 +44,15 @@ module.exports = {
 
     // if the array exists
     if(stylesheets) {
+
+      // gather the files
       var stream = vfs.src(stylesheets)
         .pipe(scss());
 
       // compress
+      if(_.get(config, "stylesheets.compress")) {
+        stream = stream.pipe(compress());
+      }
 
       // digest
       //if(_.)

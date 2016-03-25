@@ -4,6 +4,24 @@ beforeEach(function () {
 
   jasmine.addMatchers({
 
+    toExist: function() {
+      return {
+        compare: function (file) {
+          var result = {
+            pass: true
+          }
+          try {
+            var content = fs.readFileSync(file);
+          }
+          catch(err) {
+            result.pass = false;
+            result.message = file + " does not exist";
+          }
+          return result;
+        }
+      };
+    },
+
     toHaveContent: function() {
       return {
         compare: function (file, substring) {
