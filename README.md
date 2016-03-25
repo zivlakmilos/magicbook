@@ -4,7 +4,7 @@ The Magic Book Project is an open source project funded by New York University's
 
 This project operates under a few assumptions:
 
-- You want to write your book in a single source (markdown)
+- You want to write your book in a single source (markdown or HTML)
 - You want to export this source to many different formats (static website, pdf, epub, mobi)
 - You want your source to be completely free of format-specific markup
 - You want to use CSS to design the look of your book
