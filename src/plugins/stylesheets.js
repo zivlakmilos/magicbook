@@ -9,6 +9,7 @@ var CleanCSS = require('clean-css');
 var revHash = require('rev-hash');
 var revPath = require('rev-path');
 var modifyFilename = require('modify-filename');
+var concatCss = require('gulp-concat-css');
 
 // through2 function to add checksum of file content to filename
 // Returns: Vinyl filestream
@@ -71,7 +72,12 @@ module.exports = {
       var stream = vfs.src(stylesheets)
         .pipe(scss());
 
-      // bundle (use filename if not true)
+      // bundle
+      var bundle = _.get(config, "stylesheets.bundle");
+      if(bundle) {
+        var filename = _.isString(bundle) ? bundle : "bundle.css"
+        stream = stream.pipe(concatCss(filename));
+      }
 
       // compress
       if(_.get(config, "stylesheets.compress")) {

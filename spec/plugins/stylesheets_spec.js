@@ -67,16 +67,28 @@ describe("Stylesheets plugin", function() {
       });
     });
 
+    it("should bundle stylesheets", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        stylesheets: {
+          bundle: true,
+          files: [
+            "spec/support/book/stylesheets/styles.css",
+            "spec/support/book/stylesheets/otherstyles.scss"
+          ]
+        },
+        success: function() {
+          console.log(uid)
+          expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: red;");
+          expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: green;");
+          done();
+        }
+      });
+    });
+
     // it("should use stylesheets destination folder")
     //
     // it("should insert the stylesheets in the layout")
-    //
-    // it("should digest")
-    //
-    // it("should compress")
-    //
-    // it("should bundle")
-
 
   });
 
