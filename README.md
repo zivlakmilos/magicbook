@@ -5,7 +5,7 @@ The Magic Book Project is an open source project funded by New York University's
 This project operates under a few assumptions:
 
 - You want to write your book in a single source (markdown)
-- You want to be able to export this source to many different formats (website, pdf, epub, mobi)
+- You want to export this source to many different formats (static website, pdf, epub, mobi)
 - You want your source to be completely free of format-specific markup
 - You want to use CSS to design the look of your book
 - You want to use JavaScript to add interactivity to digital formats
@@ -143,30 +143,57 @@ Like most other settings, you can set the layout for each format.
 }
 ```
 
-### Stylesheets
+## Plugins
 
-Magicbook comes with built-in SCSS functionality, where you can use built-in Liquid filters to automatically generate compiled version of your SCSS files. The following snippet shows how to use the `css` filter to look for a file called `styles.scss` in your `stylesheets` folder, and compile a file called `styles.css` into the `assets` folder of each of your formats.
+Almost all functionality in `magicbook` are written via plugins. Some plugins come enabled by default, while others need to be enabled to work. It's easy to write custom plugins for your book, either by putting plugin files in the book itself (TODO) or by adding existing plugins via NPM (TODO).
 
-```html
-<link rel="stylesheet" href="{{ 'styles' | css }}">
-```
+## Stylesheets (enabled by default)
 
-You can change the default search directory by using the `stylesheets` setting in your config. The following setting will have magicbook look for a file located in `assets/css/styles.scss`.
+The stylesheets plugin allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
 
 ```json
 {
-  "stylesheets" : "assets/css"
+  "stylesheets" : {
+    "files" : [
+      "css/first.css",
+      "css/first.scss",
+    ]
+  }
 }
 ```
 
-In this SCSS file, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats.
+You can also override this setting per format, as shown here:
 
+```json
+{
+  "formats" : {
+    "html" : {
+      "stylesheets" : {
+        "files" : [
+          "css/myhtmlstyles.css"
+        ]
+      }
+    }
+  }
+}
+```
 
-## Plugins
+To link use this CSS in your build formats, you can insert the compiled CSS in the layout using the `{{ css }}` tag.
 
-You can enable extra functionality in the build process by using plugins. `magicbook` comes with a bunch of built-in plugins, and it's also possible to write custom plugins for your book, either by putting plugin files in the book itself (TODO) or by adding existing plugins via NPM (TODO).
+```html
+<html>
+  <head>
+    {{ css }}
+  </head>
+  <body>
+    {{ content }}
+  </body>
+</html>
+```
 
-### Mathjax
+In SCSS files, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats.
+
+### Mathjax (disabled by default)
 
 The mathjax plugin allows you to write math equations in markdown, and automatically convert these to MathML to be rendered by Mathjax in the output formats.
 

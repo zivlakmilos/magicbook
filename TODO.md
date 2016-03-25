@@ -1,6 +1,6 @@
 ## MUST
 
-- write docs around javascripts and stylesheets plugins
+- stylesheets should be object in config
 
 - Watch support
 - Views
