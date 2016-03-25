@@ -147,9 +147,9 @@ Like most other settings, you can set the layout for each format.
 
 Almost all functionality in `magicbook` are written via plugins. Some plugins come enabled by default, while others need to be enabled to work. It's easy to write custom plugins for your book, either by putting plugin files in the book itself (TODO) or by adding existing plugins via NPM (TODO).
 
-## Stylesheets (enabled by default)
+## Stylesheets
 
-The stylesheets plugin allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
+This plugin is **enabled by default**. The stylesheets plugin allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
 
 ```json
 {
@@ -193,9 +193,9 @@ To link use this CSS in your build formats, you can insert the compiled CSS in t
 
 In SCSS files, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats.
 
-### Mathjax (disabled by default)
+### Mathjax
 
-The mathjax plugin allows you to write math equations in markdown, and automatically convert these to MathML to be rendered by Mathjax in the output formats.
+This plugin is **disabled by default**. The mathjax plugin allows you to write math equations in markdown, and automatically convert these to MathML to be rendered by Mathjax in the output formats.
 
 First enable the mathjax plugin, by adding it to your config plugins array.
 
