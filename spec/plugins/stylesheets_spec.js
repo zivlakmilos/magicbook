@@ -67,7 +67,7 @@ describe("Stylesheets plugin", function() {
       });
     });
 
-    it("should bundle stylesheets", function(done) {
+    it("should bundle stylesheets with default name", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         stylesheets: {
@@ -78,9 +78,25 @@ describe("Stylesheets plugin", function() {
           ]
         },
         success: function() {
-          console.log(uid)
           expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: red;");
           expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: green;");
+          done();
+        }
+      });
+    });
+
+    it("should bundle stylesheets with custom name", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        stylesheets: {
+          bundle: "mybundle.css",
+          files: [
+            "spec/support/book/stylesheets/styles.css",
+            "spec/support/book/stylesheets/otherstyles.scss"
+          ]
+        },
+        success: function() {
+          expect(buildPath(uid, "html/assets/mybundle.css")).toExist();
           done();
         }
       });
