@@ -1,7 +1,7 @@
 ## MUST
 
-- stylesheets should be object in config
-  - compress, bundle, digest
+- katex font files: "extraFiles" glob to transfer into a specific place
+- compress, bundle, digest
 
 - Watch support
 - Views

@@ -15,8 +15,8 @@ describe("All Formats", function() {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         success: function() {
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("First Heading</h1>");
-          expect(buildContent(uid, "html/second-chapter.html")).toMatch("Second Heading</h1>");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
+          expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Second Heading</h1>");
           done();
         }
       });
@@ -30,10 +30,10 @@ describe("All Formats", function() {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         success: function() {
-          expect(buildContent(uid, "html/first-chapter.html")).not.toMatch("Main layout");
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("First Heading</h1>");
-          expect(buildContent(uid, "html/second-chapter.html")).not.toMatch("Main layout");
-          expect(buildContent(uid, "html/second-chapter.html")).toMatch("Second Heading</h1>");
+          expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("Main layout");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
+          expect(buildPath(uid, "html/second-chapter.html")).not.toHaveContent("Main layout");
+          expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Second Heading</h1>");
           done();
         }
       });
@@ -44,10 +44,10 @@ describe("All Formats", function() {
         enabledFormats: ["html"],
         layout: "spec/support/book/layouts/main.html",
         success: function() {
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("Main layout");
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("First Heading</h1>");
-          expect(buildContent(uid, "html/second-chapter.html")).toMatch("Main layout");
-          expect(buildContent(uid, "html/second-chapter.html")).toMatch("Second Heading</h1>");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Main layout");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
+          expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Main layout");
+          expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Second Heading</h1>");
           done();
         }
       });
@@ -63,10 +63,10 @@ describe("All Formats", function() {
           }
         },
         success: function() {
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("Format layout");
-          expect(buildContent(uid, "html/first-chapter.html")).toMatch("First Heading</h1>");
-          expect(buildContent(uid, "html/second-chapter.html")).toMatch("Format layout");
-          expect(buildContent(uid, "html/second-chapter.html")).toMatch("Second Heading</h1>");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Format layout");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
+          expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Format layout");
+          expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Second Heading</h1>");
           done();
         }
       });
@@ -85,7 +85,7 @@ describe("All Formats", function() {
           }
         },
         success: function() {
-          expect(buildContent('abcdef', "myhtml/first-chapter.html")).toMatch("First Heading</h1>");
+          expect(buildPath('abcdef', "myhtml/first-chapter.html")).toHaveContent("First Heading</h1>");
           done();
         }
       });

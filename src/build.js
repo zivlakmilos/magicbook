@@ -180,7 +180,7 @@ module.exports = function(config) {
       // with the main config (without the formats object) merged on top of it.
       var formatConfig = _.get(config, "formats." + format) || {};
       _.defaults(formatConfig, config)
-      formatConfig.formats = undefined;
+      delete formatConfig.formats;
 
       // we create a converter for each format, as each format
       // can have different markdown settings.

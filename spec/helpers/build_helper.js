@@ -7,10 +7,6 @@ global.buildPath = function(uid, file) {
   return "spec/support/book/tmp/" + uid + "/" + file;
 }
 
-global.buildContent = function(uid, file) {
-  return fs.readFileSync(buildPath(uid, file));
-}
-
 global.triggerBuild = function(config) {
   var uid = uuid.v4();
   _.defaults(config, {

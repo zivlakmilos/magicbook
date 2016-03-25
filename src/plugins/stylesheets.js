@@ -1,10 +1,15 @@
 var through = require('through2');
+var _ = require('lodash');
 
 module.exports = {
 
   hooks: {
 
     init: function(format, payload) {
+      var stylesheets = _.get(payload.config, "stylesheets.files");
+      if(stylesheets) {
+
+      }
       return through.obj();
     }
 
