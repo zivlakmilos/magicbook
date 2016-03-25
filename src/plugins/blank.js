@@ -23,14 +23,20 @@ module.exports = {
   // manipulation of files.
   hooks: {
 
-    // init is called right after the markdown files are sourced, and
+    // load is called right after the markdown files are sourced, and
     // before the markdown conversion happens.
-    init: function(format, payload) {
+    load: function(format, payload) {
       return through.obj();
     },
 
     // convert is called right after markdown conversion.
     convert: function(format, payload) {
+      return through.obj();
+    },
+
+    // layout is called right after layouts have been added
+    // to the HTML files.
+    layout: function(format, payload) {
       return through.obj();
     }
   }

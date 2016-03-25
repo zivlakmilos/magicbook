@@ -211,13 +211,16 @@ module.exports = function(config) {
         // create our stream
         var stream = vfs.src(formatConfig.files);
 
-        // hook: init
-        stream = hook(stream, plugins, "init", format, { config: formatConfig, md: md})
+        // hook: load
+        stream = hook(stream, plugins, "load", format, { config: formatConfig, md: md})
           .pipe(markdown(md));
 
-        // hook: html
-        stream = hook(stream, plugins, "html", format, { config: formatConfig })
+        // hook: convert
+        stream = hook(stream, plugins, "convert", format, { config: formatConfig })
           .pipe(layouts(formatConfig, format))
+
+        // hook: layout
+        stream = hook(stream, plugins, "layout", format, { config: formatConfig })
           .pipe(vfs.dest(destination))
           .on('finish', function() {
             config.success(format);
