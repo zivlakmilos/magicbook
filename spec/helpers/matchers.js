@@ -14,7 +14,7 @@ beforeEach(function () {
             var content = fs.readFileSync(file);
             if(content.indexOf(substring) == -1) {
               result.pass = false;
-              result.message = "'"+substring+"'" + "not found in" + "'"+content+"'";
+              result.message = "'"+substring+"'" + " not found in" + "'"+content+"'";
             }
           }
           catch(err) {

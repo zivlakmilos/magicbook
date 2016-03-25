@@ -12,6 +12,7 @@ var tinyliquid = require('tinyliquid');
 var sass = require('node-sass');
 var mkdirp = require('mkdirp');
 var path = require('path');
+var async = require('async');
 
 // Variables
 // --------------------------------------------
@@ -85,6 +86,31 @@ function loadPlugins(config, md, format) {
   }
 
   return plugins;
+}
+
+// This function takes the name of a function and calls
+// that function for all the plugins, in series after each other.
+// It then ends by calling cb(). It expects the last argument
+// of these plugin functions to be a cb that is called when the
+// function is done.
+function callPlugins(plugins, fnc, args, cb) {
+
+  // select all plugins that have this function
+  var selected = _.filter(plugins, function(plugin) {
+    return _.isFunction(plugin[fnc]);
+  });
+
+  // make async chain of the functions to be called in series.
+  var chain = _.map(selected, function(plugin) {
+    return function(callback) {
+      plugin[fnc].apply(this, args.concat(callback));
+    }
+  });
+
+  // make async fire of the chain in a series.
+  async.series(chain, function(err, results) {
+    cb();
+  });
 }
 
 // Hooks
@@ -190,20 +216,24 @@ module.exports = function(config) {
       // different plugins.
       var plugins = loadPlugins(formatConfig, md, format);
 
-      // create our stream
-      var stream = vfs.src(formatConfig.files);
+      // call the setup function in all plugins
+      callPlugins(plugins, "setup", [format, config, md], function() {
 
-      // hook: init
-      stream = hook(stream, plugins, "init", format, { config: formatConfig, md: md})
-        .pipe(markdown(md));
+        // create our stream
+        var stream = vfs.src(formatConfig.files);
 
-      // hook: html
-      stream = hook(stream, plugins, "html", format, { config: formatConfig })
-        .pipe(layouts(formatConfig, format))
-        .pipe(vfs.dest(destination(formatConfig, format)))
-        .on('finish', function() {
-          config.success(format)
-        });
+        // hook: init
+        stream = hook(stream, plugins, "init", format, { config: formatConfig, md: md})
+          .pipe(markdown(md));
+
+        // hook: html
+        stream = hook(stream, plugins, "html", format, { config: formatConfig })
+          .pipe(layouts(formatConfig, format))
+          .pipe(vfs.dest(destination(formatConfig, format)))
+          .on('finish', function() {
+            config.success(format)
+          });
+      });
     });
 
   });

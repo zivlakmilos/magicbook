@@ -1,21 +1,19 @@
-var through = require('through2');
+/*var through = require('through2');
 var _ = require('lodash');
 
 module.exports = {
 
-  hooks: {
+  setup: function(format, config, md, cb) {
 
-    init: function(format, payload) {
-      var stylesheets = _.get(payload.config, "stylesheets.files");
-      if(stylesheets) {
+    // get the stylesheets needed for this format
+    var stylesheets = _.get(payload.config, "stylesheets.files");
 
-      }
-      return through.obj();
-    }
+    // we load them
 
+    // we transfer them to the build folder
   }
 
-}
+}*/
 
 
 // find the stylesheets for this format

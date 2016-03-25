@@ -6,7 +6,7 @@ describe("Math plugin", function() {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         success: function() {
-          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("\\$\\$")
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("$$")
           expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("<math>")
           done();
         }
@@ -20,10 +20,10 @@ describe("Math plugin", function() {
     it("should convert $$ to katex", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
-        plugins: [ 'katex', 'stylesheets' ],
+        plugins: [ 'katex' ],
         success: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<math>")
-          expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("\\$\\$")
+          expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("$$")
           done();
         }
       });
@@ -32,7 +32,7 @@ describe("Math plugin", function() {
     it("should include katex.css in stylesheets files array", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
-        plugins: [ 'katex' ], // SHOULD I ADD STYLESHEETS AND JAVASCRIPTS HERE???
+        plugins: [ 'katex', 'stylesheets' ],
         success: function() {
           expect(buildPath(uid, "html/assets/katex.css")).toHaveContent("KaTeX_Main");
           done();
