@@ -20,6 +20,9 @@ var assetFolder = "assets";
 var layoutCache = {};
 var cssCache = {};
 
+var defaultFormats = ["html", "epub", "mobi", "pdf"];
+var defaultPlugins = ["stylesheets", "javascripts"];
+
 // Helpers
 // --------------------------------------------
 
@@ -36,8 +39,7 @@ function createFile(filename, content, cb) {
 // Get build destination for a single format
 // Returns: string
 function destination(config, format) {
-  var dest = _.get(config, "formats." + format + ".destination") || config.destination;
-  return dest.replace(":format", format);
+  return config.destination.replace(":format", format);
 }
 
 // Check whether a vinyl file is a markdown file
@@ -58,7 +60,7 @@ function assignLayout(file, layout, locals, cb) {
 function loadPlugins(config, md, format) {
 
   var plugins = [];
-  var pluginsArray = _.get(config, "formats." + format + ".plugins") || config.plugins || ["stylesheets", "javascripts"];
+  var pluginsArray = config.plugins || defaultPlugins;
 
   if(_.isArray(pluginsArray)) {
     _.each(pluginsArray, function(plugin) {
@@ -133,11 +135,8 @@ function duplicate() {
 // Prioritizes format layout over main layout.
 function layouts(config, format) {
 
-  // find the layout to use for this format
-  var layout = _.get(config, "formats." + format + ".layout") || config.layout;
-
   return through.obj(function(file, enc, cb) {
-    if(layout) {
+    if(config.layout) {
 
       // create the object to pass into liquid for this file
       var locals = _.extend({
@@ -145,13 +144,13 @@ function layouts(config, format) {
         format: format
       }, config)
 
-      if(layoutCache[layout]) {
-        assignLayout(file, layoutCache[layout], locals, cb);
+      if(layoutCache[config.layout]) {
+        assignLayout(file, layoutCache[config.layout], locals, cb);
       } else {
-        fs.readFile(layout, function (err, data) {
+        fs.readFile(config.layout, function (err, data) {
           if (err) { return console.log(err); }
-          layoutCache[layout] = tinyliquid.compile(data.toString());
-          assignLayout(file, layoutCache[layout], locals, cb);
+          layoutCache[config.layout] = tinyliquid.compile(data.toString());
+          assignLayout(file, layoutCache[config.layout], locals, cb);
         });
       }
     } else {
@@ -167,7 +166,7 @@ module.exports = function(config) {
 
   // default to all formats
   if(!_.isArray(config.enabledFormats)) {
-    config.enabledFormats = ["html", "pdf", "epub", "mobi"];
+    config.enabledFormats = defaultFormats;
   }
 
   // delete the build format folders
@@ -177,25 +176,31 @@ module.exports = function(config) {
     // run build for each format
     _.each(config.enabledFormats, function(format) {
 
+      // make a config object that consists of the format config,
+      // with the main config (without the formats object) merged on top of it.
+      var formatConfig = _.get(config, "formats." + format) || {};
+      _.defaults(formatConfig, config)
+      formatConfig.formats = undefined;
+
       // we create a converter for each format, as each format
       // can have different markdown settings.
       var md = new MarkdownIt();
 
       // we load plugins per format as each format can have
       // different plugins.
-      var plugins = loadPlugins(config, md, format);
+      var plugins = loadPlugins(formatConfig, md, format);
 
       // create our stream
-      var stream = vfs.src(config.files);
+      var stream = vfs.src(formatConfig.files);
 
       // hook: init
-      stream = hook(stream, plugins, "init", format, { config: config, md: md})
+      stream = hook(stream, plugins, "init", format, { config: formatConfig, md: md})
         .pipe(markdown(md));
 
       // hook: html
-      stream = hook(stream, plugins, "html", format, { config: config })
-        .pipe(layouts(config, format))
-        .pipe(vfs.dest(destination(config, format)))
+      stream = hook(stream, plugins, "html", format, { config: formatConfig })
+        .pipe(layouts(formatConfig, format))
+        .pipe(vfs.dest(destination(formatConfig, format)))
         .on('finish', function() {
           config.success(format)
         });

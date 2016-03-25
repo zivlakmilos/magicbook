@@ -227,16 +227,16 @@ The `digest` option will add a the md5 checksum of the file content to the filen
 
 
 
-### Mathjax
+### Katex
 
-This plugin is **disabled by default**. The mathjax plugin allows you to write math equations in markdown, and automatically convert these to MathML to be rendered by Mathjax in the output formats.
+This plugin is **disabled by default**. The katex plugin allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is hell when it comes to these things.
 
-First enable the mathjax plugin, by adding it to your config plugins array.
+To use, first enable the katex plugin, by adding it to your config plugins array.
 
 ```json
 {
   "plugins" : [
-    "mathjax"
+    "katex"
   ]
 }
 ```
@@ -246,9 +246,9 @@ Then you can write inline and block math equations in your markdown.
 ```md
 This is an inline equation: $$5 + 5$$. The following is a block equation:
 
-$$$
+$$
 5 + 5
-$$$
+$$
 ```
 
 The plugin will automatically include the required JavaScript libraries for the different formats.

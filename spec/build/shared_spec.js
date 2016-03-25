@@ -1,13 +1,13 @@
 var _ = require('lodash');
 var rimraf = require('rimraf');
 
-describe("All Formats", function() {
-
-  afterAll(function(done) {
-    rimraf("spec/support/book/tmp/*", function() {
-      done();
-    });
+afterAll(function(done) {
+  rimraf("spec/support/book/tmp/*", function() {
+    done();
   });
+});
+
+describe("All Formats", function() {
 
   describe("Markdown", function() {
 

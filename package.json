@@ -13,7 +13,7 @@
     "gulp-util": "^3.0.7",
     "lodash": "^4.6.1",
     "markdown-it": "^6.0.0",
-    "markdown-it-math": "^3.0.2",
+    "markdown-it-katex": "^1.1.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^3.4.2",
     "rimraf": "^2.5.2",

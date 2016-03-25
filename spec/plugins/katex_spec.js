@@ -2,7 +2,7 @@ describe("Math plugin", function() {
 
   describe("When disabled", function() {
 
-    it("should not convert $$ to mathjax", function(done) {
+    it("should not convert $$ to katex", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         success: function() {
@@ -17,10 +17,10 @@ describe("Math plugin", function() {
 
   describe("When enabled", function() {
 
-    it("should convert $$ to mathjax", function(done) {
+    it("should convert $$ to katex", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
-        plugins: [ 'mathjax' ],
+        plugins: [ 'katex' ],
         success: function() {
           expect(buildContent(uid, "html/first-chapter.html")).toMatch("<math>")
           expect(buildContent(uid, "html/first-chapter.html")).not.toMatch("\\$\\$")
@@ -29,10 +29,20 @@ describe("Math plugin", function() {
       });
     });
 
-    it("should include mathjax.js in HTML")
-    it("PDF?")
-    it("EPUB?")
-    it("MOBI?")
+    it("should include katex.css in HTML", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        plugins: [ 'katex' ],
+        success: function() {
+          expect(buildContent(uid, "html/assets/katex.css")).toMatch("KaTeX_Main")
+          done();
+        }
+      });
+    });
+
+    it("PDF?");
+    it("EPUB?");
+    it("MOBI?");
   });
 
 });
