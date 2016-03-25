@@ -6,7 +6,29 @@ var helpers = require('../helpers');
 var path = require('path');
 var sass = require('node-sass');
 var CleanCSS = require('clean-css');
+var revHash = require('rev-hash');
+var revPath = require('rev-path');
+var modifyFilename = require('modify-filename');
 
+// through2 function to add checksum of file content to filename
+// Returns: Vinyl filestream
+function digest() {
+  return through.obj(function(file, enc, cb) {
+    file.orgPath = file.path;
+    file.revHash = revHash(file.contents);
+    file.path = modifyFilename(file.path, function(filename, extension) {
+		  var extIndex = filename.indexOf('.');
+		  filename = extIndex === -1 ?
+			  revPath(filename, file.revHash) :
+			  revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
+      return filename + extension;
+	  });
+    cb(null, file);
+  });
+}
+
+// through2 function to remove whitespace from CSS files
+// Returns: Vinyl filestream
 function compress() {
   return through.obj(function(file, enc, cb) {
     new CleanCSS().minify(file.contents, function (err, minified) {
@@ -49,15 +71,17 @@ module.exports = {
       var stream = vfs.src(stylesheets)
         .pipe(scss());
 
+      // bundle (use filename if not true)
+
       // compress
       if(_.get(config, "stylesheets.compress")) {
         stream = stream.pipe(compress());
       }
 
       // digest
-      //if(_.)
-
-      // bundle (use filename if not true)
+      if(_.get(config, "stylesheets.digest")) {
+        stream = stream.pipe(digest());
+      }
 
       // finish
       stream

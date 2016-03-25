@@ -51,6 +51,22 @@ describe("Stylesheets plugin", function() {
       });
     });
 
+    it("should digest stylesheets", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        stylesheets: {
+          digest: true,
+          files: [
+            "spec/support/book/stylesheets/styles.css",
+          ]
+        },
+        success: function() {
+          expect(buildPath(uid, "html/assets/styles-b71c3f4f5d.css")).toExist();
+          done();
+        }
+      });
+    });
+
     // it("should use stylesheets destination folder")
     //
     // it("should insert the stylesheets in the layout")
