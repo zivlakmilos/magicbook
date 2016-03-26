@@ -55,9 +55,19 @@ function scss() {
 	});
 }
 
+function liquidLocals(locals, formatFolder, stylesheetsFolder) {
+  locals.stylesheets = "";
+  return through.obj(function(file, enc, cb) {
+    var relativeFolder = path.relative(formatFolder, stylesheetsFolder);
+    var relativeFile = path.join(relativeFolder, path.basename(file.path));
+    locals.stylesheets += "<link rel=\"stylesheet\" href=\""+ relativeFile +"\">\n"
+    cb(null, file);
+  });
+}
+
 module.exports = {
 
-  setup: function(format, config, md, cb) {
+  setup: function(format, config, extras, cb) {
 
     // get the stylesheets needed for this format
     var stylesheets = _.get(config, "stylesheets.files");
@@ -90,7 +100,9 @@ module.exports = {
       }
 
       // finish
-      stream.pipe(vfs.dest(stylesheetsFolder))
+      stream
+        .pipe(liquidLocals(extras.locals, formatFolder, stylesheetsFolder))
+        .pipe(vfs.dest(stylesheetsFolder))
         .on('finish', function() {
           cb(null);
         });

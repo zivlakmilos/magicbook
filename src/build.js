@@ -153,7 +153,7 @@ function duplicate() {
 
 // Assigns layouts to the files in the stream.
 // Prioritizes format layout over main layout.
-function layouts(config, format) {
+function layouts(config, format, extraLocals) {
 
   return through.obj(function(file, enc, cb) {
     if(config.layout) {
@@ -163,6 +163,10 @@ function layouts(config, format) {
         content: file.contents.toString(),
         format: format,
         config: config
+      }
+
+      if(extraLocals) {
+        _.assign(locals, extraLocals);
       }
 
       if(layoutCache[config.layout]) {
@@ -213,8 +217,12 @@ module.exports = function(config) {
       // different plugins.
       var plugins = loadPlugins(formatConfig, md, format);
 
+      // Object passed to plugins to allow them to set locals
+      // in liquid.
+      var extraLocals = {};
+
       // call the setup function in all plugins
-      callPlugins(plugins, "setup", [format, config, md], function() {
+      callPlugins(plugins, "setup", [format, formatConfig, { md: md, locals:extraLocals }], function() {
 
         // create our stream
         var stream = vfs.src(formatConfig.files);
@@ -225,7 +233,7 @@ module.exports = function(config) {
 
         // hook: convert
         stream = hook(stream, plugins, "convert", format, { config: formatConfig })
-          .pipe(layouts(formatConfig, format))
+          .pipe(layouts(formatConfig, format, extraLocals))
 
         // hook: layout
         stream = hook(stream, plugins, "layout", format, { config: formatConfig })

@@ -9,11 +9,11 @@ module.exports = {
   // It can be used to do things that need to happen only once per
   // format build.
   // Params:
-  // format - String name of the build format
-  // config - Object with the full configuration for the format
-  // md     - the markdown-it instance used for markdown conversion
+  // format   - String name of the build format
+  // config   - Object with the full configuration for the format
+  // extras   - Object with extra things that may be used for setup. (markdown parser, liquid locals, etc)
   // cb(err)  - A callback to call whenever the setup is finished. Must be called with null or error.
-  setup: function(format, config, md, cb) {
+  setup: function(format, config, extras, cb) {
     cb(null);
   }
 

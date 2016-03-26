@@ -4,10 +4,10 @@ var _ = require('lodash');
 
 module.exports = {
 
-  setup: function(format, config, md, cb) {
+  setup: function(format, config, extras, cb) {
 
     // make sure we parse $-$ and $$-$$ into katex markup
-    md.use(require('markdown-it-katex'));
+    extras.md.use(require('markdown-it-katex'));
 
     // add the katex CSS to all formats. This probably needs to
     // change as we test how katex performs in e-readers.
