@@ -102,7 +102,23 @@ describe("Stylesheets plugin", function() {
       });
     });
 
-    it("should insert the stylesheets in the layout");
+    it("should insert stylesheets in layout", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        layout: "spec/support/book/layouts/assets.html",
+        stylesheets: {
+          files: [
+            "spec/support/book/stylesheets/styles.css",
+            "spec/support/book/stylesheets/otherstyles.scss"
+          ]
+        },
+        success: function() {
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<LINKscript type=\"text/javascript\" src=\"assets/styles.css\"></script>");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<LINKscript type=\"text/javascript\" src=\"assets/otherstyles.css\"></script>");
+          done();
+        }
+      });
+    });
 
   });
 

@@ -145,7 +145,24 @@ Like most other settings, you can set the layout for each format.
 
 ## Plugins
 
-Almost all functionality in `magicbook` is written via plugins. Some plugins are enabled by default, while others need a configuration setting to work. It's easy to write custom plugins for your book, either by putting plugin files in the book itself (TODO) or by adding existing plugins via NPM (TODO).
+Almost all functionality in `magicbook` is written via plugins. Some plugins are enabled by default, while others need a configuration setting to work. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
+
+```json
+{
+  "plugins" : "plugins/myplugin"
+}
+```
+
+You can also create plugins as NPM packages, simply using the name of the package.
+
+```json
+{
+  "plugins" : "mypackage"
+}
+```
+
+The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins.
+
 
 ## Stylesheets
 
@@ -162,7 +179,7 @@ This plugin is **enabled by default**. The stylesheets plugin allows you to spec
 }
 ```
 
-You can also override this setting per format, as shown here:
+You can also override this for a particular format.
 
 ```json
 {
@@ -170,7 +187,7 @@ You can also override this setting per format, as shown here:
     "html" : {
       "stylesheets" : {
         "files" : [
-          "css/myhtmlstyles.css"
+          "myhtmlstyles.css"
         ]
       }
     }
@@ -178,12 +195,12 @@ You can also override this setting per format, as shown here:
 }
 ```
 
-To use this CSS in each format, you can insert the compiled CSS in the layout using the `{{ css }}` tag.
+You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liquid variable tag.
 
 ```html
 <html>
   <head>
-    {{ css }}
+    {{ stylesheets }}
   </head>
   <body>
     {{ content }}
@@ -191,7 +208,9 @@ To use this CSS in each format, you can insert the compiled CSS in the layout us
 </html>
 ```
 
-In SCSS files, you can use `@import` to split up your CSS into separate modules. By using different files in each format layout, you can maintain different designs for each of the build formats. You can specify the destination folder for the assets, by using the `destination` property. It defaults to `/assets`.
+By using different files for each format, you can have a book that look very different across formats. To share styles between the formats, you can use SCSS `@import`.
+
+ It is also possible to control where these stylesheets are stored. You can specify a custom destination folder by using the `destination` property. It defaults to `/assets`.
 
 ```json
 {
@@ -223,7 +242,7 @@ The `bundle` option will combine all the files in the `stylesheets` array into a
 }
 ```
 
-The `digest` option will add a the md5 checksum of the file content to the filename, in order to allow you to set high caching headers if the website lives behind a CDN.
+The `digest` option will add a the md5 checksum of the file content to the filename, to allow you to set long caching headers for a production website.
 
 ```json
 {
@@ -232,7 +251,6 @@ The `digest` option will add a the md5 checksum of the file content to the filen
   }
 }
 ```
-
 
 
 ### Katex

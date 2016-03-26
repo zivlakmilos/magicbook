@@ -55,15 +55,22 @@ function loadPlugins(config, md, format) {
 
       var loadedPlugin;
 
-      // try to load the plugin as a local plugin
       try {
-        var localPlugin = path.join(__dirname, 'plugins', plugin + '.js');
-        fs.lstatSync(localPlugin);
+        // try to load the plugin as a local plugin
+        var localPlugin = path.join(__dirname, 'plugins', plugin);
         loadedPlugin = require(localPlugin);
-      }
-      catch (e) {
-        // TODO: try to load the plugin as a file in book
-        // TODO: try to load the plugin as node package
+      } catch (e1) {
+        try {
+          // try to load the plugin as a file in the book
+          loadedPlugin = require('./' + plugin);
+        } catch(e2) {
+          try {
+            // try to load the plugin as a node package
+            loadedPlugin = require(plugin);
+          } catch(e3) {
+            console.log("Plugin " + plugin + " cannot be found");
+          }
+        }
       }
 
       if(loadedPlugin) {
@@ -152,10 +159,11 @@ function layouts(config, format) {
     if(config.layout) {
 
       // create the object to pass into liquid for this file
-      var locals = _.extend({
+      var locals = {
         content: file.contents.toString(),
-        format: format
-      }, config)
+        format: format,
+        config: config
+      }
 
       if(layoutCache[config.layout]) {
         assignLayout(file, layoutCache[config.layout], locals, cb);
