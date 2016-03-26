@@ -113,8 +113,8 @@ describe("Stylesheets plugin", function() {
           ]
         },
         success: function() {
-          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<LINKscript type=\"text/javascript\" src=\"assets/styles.css\"></script>");
-          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<LINKscript type=\"text/javascript\" src=\"assets/otherstyles.css\"></script>");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/styles.css\">");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/otherstyles.css\">");
           done();
         }
       });
