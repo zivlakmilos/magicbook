@@ -189,7 +189,7 @@ layout: layouts/introduction.html
 ---
 ```
 
-This only work for the following configuration variables:
+This only works for the following configuration variables:
 
 - `layout`
 
