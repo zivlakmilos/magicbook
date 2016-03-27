@@ -25,18 +25,18 @@ module.exports = {
 
     // load is called right after the markdown files are sourced, and
     // before the markdown conversion happens.
-    load: function(format, payload) {
+    load: function(format, config, extras) {
       return through.obj();
     },
 
     // convert is called right after markdown conversion.
-    convert: function(format, payload) {
+    convert: function(format, config, extras) {
       return through.obj();
     },
 
     // layout is called right after layouts have been added
     // to the HTML files.
-    layout: function(format, payload) {
+    layout: function(format, config, extras) {
       return through.obj();
     }
   }

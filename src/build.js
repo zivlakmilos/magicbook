@@ -14,7 +14,6 @@ var sass = require('node-sass');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var async = require('async');
-var yamlFront = require('yaml-front-matter')
 
 // Variables
 // --------------------------------------------
@@ -25,7 +24,7 @@ var defaults = {
   "files" : "content/*.md",
   "destination" : "build/:format",
   "enabledFormats" : ["html", "epub", "mobi", "pdf"],
-  "plugins" : ["stylesheets", "javascripts"]
+  "plugins" : ["frontmatter", "liquid", "stylesheets", "javascripts"]
 }
 
 // Helpers
@@ -115,7 +114,7 @@ function callPlugins(plugins, fnc, args, cb) {
 // --------------------------------------------
 
 // Function to add plugin hooks as pipes in the stream chain.
-function hook(stream, plugins, name, format, payload) {
+function hook(stream, plugins, name, format, config, payload) {
 
   // loop through each of plugins
   _.each(plugins, function(plugin) {
@@ -125,7 +124,7 @@ function hook(stream, plugins, name, format, payload) {
 
       // create a new pipe with the plugin hook function. This means that the
       // plugin hook must return a through2 object.
-      stream = stream.pipe(plugin.hooks[name].apply(this, [format, payload]));
+      stream = stream.pipe(plugin.hooks[name].apply(this, [format, config, payload || {}]));
     }
   });
 
@@ -134,43 +133,6 @@ function hook(stream, plugins, name, format, payload) {
 
 // Pipes
 // --------------------------------------------
-
-// through2 function to retrieve yaml frontmatter from
-// a file and place it in .frontmatter in the file object
-function frontmatter() {
-  return through.obj(function(file, enc, cb) {
-    var parsed = yamlFront.loadFront(file.contents);
-    file.contents = new Buffer(parsed.__content);
-    delete parsed.__content;
-    file.frontmatter = parsed;
-    cb(null, file);
-  });
-}
-
-// through2 function to retreive the object variables from
-// frontmatter, override merge it into the config, and parse
-// the markdown with liquid.
-function liquid(config) {
-  return through.obj(function(file, enc, cb) {
-
-    if(file.frontmatter && !_.isEmpty(file.frontmatter)) {
-
-      // clone the config in order to not spill over between files
-      var clone = _.cloneDeep(config);
-      _.defaults(file.frontmatter, clone);
-
-      // compile with tinyliquid
-      var template = tinyliquid.compile(file.contents.toString());
-      var context = tinyliquid.newContext({ locals: file.frontmatter });
-      template(context, function(err) {
-        file.contents = new Buffer(context.getBuffer());
-        cb(err, file);
-      });
-    } else {
-      cb(null, file);
-    }
-  });
-}
 
 // through2 function to convert a markdown file to html
 // Returns: Vinyl filestream
@@ -265,17 +227,15 @@ module.exports = function(config) {
         var stream = vfs.src(formatConfig.files);
 
         // hook: load
-        stream = hook(stream, plugins, "load", format, { config: formatConfig, md: md})
-          .pipe(frontmatter())
-          .pipe(liquid())
+        stream = hook(stream, plugins, "load", format, formatConfig)
           .pipe(markdown(md));
 
         // hook: convert
-        stream = hook(stream, plugins, "convert", format, { config: formatConfig })
+        stream = hook(stream, plugins, "convert", format, formatConfig)
           .pipe(layouts(formatConfig, format, extraLocals))
 
         // hook: layout
-        stream = hook(stream, plugins, "layout", format, { config: formatConfig })
+        stream = hook(stream, plugins, "layout", format, formatConfig)
           .pipe(vfs.dest(destination));
 
         // events
