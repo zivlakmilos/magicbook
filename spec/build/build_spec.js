@@ -72,6 +72,21 @@ describe("All Formats", function() {
       });
     });
 
+    it("should should use includes", function(done) {
+      var uid = triggerBuild({
+        enabledFormats: ["html"],
+        liquid: {
+          includes: "spec/support/book/includes"
+        },
+        layout: "spec/support/book/layouts/liquid.html",
+        success: function() {
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Liquid layout");
+          expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Include working");
+          done();
+        }
+      });
+    });
+
   });
 
   describe("Destination", function() {

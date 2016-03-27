@@ -1,6 +1,6 @@
 ## MUST
 
-INCLUDE IN LAYOUT TOO + TEST
+- Includes should work in layouts
 
 - Custom views
 - PDF rendering

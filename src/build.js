@@ -43,15 +43,6 @@ function createFile(filename, content, cb) {
   });
 }
 
-// Applies the tinyliquid template layout to the file
-function assignLayout(file, layout, locals, cb) {
-  var context = tinyliquid.newContext({ locals: locals });
-  layout(context, function(err) {
-    file.contents = new Buffer(context.getBuffer());
-    cb(null, file);
-  });
-}
-
 function loadPlugins(config, md, format) {
 
   var plugins = [];
@@ -179,12 +170,12 @@ function layouts(config, format, extraLocals) {
       }
 
       if(layoutCache[layout]) {
-        assignLayout(file, layoutCache[layout], locals, cb);
+        helpers.renderLiquidTemplate(layoutCache[layout], locals, file, config, cb);
       } else {
         fs.readFile(layout, function (err, data) {
           if (err) { return console.log(err); }
           layoutCache[layout] = tinyliquid.compile(data.toString());
-          assignLayout(file, layoutCache[layout], locals, cb);
+          helpers.renderLiquidTemplate(layoutCache[layout], locals, file, config, cb);
         });
       }
     } else {
