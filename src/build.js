@@ -14,6 +14,7 @@ var sass = require('node-sass');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var async = require('async');
+var yamlFront = require('yaml-front-matter')
 
 // Variables
 // --------------------------------------------
@@ -134,6 +135,43 @@ function hook(stream, plugins, name, format, payload) {
 // Pipes
 // --------------------------------------------
 
+// through2 function to retrieve yaml frontmatter from
+// a file and place it in .frontmatter in the file object
+function frontmatter() {
+  return through.obj(function(file, enc, cb) {
+    var parsed = yamlFront.loadFront(file.contents);
+    file.contents = new Buffer(parsed.__content);
+    delete parsed.__content;
+    file.frontmatter = parsed;
+    cb(null, file);
+  });
+}
+
+// through2 function to retreive the object variables from
+// frontmatter, override merge it into the config, and parse
+// the markdown with liquid.
+function liquid(config) {
+  return through.obj(function(file, enc, cb) {
+
+    if(file.frontmatter && !_.isEmpty(file.frontmatter)) {
+
+      // clone the config in order to not spill over between files
+      var clone = _.cloneDeep(config);
+      _.defaults(file.frontmatter, clone);
+
+      // compile with tinyliquid
+      var template = tinyliquid.compile(file.contents.toString());
+      var context = tinyliquid.newContext({ locals: file.frontmatter });
+      template(context, function(err) {
+        file.contents = new Buffer(context.getBuffer());
+        cb(err, file);
+      });
+    } else {
+      cb(null, file);
+    }
+  });
+}
+
 // through2 function to convert a markdown file to html
 // Returns: Vinyl filestream
 function markdown(md) {
@@ -228,6 +266,8 @@ module.exports = function(config) {
 
         // hook: load
         stream = hook(stream, plugins, "load", format, { config: formatConfig, md: md})
+          .pipe(frontmatter())
+          .pipe(liquid())
           .pipe(markdown(md));
 
         // hook: convert

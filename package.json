@@ -26,6 +26,7 @@
     "through2": "^2.0.1",
     "tinyliquid": "^0.2.31",
     "vinyl-fs": "^2.4.2",
+    "yaml-front-matter": "^3.4.0",
     "yargs": "^4.3.1"
   },
   "devDependencies": {
