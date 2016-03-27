@@ -289,7 +289,18 @@ Builds the book.
 magicbook build
 ```
 
-- `--config` allows you to specify the relative path to a configuration file
+You can specify the path to a configuration file by using the `--config` flag.
+
+```bash
+magicbook build --config=myconfig.json
+```
+
+For automatic builds whenever a file changes, use the `--watch` flag. This currently only works on the files specified in the `files` array.
+
+```bash
+magicbook build --watch
+```
+
 
 ## Running the tests
 

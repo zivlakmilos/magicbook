@@ -236,13 +236,15 @@ module.exports = function(config) {
 
         // hook: layout
         stream = hook(stream, plugins, "layout", format, { config: formatConfig })
-          .pipe(vfs.dest(destination))
-          .on('finish', function() {
-            console.log(format + " finished.")
-            if(config.success) {
-              config.success(format);
-            }
-          });
+          .pipe(vfs.dest(destination));
+
+        // events
+        stream.on('finish', function() {
+          console.log(format + " finished.")
+          if(config.success) {
+            config.success(format);
+          }
+        });
       });
     });
   });
