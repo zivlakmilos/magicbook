@@ -12,4 +12,4 @@ $$
 10 + 10
 $$
 
-Frontmatter test {{ myfrontmattervariable }}
+Frontmatter test {{ page.myfrontmattervariable }}

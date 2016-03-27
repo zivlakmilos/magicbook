@@ -163,6 +163,10 @@ You can also create plugins as NPM packages, simply using the name of the packag
 
 The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins.
 
+## Liquid
+
+This plugin is **enabled by default**. This will allow you to use Liquid templating in your source files. By default, each file will get the configuration file 
+
 
 ## Stylesheets
 
