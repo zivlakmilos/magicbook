@@ -1,4 +1,4 @@
-describe("Liquid and frontmatter plugins", function() {
+describe("Frontmatter plugin", function() {
 
   describe("When enabled by default", function() {
 

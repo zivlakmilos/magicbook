@@ -24,7 +24,8 @@ var defaults = {
   "files" : "content/*.md",
   "destination" : "build/:format",
   "enabledFormats" : ["html", "epub", "mobi", "pdf"],
-  "plugins" : ["frontmatter", "liquid", "stylesheets", "javascripts"]
+  "plugins" : ["frontmatter", "liquid", "stylesheets", "javascripts"],
+  "includes" : "includes"
 }
 
 // Helpers

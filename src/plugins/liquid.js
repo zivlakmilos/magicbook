@@ -1,6 +1,8 @@
 var through = require('through2');
 var _ = require('lodash');
 var tinyliquid = require('tinyliquid');
+var fs = require('fs');
+var path = require('path');
 
 module.exports = {
 
@@ -10,25 +12,34 @@ module.exports = {
 
       return through.obj(function(file, enc, cb) {
 
-        if(file.config) {
+        // create template from file content
+        var template = tinyliquid.compile(file.contents.toString());
 
-          // compile with tinyliquid
-          var template = tinyliquid.compile(file.contents.toString());
-          var context = tinyliquid.newContext({
-            locals: {
-              format: format,
-              config: config,
-              page: file.config
-            }
-          });
+        // assemble variables to pass into the file
+        var context = tinyliquid.newContext({
+          locals: {
+            format: format,
+            config: config,
+            page: file.config
+          }
+        });
 
-          template(context, function(err) {
-            file.contents = new Buffer(context.getBuffer());
-            cb(err, file);
+        // set includes
+        var templatePath = _.get(file, "config.includes") || config.includes;
+        context.onInclude(function (name, callback) {
+          fs.readFile(path.join(templatePath, name), function(err, text) {
+            if (err) return callback(err);
+            var ast = tinyliquid.parse(text.toString());
+            callback(null, ast);
           });
-        } else {
-          cb(null, file);
-        }
+        });
+
+        // render
+        template(context, function(err) {
+          file.contents = new Buffer(context.getBuffer());
+          cb(err, file);
+        });
+
       });
     }
   }

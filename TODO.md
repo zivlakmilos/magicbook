@@ -1,5 +1,7 @@
 ## MUST
 
+INCLUDE IN LAYOUT TOO + TEST
+
 - Custom views
 - PDF rendering
 
