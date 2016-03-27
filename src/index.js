@@ -6,15 +6,12 @@ var _ = require('lodash');
 var argv = require('yargs').argv;
 var cmd = argv._[0];
 
-// Prepare config
-// - Command line gets first priority
-// - JSON config gets second priority
-// - Defaults get third priority
+// Pick command lines options that override configuration
 var config = _.pick(argv, ['files']);;
-var configJSON = {};
 try {
   var configFile = argv.config || 'magicbook.json';
   configJSON = JSON.parse(fs.readFileSync(process.cwd() + "/" + configFile));
+  _.defaults(config, configJSON);
   console.log("Config file detected: " + configFile)
 }
 catch(e) {

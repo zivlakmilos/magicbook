@@ -238,7 +238,10 @@ module.exports = function(config) {
         stream = hook(stream, plugins, "layout", format, { config: formatConfig })
           .pipe(vfs.dest(destination))
           .on('finish', function() {
-            config.success(format);
+            console.log(format + " finished.")
+            if(config.success) {
+              config.success(format);
+            }
           });
       });
     });
