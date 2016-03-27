@@ -163,12 +163,34 @@ You can also create plugins as NPM packages, simply using the name of the packag
 
 The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins.
 
-## Liquid
+### Liquid
 
-This plugin is **enabled by default**. This will allow you to use Liquid templating in your source files. By default, each file will get the configuration file 
+This plugin is **enabled by default**. It allows you to use Liquid templating in your source files. By default, each file will receive an object with a few properties: `config` is an object with all the configuration settings for the specific format. `format` is a string with the name of the format. `page` is an object with variables assigned to `file.config` during the build process. Right now, this is mostly done in the `frontmatter` plugin, but you can easily write a plugin that adds extra variables to this object.
+
+### Frontmatter
+
+This plugin is **enabled by default**. In combination with the `liquid` plugin, this plugin allows you to specify YAML frontmatter in each file, and make those variables available in as liquid variables in the file content. Here's a quick example of how this works.
+
+```markdown
+---
+name: Rune Madsen
+---
+
+# About the author
+
+The author, {{ name }}, was born in Denmark.
+```
+
+The YAML Frontmatter also allows you to specify configuration specific for each file. For example, you can specify a custom layout for a file. This will override any settings in the configuration file.
+
+```markdown
+---
+layout: layouts/introduction.html
+---
+```
 
 
-## Stylesheets
+### Stylesheets
 
 This plugin is **enabled by default**. The stylesheets plugin allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
 
