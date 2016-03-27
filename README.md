@@ -169,7 +169,7 @@ This plugin is **enabled by default**. It allows you to use Liquid templating in
 
 ### Frontmatter
 
-This plugin is **enabled by default**. In combination with the `liquid` plugin, this plugin allows you to specify YAML frontmatter in each file, and make those variables available in as liquid variables in the file content. Here's a quick example of how this works.
+This plugin is **enabled by default**. In combination with the `liquid` plugin, this plugin allows you to specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
 
 ```markdown
 ---
