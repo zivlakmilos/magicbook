@@ -326,13 +326,13 @@ Builds the book.
 magicbook build
 ```
 
-You can specify the path to a configuration file by using the `--config` flag.
+You can specify the path to a configuration file by using the `--config` argument.
 
 ```bash
 magicbook build --config=myconfig.json
 ```
 
-For automatic builds whenever a file changes, use the `--watch` flag. This currently only works on the files specified in the `files` array.
+To automatically build your book whenever a file changes, use the `--watch` flag.
 
 ```bash
 magicbook build --watch
