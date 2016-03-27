@@ -25,7 +25,9 @@ var defaults = {
   "destination" : "build/:format",
   "enabledFormats" : ["html", "epub", "mobi", "pdf"],
   "plugins" : ["frontmatter", "liquid", "stylesheets", "javascripts"],
-  "includes" : "includes"
+  "liquid" : {
+    "includes" : "includes"
+  }
 }
 
 // Helpers

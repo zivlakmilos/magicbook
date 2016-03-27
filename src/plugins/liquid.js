@@ -25,10 +25,10 @@ module.exports = {
         });
 
         // set includes
-        var templatePath = _.get(file, "config.includes") || config.includes;
+        var templatePath = _.get(file, "config.liquid.includes") || config.liquid.includes;
         context.onInclude(function (name, callback) {
           fs.readFile(path.join(templatePath, name), function(err, text) {
-            if (err) return callback(err);
+            if (err) return callback(new Error('Liquid include template not found: ' + err));
             var ast = tinyliquid.parse(text.toString());
             callback(null, ast);
           });
