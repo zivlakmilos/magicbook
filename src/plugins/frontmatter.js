@@ -1,5 +1,6 @@
 var through = require('through2');
 var yamlFront = require('yaml-front-matter');
+var _ = require('lodash');
 
 module.exports = {
 
@@ -17,9 +18,12 @@ module.exports = {
         // delete content from the parsed frontmatter
         delete parsed.__content;
 
-        // assign the frontmatter objects to .liquidLocals for
+        // assign the frontmatter objects to .config for
         // processing with the liquid plugin.
-        file.liquidLocals = parsed;
+        if(!_.isEmpty(parsed)) {
+          file.config = file.config || {};
+          _.extend(file.config, parsed);
+        }
 
         cb(null, file);
       });

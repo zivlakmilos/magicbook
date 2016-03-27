@@ -10,7 +10,7 @@ module.exports = {
 
       return through.obj(function(file, enc, cb) {
 
-        if(file.liquidLocals && _.isObject(file.liquidLocals) && !_.isEmpty(file.liquidLocals)) {
+        if(file.config) {
 
           // compile with tinyliquid
           var template = tinyliquid.compile(file.contents.toString());
@@ -18,7 +18,7 @@ module.exports = {
             locals: {
               format: format,
               config: config,
-              page: file.liquidLocals
+              page: file.config
             }
           });
 

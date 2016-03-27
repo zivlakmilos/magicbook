@@ -159,7 +159,10 @@ function duplicate() {
 function layouts(config, format, extraLocals) {
 
   return through.obj(function(file, enc, cb) {
-    if(config.layout) {
+
+    var layout = _.get(file, "config.layout") || config.layout;
+
+    if(layout) {
 
       // create the object to pass into liquid for this file
       var locals = {
@@ -172,13 +175,13 @@ function layouts(config, format, extraLocals) {
         _.assign(locals, extraLocals);
       }
 
-      if(layoutCache[config.layout]) {
-        assignLayout(file, layoutCache[config.layout], locals, cb);
+      if(layoutCache[layout]) {
+        assignLayout(file, layoutCache[layout], locals, cb);
       } else {
-        fs.readFile(config.layout, function (err, data) {
+        fs.readFile(layout, function (err, data) {
           if (err) { return console.log(err); }
-          layoutCache[config.layout] = tinyliquid.compile(data.toString());
-          assignLayout(file, layoutCache[config.layout], locals, cb);
+          layoutCache[layout] = tinyliquid.compile(data.toString());
+          assignLayout(file, layoutCache[layout], locals, cb);
         });
       }
     } else {
