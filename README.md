@@ -181,13 +181,17 @@ name: Rune Madsen
 The author, {{ name }}, was born in Denmark.
 ```
 
-The YAML Frontmatter also allows you to specify configuration specific for each file. For example, you can specify a custom layout for a file. This will override any settings in the configuration file.
+The YAML Frontmatter also allows you to override some configuration for each file. For example, you can specify a custom layout for a file. This will override any settings in the configuration file.
 
 ```markdown
 ---
 layout: layouts/introduction.html
 ---
 ```
+
+This only work for the following configuration variables:
+
+- `layout`
 
 
 ### Stylesheets
