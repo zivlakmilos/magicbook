@@ -172,7 +172,36 @@ The load order of plugins is native plugins first, then plugins in the book fold
 
 ### Liquid
 
-This plugin is **enabled by default**. It allows you to use Liquid templating in your source files. By default, each file will receive an object with a few properties: `config` is an object with all the configuration settings for the specific format. `format` is a string with the name of the format. `page` is an object with variables assigned to `file.config` during the build process. Right now, this is mostly done in the `frontmatter` plugin, but you can easily write a plugin that adds extra variables to this object.
+This plugin is **enabled by default**. It allows you to use Liquid templating in your source files. By default, each file will receive an object that looks like the following.
+
+```json
+{
+  "format" : "",
+  "config" : {},
+  "page" : {}
+}
+```
+
+- `format` is a string with the name of the format. This can be used show show or hide specific markup in each format.
+- `config` is an object with all the configuration settings for the specific format.
+- `page` is an object with variables assigned to `file.config` during the build process. Right now, this is mostly done in the `frontmatter` plugin, but you can easily write a plugin that adds extra variables to this object.
+
+Even though `magicbook` has a built-in views, it's possible to use Liquid includes. The default search location is in `/includes`, but you can customize this as a general setting or a format setting.
+
+```json
+{
+  "liquid" : {
+    "includes" : "my/include/folder"
+  },
+  "formats" : {
+    "html" : {
+      "includes" : "my/other/include/folder"
+    }
+  }
+}
+```
+
+This makes it possible to either have includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
 
 ### Frontmatter
 
