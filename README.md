@@ -238,7 +238,7 @@ You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liqu
 </html>
 ```
 
-By using different files for each format, you can have a book that look very different across formats. To share styles between the formats, you can use SCSS `@import`.
+By using different files for each format, you can have a book that looks very different across formats. To share styles between the formats, you can use SCSS `@import`.
 
  It is also possible to control where these stylesheets are stored. You can specify a custom destination folder by using the `destination` property. It defaults to `/assets`.
 
