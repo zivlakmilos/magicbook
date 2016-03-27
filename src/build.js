@@ -20,8 +20,12 @@ var async = require('async');
 
 var layoutCache = {};
 
-var defaultFormats = ["html", "epub", "mobi", "pdf"];
-var defaultPlugins = ["stylesheets", "javascripts"];
+var defaults = {
+  "files" : "content/*.md",
+  "destination" : "build/:format",
+  "enabledFormats" : ["html", "epub", "mobi", "pdf"],
+  "plugins" : ["stylesheets", "javascripts"]
+}
 
 // Helpers
 // --------------------------------------------
@@ -48,10 +52,9 @@ function assignLayout(file, layout, locals, cb) {
 function loadPlugins(config, md, format) {
 
   var plugins = [];
-  var pluginsArray = config.plugins || defaultPlugins;
 
-  if(_.isArray(pluginsArray)) {
-    _.each(pluginsArray, function(plugin) {
+  if(_.isArray(config.plugins)) {
+    _.each(config.plugins, function(plugin) {
 
       var loadedPlugin;
 
@@ -189,18 +192,14 @@ function layouts(config, format, extraLocals) {
 
 module.exports = function(config) {
 
-  // default to all formats
-  if(!_.isArray(config.enabledFormats)) {
-    config.enabledFormats = defaultFormats;
-  }
-
   // run build for each format
-  _.each(config.enabledFormats, function(format) {
+  _.each(config.enabledFormats || defaults.enabledFormats, function(format) {
 
     // make a config object that consists of the format config,
-    // with the main config (without the formats object) merged on top of it.
+    // with the main config and defaults merged on top of it.
+    // We remove the "formats" property
     var formatConfig = _.get(config, "formats." + format) || {};
-    _.defaults(formatConfig, config)
+    _.defaults(formatConfig, config, defaults);
     delete formatConfig.formats;
 
     // figure out the build folder for this format

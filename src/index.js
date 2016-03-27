@@ -21,11 +21,6 @@ catch(e) {
   console.log("No config file detected")
 }
 
-_.defaults(config, configJSON, {
-  "files" : "content/*.md",
-  "destination" : "build/:format"
-});
-
 // Run build process
 if(cmd == "build") {
   build(config);
