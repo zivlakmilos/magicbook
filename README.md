@@ -17,14 +17,21 @@ Although a small number of open source publishing frameworks already exists, it'
 
 First install the `magicbook` package:
 
-```
+```bash
 npm install magicbook -g
 ```
 
 TODO: Then run the new project generator:
 
-```
+```bash
 magicbook new myproject
+```
+
+Then `cd` into the new project and build the book.
+
+```bash
+cd myproject
+magicbook build
 ```
 
 ## Configuration

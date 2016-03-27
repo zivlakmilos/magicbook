@@ -1,8 +1,9 @@
 ## MUST
+
+- Custom views
+- PDF rendering
+
 - katex font files: "extraFiles" glob to transfer into a specific place
-- Watch support
-- Views
-- Add PDF
 - Add Epub
 - Add Mobi
 - Add support for JS
