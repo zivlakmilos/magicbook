@@ -1,7 +1,5 @@
 ## MUST
 
-- Includes should work in layouts
-
 - Custom views
 - PDF rendering
 

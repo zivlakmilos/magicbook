@@ -162,7 +162,8 @@ function layouts(config, format, extraLocals) {
       var locals = {
         content: file.contents.toString(),
         format: format,
-        config: config
+        config: config,
+        page: file.config
       }
 
       if(extraLocals) {

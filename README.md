@@ -150,6 +150,8 @@ Like most other settings, you can set the layout for each format.
 }
 ```
 
+Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
+
 ## Plugins
 
 Almost all functionality in `magicbook` is written via plugins. Some plugins are enabled by default, while others need a configuration setting to work. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
@@ -228,6 +230,7 @@ layout: layouts/introduction.html
 This only works for the following configuration variables:
 
 - `layout`
+- `includes`
 
 
 ### Stylesheets
