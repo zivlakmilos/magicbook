@@ -154,6 +154,24 @@ var helpers = {
         cb();
       }
     });
+  },
+
+  // Function to add plugin hooks as pipes in the stream chain.
+  pipePluginHook: function(stream, plugins, name, format, config, payload) {
+
+    // loop through each of plugins
+    _.each(plugins, function(plugin) {
+
+      // if the plugin has this hook
+      if(_.get(plugin, "hooks." + name)) {
+
+        // create a new pipe with the plugin hook function. This means that the
+        // plugin hook must return a through2 object.
+        stream = stream.pipe(plugin.hooks[name].apply(this, [format, config, payload || {}]));
+      }
+    });
+
+    return stream;
   }
 
 };
