@@ -2,7 +2,9 @@ var through = require('through2');
 var yamlFront = require('yaml-front-matter');
 var _ = require('lodash');
 
-module.exports = {
+var Plugin = function(){};
+
+Plugin.prototype = {
 
   hooks: {
 
@@ -25,9 +27,12 @@ module.exports = {
           _.extend(file.config, parsed);
         }
 
+        // pass file through the chain
         cb(null, file);
       });
     }
   }
 
 }
+
+module.exports = Plugin;

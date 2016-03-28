@@ -2,7 +2,9 @@ var through = require('through2');
 var tinyliquid = require('tinyliquid');
 var helpers = require('../helpers');
 
-module.exports = {
+var Plugin = function(){};
+
+Plugin.prototype = {
 
   hooks: {
 
@@ -20,3 +22,5 @@ module.exports = {
   }
 
 }
+
+module.exports = Plugin;

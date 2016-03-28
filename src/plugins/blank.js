@@ -1,13 +1,18 @@
-var through = require('through2');
-
 // This is an empty plugin that can be used when starting to
 // write a new plugin. It shows all the hooks available.
 
-module.exports = {
 
-  // The setup function is called before the file conversion happens.
-  // It can be used to do things that need to happen only once per
-  // format build.
+var through = require('through2');
+
+// This constructor function will be called once per format
+// for every build. You can set up basic variables needed in
+// the other functions here.
+
+var Plugin = function(){};
+
+Plugin.prototype = {
+
+  // The setup function is called right before a build start for every format.
   // Params:
   // format   - String name of the build format
   // config   - Object with the full configuration for the format
@@ -15,7 +20,7 @@ module.exports = {
   // cb(err)  - A callback to call whenever the setup is finished. Must be called with null or error.
   setup: function(format, config, extras, cb) {
     cb(null);
-  }
+  },
 
   // Hooks are functions that allows you to hook into the build process
   // at certain times. Common to all of the hook is that they have to
@@ -40,5 +45,6 @@ module.exports = {
       return through.obj();
     }
   }
-
 }
+
+module.exports = Plugin;

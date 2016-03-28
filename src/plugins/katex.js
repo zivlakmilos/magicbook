@@ -2,7 +2,9 @@ var through = require('through2');
 var path = require('path');
 var _ = require('lodash');
 
-module.exports = {
+var Plugin = function(){}
+
+Plugin.prototype = {
 
   setup: function(format, config, extras, cb) {
 
@@ -20,3 +22,5 @@ module.exports = {
   }
 
 }
+
+module.exports = Plugin;

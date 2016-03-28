@@ -65,7 +65,9 @@ function liquidLocals(locals, formatFolder, stylesheetsFolder) {
   });
 }
 
-module.exports = {
+var Plugin = function(){}
+
+Plugin.prototype = {
 
   setup: function(format, config, extras, cb) {
 
@@ -111,4 +113,7 @@ module.exports = {
       cb(null);
     }
   }
+
 }
+
+module.exports = Plugin;

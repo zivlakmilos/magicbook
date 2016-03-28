@@ -18,9 +18,11 @@ var async = require('async');
 // Variables
 // --------------------------------------------
 
+var pluginsCache = {};
 var layoutCache = {};
 
 var defaults = {
+  "verbose" : true,
   "files" : "content/*.md",
   "destination" : "build/:format",
   "enabledFormats" : ["html", "epub", "mobi", "pdf"],
@@ -43,12 +45,16 @@ function createFile(filename, content, cb) {
   });
 }
 
-function loadPlugins(config, md, format) {
+// a function that requires plugins specified in the neededPlugins
+// array. Checks requiredPlugins first to see if it has already
+// been required.
+function requirePlugins(requiredPlugins, neededPlugins, verbose) {
 
-  var plugins = [];
+  // loop through each of the required plugins
+  _.each(neededPlugins, function(plugin) {
 
-  if(_.isArray(config.plugins)) {
-    _.each(config.plugins, function(plugin) {
+    // if this plugin has not been required yet
+    if(!requiredPlugins[plugin]) {
 
       var loadedPlugin;
 
@@ -59,24 +65,36 @@ function loadPlugins(config, md, format) {
       } catch (e1) {
         try {
           // try to load the plugin as a file in the book
-          loadedPlugin = require('./' + plugin);
+          loadedPlugin = require(path.join(process.cwd(), plugin));
         } catch(e2) {
           try {
             // try to load the plugin as a node package
             loadedPlugin = require(plugin);
           } catch(e3) {
-            console.log("Plugin " + plugin + " cannot be found");
+            if(verbose) console.log("Plugin " + plugin + " cannot be found");
           }
         }
       }
 
+      // assign to required plugins
       if(loadedPlugin) {
-        plugins.push(loadedPlugin);
+        requiredPlugins[plugin] = loadedPlugin
       }
-    });
-  }
+    }
+  });
 
-  return plugins;
+  return requiredPlugins;
+}
+
+// Instantiates all formatPlugins if they exist in requiredPlugins
+function instantiatePlugins(requiredPlugins, formatPlugins) {
+  var instances = [];
+  _.each(formatPlugins, function(plugin) {
+    if(requiredPlugins[plugin]) {
+      instances.push(new requiredPlugins[plugin]());
+    }
+  });
+  return instances;
 }
 
 // This function takes the name of a function and calls
@@ -108,7 +126,7 @@ function callPlugins(plugins, fnc, args, cb) {
 // --------------------------------------------
 
 // Function to add plugin hooks as pipes in the stream chain.
-function hook(stream, plugins, name, format, config, payload) {
+function pipePluginHook(stream, plugins, name, format, config, payload) {
 
   // loop through each of plugins
   _.each(plugins, function(plugin) {
@@ -203,20 +221,20 @@ module.exports = function(config) {
     // figure out the build folder for this format
     var destination = helpers.destination(formatConfig.destination, format);
 
+    // we create a converter for each format, as each format
+    // can have different markdown settings.
+    var md = new MarkdownIt();
+
+    // require and instantiate plugins for this format
+    pluginsCache = requirePlugins(pluginsCache, formatConfig.plugins, formatConfig.verbose);
+    var plugins = instantiatePlugins(pluginsCache, formatConfig.plugins);
+
+    // Object passed to plugins to allow them to set locals
+    // in liquid.
+    var extraLocals = {};
+
     // delete everything in build folder
     rimraf(destination, function() {
-
-      // we create a converter for each format, as each format
-      // can have different markdown settings.
-      var md = new MarkdownIt();
-
-      // we load plugins per format as each format can have
-      // different plugins.
-      var plugins = loadPlugins(formatConfig, md, format);
-
-      // Object passed to plugins to allow them to set locals
-      // in liquid.
-      var extraLocals = {};
 
       // call the setup function in all plugins
       callPlugins(plugins, "setup", [format, formatConfig, { md: md, locals:extraLocals }], function() {
@@ -225,22 +243,22 @@ module.exports = function(config) {
         var stream = vfs.src(formatConfig.files);
 
         // hook: load
-        stream = hook(stream, plugins, "load", format, formatConfig)
+        stream = pipePluginHook(stream, plugins, "load", format, formatConfig)
           .pipe(markdown(md));
 
         // hook: convert
-        stream = hook(stream, plugins, "convert", format, formatConfig)
+        stream = pipePluginHook(stream, plugins, "convert", format, formatConfig)
           .pipe(layouts(formatConfig, format, extraLocals))
 
         // hook: layout
-        stream = hook(stream, plugins, "layout", format, formatConfig)
+        stream = pipePluginHook(stream, plugins, "layout", format, formatConfig)
           .pipe(vfs.dest(destination));
 
         // events
         stream.on('finish', function() {
-          console.log(format + " finished.")
-          if(config.success) {
-            config.success(format);
+          if(formatConfig.verbose) console.log(format + " finished.")
+          if(formatConfig.success) {
+            formatConfig.success(format);
           }
         });
       });
