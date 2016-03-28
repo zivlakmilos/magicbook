@@ -5,7 +5,7 @@ describe("Katex plugin", function() {
     it("should not convert $$ to katex", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("$$")
           expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("<math>")
           done();
@@ -21,7 +21,7 @@ describe("Katex plugin", function() {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         plugins: [ 'katex' ],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<math>")
           expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("$$")
           done();
@@ -33,7 +33,7 @@ describe("Katex plugin", function() {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         plugins: [ 'katex', 'stylesheets' ],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/assets/katex.css")).toHaveContent("KaTeX_Main");
           done();
         }

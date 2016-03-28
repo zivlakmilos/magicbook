@@ -45,45 +45,44 @@ function createFile(filename, content, cb) {
   });
 }
 
-// a function that requires plugins specified in the neededPlugins
-// array. Checks requiredPlugins first to see if it has already
-// been required.
-function requirePlugins(requiredPlugins, neededPlugins, verbose) {
+// Requires and caches files in cachedFiles with the requireFile
+// function. See below.
+function requireFiles(filesCache, neededFiles, localFolder, verbose) {
 
   // loop through each of the required plugins
-  _.each(neededPlugins, function(plugin) {
+  _.each(neededFiles, function(file) {
 
-    // if this plugin has not been required yet
-    if(!requiredPlugins[plugin]) {
+    // if this file has not been required yet
+    if(!filesCache[file]) {
 
-      var loadedPlugin;
-
-      try {
-        // try to load the plugin as a local plugin
-        var localPlugin = path.join(__dirname, 'plugins', plugin);
-        loadedPlugin = require(localPlugin);
-      } catch (e1) {
-        try {
-          // try to load the plugin as a file in the book
-          loadedPlugin = require(path.join(process.cwd(), plugin));
-        } catch(e2) {
-          try {
-            // try to load the plugin as a node package
-            loadedPlugin = require(plugin);
-          } catch(e3) {
-            if(verbose) console.log("Plugin " + plugin + " cannot be found");
-          }
-        }
-      }
-
-      // assign to required plugins
-      if(loadedPlugin) {
-        requiredPlugins[plugin] = loadedPlugin
-      }
+      // require it and save to cache
+      filesCache[file] = requireFile(file, localFolder, verbose);
     }
   });
 
-  return requiredPlugins;
+  return filesCache;
+}
+
+// This function can be used to require a file or NPM packages by
+// name. It first searches through the folder specified in localFolder,
+// then searches the book repo for the file, and then tries to require
+// as NPM package.
+function requireFile(file, localFolder, verbose) {
+
+  var loadedFile;
+
+  // try to load the file as a local file
+  try { loadedFile = require(path.join(__dirname, localFolder, file)); } catch (e1) {
+    // try to load the file as a file in the book
+    try { loadedFile = require(path.join(process.cwd(), file)); } catch(e2) {
+      // try to load the file as a node package
+      try { loadedFile = require(file); } catch(e3) {
+        if(verbose) console.log("Required file: " + file + " cannot be found");
+      }
+    }
+  }
+
+  return loadedFile;
 }
 
 // Instantiates all formatPlugins if they exist in requiredPlugins
@@ -226,7 +225,7 @@ module.exports = function(config) {
     var md = new MarkdownIt();
 
     // require and instantiate plugins for this format
-    pluginsCache = requirePlugins(pluginsCache, formatConfig.plugins, formatConfig.verbose);
+    pluginsCache = requireFiles(pluginsCache, formatConfig.plugins, "plugins", formatConfig.verbose)
     var plugins = instantiatePlugins(pluginsCache, formatConfig.plugins);
 
     // Object passed to plugins to allow them to set locals
@@ -238,6 +237,15 @@ module.exports = function(config) {
 
       // call the setup function in all plugins
       callPlugins(plugins, "setup", [format, formatConfig, { md: md, locals:extraLocals }], function() {
+
+        // first make sure that we have that format available
+        var formatFunction = requireFile(format, "formats", formatConfig.verbose);
+        if(!formatFunction) {
+          if(formatConfig.finish) {
+            formatConfig.finish(format, new Error("Format not found: " + format));
+          }
+          return;
+        }
 
         // create our stream
         var stream = vfs.src(formatConfig.files);
@@ -252,13 +260,14 @@ module.exports = function(config) {
 
         // hook: layout
         stream = pipePluginHook(stream, plugins, "layout", format, formatConfig)
-          .pipe(vfs.dest(destination));
+
+        stream = formatFunction(stream, destination, formatConfig);
 
         // events
         stream.on('finish', function() {
           if(formatConfig.verbose) console.log(format + " finished.")
-          if(formatConfig.success) {
-            formatConfig.success(format);
+          if(formatConfig.finish) {
+            formatConfig.finish(format, null);
           }
         });
       });

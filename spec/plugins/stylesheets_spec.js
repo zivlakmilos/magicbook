@@ -11,7 +11,7 @@ describe("Stylesheets plugin", function() {
             "spec/support/book/stylesheets/otherstyles.scss",
           ]
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/assets/styles.css")).toHaveContent("color: green");
           expect(buildPath(uid, "html/assets/otherstyles.css")).toHaveContent("color: red");
           done();
@@ -28,7 +28,7 @@ describe("Stylesheets plugin", function() {
             "spec/support/book/stylesheets/styles.css",
           ]
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/myassets/css/styles.css")).toExist();
           done();
         }
@@ -44,7 +44,7 @@ describe("Stylesheets plugin", function() {
             "spec/support/book/stylesheets/styles.css",
           ]
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/assets/styles.css")).toHaveContent("color:green");
           done();
         }
@@ -60,7 +60,7 @@ describe("Stylesheets plugin", function() {
             "spec/support/book/stylesheets/styles.css",
           ]
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/assets/styles-b71c3f4f5d.css")).toExist();
           done();
         }
@@ -77,7 +77,7 @@ describe("Stylesheets plugin", function() {
             "spec/support/book/stylesheets/otherstyles.scss"
           ]
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: red;");
           expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: green;");
           done();
@@ -95,7 +95,7 @@ describe("Stylesheets plugin", function() {
             "spec/support/book/stylesheets/otherstyles.scss"
           ]
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/assets/mybundle.css")).toExist();
           done();
         }
@@ -112,7 +112,7 @@ describe("Stylesheets plugin", function() {
             "spec/support/book/stylesheets/otherstyles.scss"
           ]
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/styles.css\">");
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/otherstyles.css\">");
           done();

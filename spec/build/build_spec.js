@@ -14,7 +14,7 @@ describe("All Formats", function() {
     it("should convert markdown files", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
           expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Second Heading</h1>");
           done();
@@ -29,7 +29,7 @@ describe("All Formats", function() {
     it("should ignore layout", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("Main layout");
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
           expect(buildPath(uid, "html/second-chapter.html")).not.toHaveContent("Main layout");
@@ -43,7 +43,7 @@ describe("All Formats", function() {
       var uid = triggerBuild({
         enabledFormats: ["html"],
         layout: "spec/support/book/layouts/main.html",
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Main layout");
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
           expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Main layout");
@@ -62,7 +62,7 @@ describe("All Formats", function() {
             layout: "spec/support/book/layouts/format.html"
           }
         },
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Format layout");
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
           expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Format layout");
@@ -79,7 +79,7 @@ describe("All Formats", function() {
           includes: "spec/support/book/includes"
         },
         layout: "spec/support/book/layouts/liquid.html",
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Liquid layout");
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("Include working");
           done();
@@ -99,7 +99,7 @@ describe("All Formats", function() {
             destination: "spec/support/book/tmp/abcdef/myhtml",
           }
         },
-        success: function() {
+        finish: function() {
           expect(buildPath('abcdef', "myhtml/first-chapter.html")).toHaveContent("First Heading</h1>");
           done();
         }

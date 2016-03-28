@@ -9,7 +9,7 @@ describe("Liquid plugin", function() {
           includes: "spec/support/book/includes"
         },
         enabledFormats: ["html"],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/liquid.html")).toHaveContent("Include working");
           done();
         }
@@ -30,7 +30,7 @@ describe("Liquid plugin", function() {
           }
         },
         enabledFormats: ["html"],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/liquid.html")).toHaveContent("Other include working");
           done();
         }

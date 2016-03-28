@@ -6,7 +6,7 @@ describe("Frontmatter plugin", function() {
       var uid = triggerBuild({
         files: "spec/support/book/content/frontmatter.md",
         enabledFormats: ["html"],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/frontmatter.html")).toHaveContent("Frontmatter test is working");
           done();
         }
@@ -17,7 +17,7 @@ describe("Frontmatter plugin", function() {
       var uid = triggerBuild({
         files: "spec/support/book/content/frontmatter.md",
         enabledFormats: ["html"],
-        success: function() {
+        finish: function() {
           expect(buildPath(uid, "html/frontmatter.html")).toHaveContent("Frontmatter layout");
           done();
         }
