@@ -1,6 +1,8 @@
 ## MUST
 
-- PDF rendering
+- Formats should be plugins: Having the ability to hook into the chain. That makes it possible for PDF to concat files before layouts, etc.
+- Rewrite formats README
+
 - Custom views
 - Project skeleton generator
 

@@ -26,7 +26,7 @@ var defaults = {
   "files" : "content/*.md",
   "destination" : "build/:format",
   "enabledFormats" : ["html", "epub", "mobi", "pdf"],
-  "plugins" : ["frontmatter", "liquid", "stylesheets", "javascripts"],
+  "plugins" : ["frontmatter", "liquid", "stylesheets", "html"],
   "liquid" : {
     "includes" : "includes"
   }
@@ -72,14 +72,28 @@ function requireFile(file, localFolder, verbose) {
   var loadedFile;
 
   // try to load the file as a local file
-  try { loadedFile = require(path.join(__dirname, localFolder, file)); } catch (e1) {
-    // try to load the file as a file in the book
-    try { loadedFile = require(path.join(process.cwd(), file)); } catch(e2) {
-      // try to load the file as a node package
-      try { loadedFile = require(file); } catch(e3) {
-        if(verbose) console.log("Required file: " + file + " cannot be found");
+  try { loadedFile = require(path.join(__dirname, localFolder, file)); }
+    catch (e1) {
+      if(e1 instanceof SyntaxError) {
+        if(verbose) console.log("Plugin file: " + file + " has syntax errors. " + e1.toString());
+      } else {
+        // try to load the file as a file in the book
+        try { loadedFile = require(path.join(process.cwd(), file)); } catch(e2) {
+          if(e2 instanceof SyntaxError) {
+            if(verbose) console.log("Plugin file: " + file + " has syntax errors. " + e2.toString());
+          } else {
+            // try to load the file as a node package
+            try { loadedFile = require(file); } catch(e3) {
+              if(e3 instanceof SyntaxError) {
+                if(verbose) console.log("Plugin file: " + file + " has syntax errors. " + e3.toString());
+              } else {
+                if(verbose) console.log("Required file: " + file + " cannot be found");
+              }
+            }
+          }
+        }
       }
-    }
+
   }
 
   return loadedFile;
@@ -87,10 +101,10 @@ function requireFile(file, localFolder, verbose) {
 
 // Instantiates all formatPlugins if they exist in requiredPlugins
 function instantiatePlugins(requiredPlugins, formatPlugins) {
-  var instances = [];
+  var instances = {};
   _.each(formatPlugins, function(plugin) {
     if(requiredPlugins[plugin]) {
-      instances.push(new requiredPlugins[plugin]());
+      instances[plugin] = new requiredPlugins[plugin]();
     }
   });
   return instances;
@@ -101,23 +115,30 @@ function instantiatePlugins(requiredPlugins, formatPlugins) {
 // It then ends by calling cb(). It expects the last argument
 // of these plugin functions to be a cb that is called when the
 // function is done.
-function callPlugins(plugins, fnc, args, cb) {
+function callPluginFunctionAsync(fnc, plugins, args, cb) {
 
-  // select all plugins that have this function
-  var selected = _.filter(plugins, function(plugin) {
-    return _.isFunction(plugin[fnc]);
-  });
+  var chain = [];
 
-  // make async chain of the functions to be called in series.
-  var chain = _.map(selected, function(plugin) {
-    return function(callback) {
-      plugin[fnc].apply(this, args.concat(callback));
+  // loop through plugins hash
+  _.each(plugins, function(instance, name) {
+
+    // if the plugin has this function
+    if(_.isFunction(instance[fnc])) {
+
+      // create an synch chain function
+      chain.push(function(callback) {
+        instance[fnc].apply(this, args.concat(callback));
+      })
+
     }
+
   });
 
   // make async fire of the chain in a series.
   async.series(chain, function(err, results) {
-    cb();
+    if(cb) {
+      cb();
+    }
   });
 }
 
@@ -236,16 +257,7 @@ module.exports = function(config) {
     rimraf(destination, function() {
 
       // call the setup function in all plugins
-      callPlugins(plugins, "setup", [format, formatConfig, { md: md, locals:extraLocals }], function() {
-
-        // first make sure that we have that format available
-        var formatFunction = requireFile(format, "formats", formatConfig.verbose);
-        if(!formatFunction) {
-          if(formatConfig.finish) {
-            formatConfig.finish(format, new Error("Format not found: " + format));
-          }
-          return;
-        }
+      callPluginFunctionAsync("setup", plugins, [format, formatConfig, { md: md, locals:extraLocals }], function() {
 
         // create our stream
         var stream = vfs.src(formatConfig.files);
@@ -261,7 +273,15 @@ module.exports = function(config) {
         // hook: layout
         stream = pipePluginHook(stream, plugins, "layout", format, formatConfig)
 
-        stream = formatFunction(stream, destination, formatConfig);
+        // loop through all plugin 'finish' functions and call them
+        // after each other. This does not allow async right now because
+        // I cant't figure out how to do it async with the stream.
+        // may need rewrite if we ever need async in finish.
+        _.each(plugins, function(plugin) {
+          if(_.isFunction(plugin.finish)) {
+            stream = plugin.finish(format, formatConfig, stream, destination);
+          }
+        });
 
         // events
         stream.on('finish', function() {

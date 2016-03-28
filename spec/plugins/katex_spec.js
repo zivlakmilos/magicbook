@@ -20,7 +20,7 @@ describe("Katex plugin", function() {
     it("should convert $$ to katex", function(done) {
       var uid = triggerBuild({
         enabledFormats: ["html"],
-        plugins: [ 'katex' ],
+        plugins: [ 'katex', 'html' ],
         finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<math>")
           expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("$$")
