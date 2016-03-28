@@ -10,6 +10,7 @@ global.buildPath = function(uid, file) {
 global.triggerBuild = function(config) {
   var uid = uuid.v4();
   _.defaults(config, {
+    verbose: false,
     files: ["spec/support/book/content/first-chapter.md", "spec/support/book/content/second-chapter.md"],
     destination: "spec/support/book/tmp/"+uid+"/:format"
   });
