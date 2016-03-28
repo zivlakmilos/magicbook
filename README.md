@@ -38,13 +38,13 @@ magicbook build
 
 To specify configuration for your project, you can create a file called `magicbook.json` in your project folder. In this file, you can set all of the following config settings. Most of these settings can also be overridden with command line arguments, including the name of the config file. See the documentation further down for command line arguments.
 
-### Formats
+### Enabled formats
 
 By default `magicbook` will turn your project into a HTML website, ePub, MOBI and PDF. To only enable certain formats, you can use the `enableFormats` setting.
 
 ```json
 {
-  "enableFormats" : ["pdf", "html"]
+  "enabledFormats" : ["pdf", "html"]
 }
 ```
 
