@@ -22,16 +22,6 @@ Plugin.prototype = {
     cb(null);
   },
 
-  // The finish function is called right before the stream ends. This function
-  // is mostly used for format plugins. This function must return the stream.
-  // format      - String name of the build formats
-  // config      - Object with the full configuration for the format
-  // stream      - Node transform stream with files
-  // destination - the destination of the files for this format
-  finish: function(format, config, stream, destination) {
-    return stream;
-  },
-
   // Hooks are functions that allows you to hook into the build process
   // at certain times. Common to all of the hook is that they have to
   // return a Node stream2 transform. This is a powerful way to add extra
@@ -54,6 +44,16 @@ Plugin.prototype = {
     layout: function(format, config, extras) {
       return through.obj();
     }
+  },
+
+  // The finish function is called right before the stream ends. This function
+  // is mostly used for format plugins. This function must return the stream.
+  // format      - String name of the build formats
+  // config      - Object with the full configuration for the format
+  // stream      - Node transform stream with files
+  // destination - the destination of the files for this format
+  finish: function(format, config, stream, destination) {
+    return stream;
   }
 }
 
