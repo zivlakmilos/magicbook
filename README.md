@@ -48,6 +48,8 @@ By default `magicbook` will turn your project into a HTML website, ePub, MOBI an
 }
 ```
 
+Read more about formats below.
+
 ### Files
 
 You can specify the files to build by adding a `files` array to your `magicbook.json` file. If you do not have a `files` array, it will look for all markdown files in `content/*.md`.
@@ -152,13 +154,13 @@ Like most other settings, you can set the layout for each format.
 
 Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
 
-## Plugins
+## Formats
 
-Almost all functionality in `magicbook` is written via plugins. Some plugins are enabled by default, while others need a configuration setting to work. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
+`magicbook` includes four different formats out of the box: html, pdf (TODO), epub (TODO), and mobi (TODO). It's easy to write new formats for your book. You can place a file in your book repo and reference it in the `enabledFormats` array. The following will try to load a format located at `formats/myformat.js` in the book folder.
 
 ```json
 {
-  "plugins" : "plugins/myplugin"
+  "enabledFormats" : ["formats/myformat"]
 }
 ```
 
@@ -166,11 +168,48 @@ You can also create plugins as NPM packages, simply using the name of the packag
 
 ```json
 {
-  "plugins" : "mypackage"
+  "enabledFormats" : ["mypackage"]
 }
 ```
 
-The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins.
+The load order of formats is native formats first, then formats in the book folder, then NPM packages. `magicbook` will output a warning if the format is not found. Consult the `src/formats/blank.js` file to see what's possible with formats.
+
+### html
+
+This format is **enabled by default**. It saves all source files as separate `.html` files in the format destination folder. This can be used to build static websites.
+
+### pdf
+
+Not created yet
+
+### epub
+
+Not created yet
+
+### mobi
+
+Not created yet
+
+
+## Plugins
+
+Almost all functionality in `magicbook` is written via plugins. Some plugins are enabled by default, while others need a configuration setting to work. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
+
+```json
+{
+  "plugins" : ["plugins/myplugin"]
+}
+```
+
+You can also create plugins as NPM packages, simply using the name of the package.
+
+```json
+{
+  "plugins" : ["mypackage"]
+}
+```
+
+The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins. Remember that if you're specifying your own plugins array, you are clearing the default enabled plugins, and you must add those plugin names to your array.
 
 ### Liquid
 

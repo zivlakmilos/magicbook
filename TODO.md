@@ -1,9 +1,7 @@
 ## MUST
 
-- Add format objects
-
-- Custom views
 - PDF rendering
+- Custom views
 - Project skeleton generator
 
 - katex font files: "extraFiles" glob to transfer into a specific place
