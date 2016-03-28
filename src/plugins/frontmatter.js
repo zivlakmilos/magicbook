@@ -8,31 +8,36 @@ Plugin.prototype = {
 
   hooks: {
 
-    load: function(format, config, extras) {
-      return through.obj(function(file, enc, cb) {
+    load: function(format, config, stream, extras, callback) {
 
-        // parse frontmatter in file
-        var parsed = yamlFront.loadFront(file.contents);
+      stream = stream.pipe(
+        through.obj(function(file, enc, cb) {
 
-        // set main content back to file
-        file.contents = new Buffer(parsed.__content);
+          // parse frontmatter in file
+          var parsed = yamlFront.loadFront(file.contents);
 
-        // delete content from the parsed frontmatter
-        delete parsed.__content;
+          // set main content back to file
+          file.contents = new Buffer(parsed.__content);
 
-        // assign the frontmatter objects to .config for
-        // processing with the liquid plugin.
-        if(!_.isEmpty(parsed)) {
-          file.config = file.config || {};
-          _.extend(file.config, parsed);
-        }
+          // delete content from the parsed frontmatter
+          delete parsed.__content;
 
-        // pass file through the chain
-        cb(null, file);
-      });
+          // assign the frontmatter objects to .config for
+          // processing with the liquid plugin.
+          if(!_.isEmpty(parsed)) {
+            file.config = file.config || {};
+            _.extend(file.config, parsed);
+          }
+
+          // pass file through the chain
+          cb(null, file);
+
+        })
+      );
+
+      callback(null, format, config, stream, extras);
     }
   }
-
 }
 
 module.exports = Plugin;

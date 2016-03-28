@@ -12,48 +12,51 @@ var Plugin = function(){};
 
 Plugin.prototype = {
 
-  // The setup function is called right before a build start for every format.
-  // Params:
-  // format   - String name of the build format
-  // config   - Object with the full configuration for the format
-  // extras   - Object with extra things that may be used for setup. (markdown parser, liquid locals, etc)
-  // cb(err)  - A callback to call whenever the setup is finished. Must be called with null or error.
-  setup: function(format, config, extras, cb) {
-    cb(null);
-  },
+  // The guts of a plugin consists of a number of hooks that allows
+  // you to hook into the stream pipeline at certain times during
+  // the build process.
+  //
+  // Common to all plugins is that they receive the following parameters.
+  // format   - String with the name of the format being built
+  // config   - Object with the config settings for the format
+  // stream   - The transform stream with source files. Setup hook does not have this argument as files have not been loaded.
+  // extras   - Object holding extra objects for the particular hook
+  // cb       - Function that MUST be called with error/null, and the same arguments as input.
 
-  // Hooks are functions that allows you to hook into the build process
-  // at certain times. Common to all of the hook is that they have to
-  // return a Node stream2 transform. This is a powerful way to add extra
-  // manipulation of files.
   hooks: {
 
-    // load is called right after the markdown files are sourced, and
+    // setup is called right before build start for every format.
+    // extras:
+    // md     - a markdown-it instance for this format
+    // locals - locals passed to liquid
+    setup: function(format, config, extras, cb) {
+      cb(null, format, config, extras);
+    },
+
+    // load is called right after the files are sourced, and
     // before the markdown conversion happens.
-    load: function(format, config, extras) {
-      return through.obj();
+    load: function(format, config, stream, extras, cb) {
+      cb(null, format, config, stream, extras);
     },
 
     // convert is called right after markdown conversion.
-    convert: function(format, config, extras) {
-      return through.obj();
+    convert: function(format, config, stream, extras, cb) {
+      cb(null, format, config, stream, extras);
     },
 
     // layout is called right after layouts have been added
     // to the HTML files.
-    layout: function(format, config, extras) {
-      return through.obj();
-    }
-  },
+    layout: function(format, config, stream, extras, cb) {
+      cb(null, format, config, stream, extras);
+    },
 
-  // The finish function is called right before the stream ends. This function
-  // is mostly used for format plugins. This function must return the stream.
-  // format      - String name of the build formats
-  // config      - Object with the full configuration for the format
-  // stream      - Node transform stream with files
-  // destination - the destination of the files for this format
-  finish: function(format, config, stream, destination) {
-    return stream;
+    // finish is called right before the stream ends. This is mostly
+    // used for plugins that define formats.
+    // extras:
+    // destination  - build destination folder for this format
+    finish: function(format, config, stream, extras, cb) {
+      cb(null, format, config, stream, extras);
+    }
   }
 }
 

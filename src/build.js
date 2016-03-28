@@ -94,28 +94,28 @@ function layouts(config, format, extraLocals) {
 // Main
 // --------------------------------------------
 
-module.exports = function(config) {
+module.exports = function(cmdConfig) {
 
   // run build for each format
-  _.each(config.enabledFormats || defaults.enabledFormats, function(format) {
+  _.each(cmdConfig.enabledFormats || defaults.enabledFormats, function(format) {
 
     // make a config object that consists of the format config,
     // with the main config and defaults merged on top of it.
     // We remove the "formats" property
-    var formatConfig = _.get(config, "formats." + format) || {};
-    _.defaults(formatConfig, config, defaults);
-    delete formatConfig.formats;
+    var config = _.get(cmdConfig, "formats." + format) || {};
+    _.defaults(config, cmdConfig, defaults);
+    delete config.formats;
 
     // figure out the build folder for this format
-    var destination = helpers.destination(formatConfig.destination, format);
+    var destination = helpers.destination(config.destination, format);
 
     // we create a converter for each format, as each format
     // can have different markdown settings.
     var md = new MarkdownIt();
 
     // require and instantiate plugins for this format
-    pluginsCache = helpers.requireFiles(pluginsCache, formatConfig.plugins, "plugins", formatConfig.verbose)
-    var plugins = helpers.instantiatePlugins(pluginsCache, formatConfig.plugins);
+    pluginsCache = helpers.requireFiles(pluginsCache, config.plugins, "plugins", config.verbose)
+    var plugins = helpers.instantiatePlugins(pluginsCache, config.plugins);
 
     // Object passed to plugins to allow them to set locals
     // in liquid.
@@ -124,39 +124,35 @@ module.exports = function(config) {
     // delete everything in build folder
     rimraf(destination, function() {
 
-      // call the setup function in all plugins
-      helpers.callPluginFunctionsAsync("setup", plugins, [format, formatConfig, { md: md, locals:extraLocals }], function() {
+      // hook: setup
+      helpers.callHook('setup', plugins, [format, config, { md: md, locals:extraLocals }], function() {
 
         // create our stream
-        var stream = vfs.src(formatConfig.files);
+        var stream = vfs.src(config.files);
 
         // hook: load
-        stream = helpers.pipePluginHook(stream, plugins, "load", format, formatConfig)
-          .pipe(markdown(md));
+        helpers.callHook('load', plugins, [format, config, stream, {}], function(format, config, stream) {
 
-        // hook: convert
-        stream = helpers.pipePluginHook(stream, plugins, "convert", format, formatConfig)
-          .pipe(layouts(formatConfig, format, extraLocals))
+          stream = stream.pipe(markdown(md));
 
-        // hook: layout
-        stream = helpers.pipePluginHook(stream, plugins, "layout", format, formatConfig)
+          helpers.callHook('convert', plugins, [format, config, stream, {}], function(format, config, stream) {
 
-        // loop through all plugin 'finish' functions and call them
-        // after each other. This does not allow async right now because
-        // I cant't figure out how to do it async with the stream.
-        // may need rewrite if we ever need async in finish.
-        _.each(plugins, function(plugin) {
-          if(_.isFunction(plugin.finish)) {
-            stream = plugin.finish(format, formatConfig, stream, destination);
-          }
-        });
+            stream = stream.pipe(layouts(config, format, extraLocals));
 
-        // events
-        stream.on('finish', function() {
-          if(formatConfig.verbose) console.log(format + " finished.")
-          if(formatConfig.finish) {
-            formatConfig.finish(format, null);
-          }
+            helpers.callHook('layout', plugins, [format, config, stream, {}], function(format, config, stream) {
+
+              helpers.callHook('finish', plugins, [format, config, stream, { destination: destination}], function(format, config, stream) {
+
+                stream.on('finish', function() {
+                  if(config.verbose) console.log(format + " finished.")
+                  if(config.finish) {
+                    config.finish(format, null);
+                  }
+                });
+
+              });
+            });
+          });
         });
       });
     });

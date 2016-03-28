@@ -113,47 +113,58 @@ var helpers = {
     return loadedFile;
   },
 
-  // Instantiates all formatPlugins if they exist in requiredPlugins
-  instantiatePlugins: function(requiredPlugins, formatPlugins) {
+  // Instantiates all formatPlugins if they exist in pluginsCache
+  instantiatePlugins: function(pluginsCache, formatPlugins) {
     var instances = {};
     _.each(formatPlugins, function(plugin) {
-      if(requiredPlugins[plugin]) {
-        instances[plugin] = new requiredPlugins[plugin]();
+      if(pluginsCache[plugin]) {
+        instances[plugin] = new pluginsCache[plugin]();
       }
     });
     return instances;
   },
 
-  // This function takes the name of a function and calls
-  // that function for all the plugins, in series after each other.
-  // It then ends by calling cb(). It expects the last argument
-  // of these plugin functions to be a cb that is called when the
-  // function is done.
-  callPluginFunctionsAsync: function(fnc, plugins, args, cb) {
+  // This function takes the name of a hook function and calls
+  // that function for all the plugins, in series after each other,
+  // passing the arguments from the one function to the next.
+  // It then ends by calling cb().
+  callHook: function(hook, plugins, args, cb) {
 
+    // make an array of functions, starting with a function
+    // passing args into the next function.
     var chain = [];
 
-    // loop through plugins hash
+    // loop through plugins hash, if plugin has this function,
+    // add to waterfall chain of functions to be called after each other,
+    // receving args from the previous function.
     _.each(plugins, function(instance, name) {
-
-      // if the plugin has this function
-      if(_.isFunction(instance[fnc])) {
-
-        // create an synch chain function
-        chain.push(function(callback) {
-          instance[fnc].apply(this, args.concat(callback));
-        })
-
-      }
-
-    });
-
-    // make async fire of the chain in a series.
-    async.series(chain, function(err, results) {
-      if(cb) {
-        cb();
+      if(_.get(instance, "hooks." + hook) && _.isFunction(instance.hooks[hook])) {
+        chain.push(instance.hooks[hook])
       }
     });
+
+    // if we have any functions
+    if(chain.length > 0) {
+
+      // first function should pass arguments in with the first
+      // arguments being no errors.
+      chain.unshift(function(callback) {
+        args.unshift(null);
+        callback.apply(this, args);
+      });
+
+      // call functions in a waterfall. When all functions
+      // have been called, call cb with arguments to function.
+      async.waterfall(chain, function(err, a1, a2, a3, a4) {
+        if(cb) {
+          cb(a1, a2, a3, a4)
+        }
+      });
+    } else {
+      cb.apply(this, args);
+    }
+
+
   },
 
   // Function to add plugin hooks as pipes in the stream chain.

@@ -1,5 +1,6 @@
 ## MUST
 
+- Plugin finish MUST be async. How can we do that?
 - Add PDF rendering
 
 - Custom views

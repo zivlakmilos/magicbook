@@ -4,12 +4,16 @@ var Plugin = function(){};
 
 Plugin.prototype = {
 
-  finish: function(format, config, stream, destination) {
-    if(format == "html") {
-      stream = stream.pipe(vfs.dest(destination));
+  hooks: {
+
+    finish: function(format, config, stream, extras, callback) {
+      if(format == "html") {
+        stream = stream.pipe(vfs.dest(extras.destination));
+      }
+      callback(null, format, config, stream, extras);
     }
-    return stream;
+
   }
-}
+};
 
 module.exports = Plugin;

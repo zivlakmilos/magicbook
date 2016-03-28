@@ -69,51 +69,53 @@ var Plugin = function(){}
 
 Plugin.prototype = {
 
-  setup: function(format, config, extras, cb) {
+  hooks: {
 
-    // get the stylesheets needed for this format
-    var stylesheets = _.get(config, "stylesheets.files");
-    var formatFolder = helpers.destination(config.destination, format);
-    var assetsFolder = _.get(config, "stylesheets.destination") || "assets";
-    var stylesheetsFolder = path.join(formatFolder, assetsFolder);
+    setup: function(format, config, extras, callback) {
 
-    // if the array exists
-    if(stylesheets) {
+      // get the stylesheets needed for this format
+      var stylesheets = _.get(config, "stylesheets.files");
+      var formatFolder = helpers.destination(config.destination, format);
+      var assetsFolder = _.get(config, "stylesheets.destination") || "assets";
+      var stylesheetsFolder = path.join(formatFolder, assetsFolder);
 
-      // gather the files
-      var stream = vfs.src(stylesheets)
-        .pipe(scss());
+      // if the array exists
+      if(stylesheets) {
 
-      // bundle
-      var bundle = _.get(config, "stylesheets.bundle");
-      if(bundle) {
-        var filename = _.isString(bundle) ? bundle : "bundle.css"
-        stream = stream.pipe(concatCss(filename));
+        // gather the files
+        var cssStream = vfs.src(stylesheets)
+          .pipe(scss());
+
+        // bundle
+        var bundle = _.get(config, "stylesheets.bundle");
+        if(bundle) {
+          var filename = _.isString(bundle) ? bundle : "bundle.css"
+          cssStream = cssStream.pipe(concatCss(filename));
+        }
+
+        // compress
+        if(_.get(config, "stylesheets.compress")) {
+          cssStream = cssStream.pipe(compress());
+        }
+
+        // digest
+        if(_.get(config, "stylesheets.digest")) {
+          cssStream = cssStream.pipe(digest());
+        }
+
+        // finish
+        cssStream
+          .pipe(liquidLocals(extras.locals, formatFolder, stylesheetsFolder))
+          .pipe(vfs.dest(stylesheetsFolder))
+          .on('finish', function() {
+            callback(null, format, config, extras);
+          });
+
+      } else {
+        callback(null, format, config, extras);
       }
-
-      // compress
-      if(_.get(config, "stylesheets.compress")) {
-        stream = stream.pipe(compress());
-      }
-
-      // digest
-      if(_.get(config, "stylesheets.digest")) {
-        stream = stream.pipe(digest());
-      }
-
-      // finish
-      stream
-        .pipe(liquidLocals(extras.locals, formatFolder, stylesheetsFolder))
-        .pipe(vfs.dest(stylesheetsFolder))
-        .on('finish', function() {
-          cb(null);
-        });
-
-    } else {
-      cb(null);
     }
   }
-
 }
 
 module.exports = Plugin;
