@@ -180,7 +180,11 @@ This plugin is **enabled by default**. It saves all source files as separate `.h
 
 ### pdf
 
-Not created yet
+This plugin is **enabled by default**. It combines all source files, bundles them into a single `.html` file, and generates a PDF in the format destination folder. This can be used to make print book.
+
+Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
+
+We would like to enable support for PanDoc, wkhtmltopdf down the road, although those programs don't have the flexibility of Prince XML.
 
 ### epub
 

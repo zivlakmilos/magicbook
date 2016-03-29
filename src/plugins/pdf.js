@@ -1,5 +1,7 @@
 var vfs = require('vinyl-fs');
 var concat = require('gulp-concat');
+var Prince = require("prince");
+var path = require('path');
 
 var Plugin = function(){};
 
@@ -27,9 +29,20 @@ Plugin.prototype = {
         // save consolidated file to destination
         stream = stream.pipe(vfs.dest(extras.destination));
 
-        // when stream is finished, call back
+        // when stream is finished
         stream.on('finish', function() {
-          callback(null, format, config, stream, extras);
+
+          // run prince PDF generation
+          Prince()
+            .inputs(path.join(extras.destination, "consolidated.html"))
+            .output(path.join(extras.destination, "consolidated.pdf"))
+            .execute()
+            .then(function () {
+              callback(null, format, config, stream, extras);
+            }, function (error) {
+              console.log("Prince XML error")
+              callback(error);
+            });
         });
 
       }
