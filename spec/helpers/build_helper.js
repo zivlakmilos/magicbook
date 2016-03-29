@@ -8,7 +8,7 @@ global.buildPath = function(uid, file) {
 }
 
 global.triggerBuild = function(config) {
-  var uid = uuid.v4();
+  var uid = uuid.v4().replace('-', "").substring(0, 10);
   _.defaults(config, {
     files: ["spec/support/book/content/first-chapter.md", "spec/support/book/content/second-chapter.md"],
     destination: "spec/support/book/tmp/"+uid+"/:format"
@@ -16,3 +16,14 @@ global.triggerBuild = function(config) {
   build(config);
   return uid;
 };
+
+global.buildContent = function(uid, file) {
+  var path = global.buildPath(uid, file);
+  try {
+    return fs.readFileSync(path);
+  }
+  catch(err) {
+    console.log(err)
+  }
+  return "FILE NOT LOADED";
+}

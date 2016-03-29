@@ -25,7 +25,7 @@ var defaults = {
   "files" : "content/*.md",
   "destination" : "build/:format",
   "enabledFormats" : ["html", "epub", "mobi", "pdf"],
-  "plugins" : ["frontmatter", "liquid", "stylesheets", "html"],
+  "plugins" : ["frontmatter", "liquid", "stylesheets", "html", "pdf"],
   "liquid" : {
     "includes" : "includes"
   }
@@ -146,7 +146,7 @@ module.exports = function(cmdConfig) {
                 if(config.verbose) console.log(format + " finished.")
                 if(config.finish) {
                   config.finish(format, null);
-                } 
+                }
 
               });
             });
