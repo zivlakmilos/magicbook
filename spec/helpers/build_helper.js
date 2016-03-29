@@ -17,13 +17,17 @@ global.triggerBuild = function(config) {
   return uid;
 };
 
-global.buildContent = function(uid, file) {
-  var path = global.buildPath(uid, file);
+global.fileContent = function(path) {
   try {
     return fs.readFileSync(path);
   }
   catch(err) {
     console.log(err)
+    return "FILE NOT LOADED: " + err.toString();
   }
-  return "FILE NOT LOADED";
+}
+
+global.buildContent = function(uid, file) {
+  var path = global.buildPath(uid, file);
+  return global.fileContent(path);
 }

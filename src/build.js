@@ -39,8 +39,14 @@ var defaults = {
 function markdown(md) {
   return through.obj(function (file, enc, cb) {
     if(helpers.isMarkdown(file)) {
-      file.contents = new Buffer(md.render(file.contents.toString()));
+
+      // convert md to HTML
+      var fileHTML = md.render(file.contents.toString());
+
+      // put that back into the file
+      file.contents = new Buffer(fileHTML);
       file.path = gutil.replaceExtension(file.path, '.html');
+
     }
     cb(null, file);
 	});

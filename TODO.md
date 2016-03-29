@@ -1,9 +1,10 @@
 ## MUST
 
-- Project skeleton generator
-- HTMLBook conversion
+- Write HTMLBook plugin that converts HTML to HTMLBook based on Fred's code without XHTML. 
+- Add "Writing" section in README about writing HTML in HTMLBook (HTML5!)
+- Change project example to have HTMLBook
 - Custom views
-
+- Internal references should work
 - katex font files: "extraFiles" glob to transfer into a specific place
 - Add Epub
 - Add Mobi
