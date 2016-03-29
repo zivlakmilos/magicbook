@@ -143,12 +143,10 @@ module.exports = function(cmdConfig) {
 
               helpers.callHook('finish', plugins, [format, config, stream, { destination: destination}], function(format, config, stream) {
 
-                stream.on('finish', function() {
-                  if(config.verbose) console.log(format + " finished.")
-                  if(config.finish) {
-                    config.finish(format, null);
-                  }
-                });
+                if(config.verbose) console.log(format + " finished.")
+                if(config.finish) {
+                  config.finish(format, null);
+                } 
 
               });
             });
