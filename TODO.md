@@ -1,10 +1,8 @@
 ## MUST
 
-- Plugin finish MUST be async. How can we do that?
-- Add PDF rendering
-
-- Custom views
 - Project skeleton generator
+- HTMLBook conversion
+- Custom views
 
 - katex font files: "extraFiles" glob to transfer into a specific place
 - Add Epub
