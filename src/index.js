@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
-var build = require('./build');
+var buildFunction = require('./build');
+var newFunction = require('./new');
 var fs = require("fs");
 var _ = require('lodash');
 var chokidar = require('chokidar');
@@ -32,7 +33,7 @@ function triggerBuild() {
   _.defaults(cmdConfig, jsonConfig);
 
   // trigger the build with the new config
-  build(cmdConfig);
+  buildFunction(cmdConfig);
 
   return cmdConfig;
 
@@ -84,6 +85,18 @@ if(cmd == "build") {
       });
   }
 
+}
+
+// new
+else if(cmd == "new") {
+
+  var projectName = argv._[1];
+
+  if(!_.isString(projectName)) {
+    return console.log("Please specify a project name with the new command");
+  }
+
+  newFunction(projectName);
 }
 
 // This command does not exist

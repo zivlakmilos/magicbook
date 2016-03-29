@@ -21,7 +21,7 @@ First install the `magicbook` package:
 npm install magicbook -g
 ```
 
-TODO: Then run the new project generator:
+Then run the new project generator:
 
 ```bash
 magicbook new myproject
@@ -33,6 +33,8 @@ Then `cd` into the new project and build the book.
 cd myproject
 magicbook build
 ```
+
+You now have a `myproject/build` directory with both a website and a PDF of your book. This is of course a vanilla book. Consult the rest of this README for extra functionality.
 
 ## Configuration
 
