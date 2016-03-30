@@ -12,8 +12,8 @@ describe("HTMLBook plugin", function() {
     var f2 = file + "_2.html";
 
     it("should match " + f1 + " and " + f2, function() {
-      expect(hb.convertHtmlFragment(fileContent('spec/support/fixtures/' + f1)))
-        .toEqual(fileContent('spec/support/fixtures/' + f2));
+      expect(hb.convertFragment(fileContent('spec/support/fixtures/' + f1).toString().trim()))
+        .toEqual(fileContent('spec/support/fixtures/' + f2).toString().trim());
     });
 
   });
