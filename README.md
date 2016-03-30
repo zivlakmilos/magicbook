@@ -36,6 +36,42 @@ magicbook build
 
 You now have a `myproject/build` directory with both a website and a PDF of your book. This is of course a vanilla book. Consult the rest of this README for extra functionality.
 
+## Writing
+
+You can write your book in `.md`, `.html`, or both. As HTML doesn't define book-specific markup, we use a very simple spec called [HTMLBook](http://oreillymedia.github.io/HTMLBook) to define various elements in the book. It's very easy to learn, and it introduces no new HTML tags.
+
+### Writing in Markdown
+
+If you chose to write your book in Markdown, `magicbook` will automatically convert your markdown to HTMLBook. A simple file like the following...
+
+```md
+# Chapter title
+
+## Sect 1
+
+### Sect 2
+```
+
+... will be converted to the following HTMLBook markup.
+
+```html
+<section data-type="chapter">
+  <h1>Chapter Title</h1>
+  <section data-type="sect1">
+    <h1>Sect 1</h1>
+    <section data-type="sect2">
+      <h2>Sect 2</h2>
+    </section>
+  </section>
+</section>
+```
+
+This gives you a common way to style your book with CSS across formats.
+
+### Writing in HTML
+
+If you choose to write in HTML, it's up to you whether you want to use HTMLBook or not. You can write your entire book using just HTML5, and use CSS to style your markup. Nothing prevents you from doing that.
+
 ## Configuration
 
 To specify configuration for your project, you can create a file called `magicbook.json` in your project folder. In this file, you can set all of the following config settings. Most of these settings can also be overridden with command line arguments, including the name of the config file. See the documentation further down for command line arguments.
