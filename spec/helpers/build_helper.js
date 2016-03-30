@@ -10,7 +10,7 @@ global.buildPath = function(uid, file) {
 global.triggerBuild = function(config) {
   var uid = uuid.v4().replace('-', "").substring(0, 10);
   _.defaults(config, {
-    files: ["spec/support/book/content/first-chapter.md", "spec/support/book/content/second-chapter.md"],
+    files: ["spec/support/book/content/first-chapter.md", "spec/support/book/content/second-chapter.html"],
     destination: "spec/support/book/tmp/"+uid+"/:format"
   });
   build(config);

@@ -16,7 +16,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-concat-css": "^2.2.0",
     "gulp-util": "^3.0.7",
-    "html": "0.0.10",
+    "js-beautify": "^1.6.2",
     "lodash": "^4.6.1",
     "markdown-it": "^6.0.0",
     "markdown-it-katex": "^1.1.0",
@@ -35,6 +35,7 @@
     "yargs": "^4.3.1"
   },
   "devDependencies": {
+    "diff": "^2.2.2",
     "jasmine": "^2.4.1",
     "node-uuid": "^1.4.7"
   },

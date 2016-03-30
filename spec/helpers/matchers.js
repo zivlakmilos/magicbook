@@ -1,8 +1,35 @@
 var fs = require('fs');
+var diff = require('diff');
 
 beforeEach(function () {
 
   jasmine.addMatchers({
+
+    toDiffLines: function() {
+      return {
+        compare: function (actual, expected) {
+          var result = {
+            pass: true,
+            message: ""
+          }
+          try {
+            var diffResult = diff.diffLines(actual.toString().trim(), expected.toString().trim());
+            diffResult.forEach(function(part){
+              if(part.added || part.removed) {
+                var label = part.added ? '+ ' : '-';
+                result.message += label + part.value.replace(/\n/g, "") + "\n"
+                result.pass = false;
+              }
+            });
+          }
+          catch(err) {
+            result.pass = false;
+            result.message = err.toString();
+          }
+          return result;
+        }
+      };
+    },
 
     toExist: function() {
       return {

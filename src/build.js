@@ -31,6 +31,21 @@ var defaults = {
   }
 }
 
+function getMarkdownConverter() {
+
+  var md = new MarkdownIt({
+
+    // make sure that we add htmlbook to code examples
+    highlight: function (str, lang) {
+      var langClass = _.isEmpty(lang) ? '' : ' data-code-language="'+lang+'"';
+      return '<pre data-type="programlisting"'+langClass+'><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+    }
+
+  });
+
+  return md;
+}
+
 // Pipes
 // --------------------------------------------
 
@@ -43,8 +58,11 @@ function markdown(md) {
       // convert md to HTML
       var fileHTML = md.render(file.contents.toString());
 
+      // make HTMLBook sections from headings
+      var sectionHTML = helpers.sectionify(fileHTML);
+
       // put that back into the file
-      file.contents = new Buffer(fileHTML);
+      file.contents = new Buffer(sectionHTML);
       file.path = gutil.replaceExtension(file.path, '.html');
 
     }
@@ -117,7 +135,7 @@ module.exports = function(cmdConfig) {
 
     // we create a converter for each format, as each format
     // can have different markdown settings.
-    var md = new MarkdownIt();
+    var md = getMarkdownConverter();
 
     // require and instantiate plugins for this format
     pluginsCache = helpers.requireFiles(pluginsCache, config.plugins, "plugins", config.verbose)

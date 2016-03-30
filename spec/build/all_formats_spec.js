@@ -16,7 +16,17 @@ describe("All Formats", function() {
         enabledFormats: ["html"],
         finish: function() {
           expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("First Heading</h1>");
-          expect(buildPath(uid, "html/second-chapter.html")).toHaveContent("Second Heading</h1>");
+          done();
+        }
+      });
+    });
+
+    it("should make HTMLBook sections from heading hierarchy", function(done) {
+      var uid = triggerBuild({
+        files: "spec/support/book/content/htmlbook.md",
+        enabledFormats: ["html"],
+        finish: function() {
+          expect(buildContent(uid, "html/htmlbook.html")).toDiffLines(fileContent("spec/support/fixtures/htmlbook.html"));
           done();
         }
       });
