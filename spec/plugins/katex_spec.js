@@ -1,5 +1,5 @@
 describe("Katex plugin", function() {
-  
+
   it("should convert $$ to katex", function(done) {
     var uid = triggerBuild({
       enabledFormats: ["html"],
@@ -22,5 +22,7 @@ describe("Katex plugin", function() {
       }
     });
   });
+
+  it("should add data-type equation to mathml")
 
 });

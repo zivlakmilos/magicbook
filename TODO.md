@@ -1,9 +1,10 @@
 ## MUST
 
 - If body doesn't have data-type book add it
-- set data-type equation on mathml via the katex plugin?
 - set data-type footnote and endnote
 - data-type xhref to internal links
+
+- Footnotes
 
 - USE XMLSERIALIZER AT A LATER POINT IN THE PROCESS TO ENSURE XHTML. HTMLBOOK JUST PARSES AS HTML5
 - Add "Writing" section in README about writing HTML in HTMLBook (XHTML5!)
