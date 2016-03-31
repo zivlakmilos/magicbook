@@ -2,14 +2,14 @@
 
 The Magic Book Project is an open source project funded by New York University's Interactive Telecommunications Program. It aims to be the best free tool for creating print and digital books from a single source.
 
-This project operates under a few assumptions:
+This project is for you, if:
 
-- You want to write your book in a single source (markdown or HTML)
-- You want to export this source to many different formats (static website, pdf, epub, mobi)
-- You want your source to be completely free of format-specific markup
+- You want to write your book in plain text (Markdown or HTML)
+- You want to export to many different formats (static website, pdf, epub, mobi)
+- You want your source to be completely free of format-specific hacks
 - You want to use CSS to design the look of your book
 - You want to use JavaScript to add interactivity to digital formats
-- You want an easy way to define custom elements that can look and behave differently in every format
+- You want the ability to define custom elements that behave differently in every format
 - You want to use a command-line tool for all of this
 
 Although a small number of open source publishing frameworks already exists, it's hard to find any that are flexible enough to create modern, interactive books for the web while also doing print-ready PDF export.
@@ -35,7 +35,7 @@ cd myproject
 magicbook build
 ```
 
-You now have a `myproject/build` directory with both a website and a PDF of your book. This is of course a vanilla book. Consult the rest of this README for extra functionality.
+You now have a `myproject/build` directory with two builds: a website and a PDF. This is of course a very basic setup. Consult the rest of this README for all the available functionality.
 
 ## Writing
 
@@ -71,23 +71,11 @@ This gives you a common way to style your book with CSS across formats.
 
 ### Writing in HTML
 
-If you choose to write in HTML, it's up to you whether you want to use HTMLBook or not. You can write your entire book using just HTML5, and use CSS to style your markup. Nothing prevents you from doing that.
+If you choose to write in HTML, it's up to you whether you want to use HTMLBook or not. You can write your entire book using just HTML5, and use CSS to style your markup.
 
 ## Configuration
 
-To specify configuration for your project, you can create a file called `magicbook.json` in your project folder. In this file, you can set all of the following config settings. Most of these settings can also be overridden with command line arguments, including the name of the config file. See the documentation further down for command line arguments.
-
-### Enabled formats
-
-By default `magicbook` will turn your project into a HTML website, ePub, MOBI and PDF. To only enable certain formats, you can use the `enableFormats` setting.
-
-```json
-{
-  "enabledFormats" : ["pdf", "html"]
-}
-```
-
-Read more about formats below.
+To specify configuration for your project, `magicbook` uses a file called `magicbook.json` in your project folder. Here's a walk-through of all the available settings. Most of these settings can be overridden per build, by adding the same setting to the build object.
 
 ### Files
 
@@ -124,23 +112,60 @@ Using an array, you can also specify each of the files you want to build.
 }
 ```
 
-### Destination
+### Builds
 
-`destination` specifies where to put the output formats. Because there are multiple output formats, the default destination is `build/:format`, which will create the following folders:
-
-```
-build/
-  html/
-  pdf/
-  epub/
-  mobi/
-```
-
-You can change this setting in the JSON config.
+You must add a `builds` array that specifies your builds. Here's an example with the bare minimum setting to build a website.
 
 ```json
 {
-  "destination" : "my/other/folder/:format"
+  "builds" : [
+    { "format" : "html" }
+  ]
+}
+```
+
+Here's a slightly more advanced example, with two builds, and specific settings per build. You can read about these settings further down.
+
+```json
+{
+  "builds" : [
+    {
+      "format" : "pdf",
+      "layout" : "layouts/pdf.html",
+      "stylesheets" : {
+        "files" : ["stylesheets/pdf.scss"]
+      }
+    },
+    {
+      "format" : "html",
+      "layout" : "layouts/html.html",
+      "stylesheets" : {
+        "files" : ["stylesheets/html.scss"]
+      }
+    }
+  ]
+}
+```
+
+`magicbook` comes with these built-in formats:
+
+- `html` will save all source files as separate `.html` files in the format destination folder. This can be used to build static websites.
+- `pdf` will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. This can be used to make print book. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
+- `epub` TODO
+- `mobi` TODO
+
+Using the `builds` array, you can built a specific format several times. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
+
+
+### Destination
+
+`destination` specifies where to put the output formats. Because there are multiple output formats, the default destination is `build/:build`, which will create a build folder within `build` for each build (`build/build1`, `build/build2`, etc).
+
+You can change this setting in your configuration file.
+
+```json
+{
+  "destination" : "my/custom/folder/:build"
 }
 ```
 
@@ -148,11 +173,10 @@ You can also override the destination per format.
 
 ```json
 {
-  "formats" : {
-    "html" : {
-      "destination" : "my/third/folder/html"
-    }
-  }
+  "builds" : [{
+    "format" : "html",
+    "destination" : "my/custom/folder/html"
+  }]
 }
 ```
 
@@ -183,11 +207,10 @@ Like most other settings, you can set the layout for each format.
 
 ```json
 {
-  "formats" : {
-    "html" : {
-      "layout" : "layouts/website.html"
-    }
-  }
+  "builds" : [{
+    "format" : "html",
+    "layout" : "layouts/website.html"
+  }]
 }
 ```
 
@@ -195,11 +218,11 @@ Layouts support the use of liquid includes (even when the `liquid` plugin has be
 
 ## Plugins
 
-Almost all functionality in `magicbook` is written via plugins. Some plugins are enabled by default, while others need a configuration setting to work. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
+Almost all functionality in `magicbook` is written via plugins. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
 
 ```json
 {
-  "plugins" : ["plugins/myplugin"]
+  "extraPlugins" : ["plugins/myplugin"]
 }
 ```
 
@@ -207,35 +230,23 @@ You can also create plugins as NPM packages, simply using the name of the packag
 
 ```json
 {
-  "plugins" : ["mypackage"]
+  "extraPlugins" : ["mypackage"]
 }
 ```
 
-The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins. Remember that if you're specifying your own plugins array, you are clearing the default enabled plugins, and you must add those plugin names to your array.
+The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins. Using the `extraPlugins` will add your custom plugins at the end of the plugin pipe, after the built-in plugins. This setting is also available inside the `builds` array, so each build can have different plugins.
 
-### html
+It is also possible to disable the native plugins, and decide the load order, by using the `plugins` setting. The following will completely disable all plugins in `magicbook`.
 
-This plugin is **enabled by default**. It saves all source files as separate `.html` files in the format destination folder. This can be used to build static websites.
-
-### pdf
-
-This plugin is **enabled by default**. It combines all source files, bundles them into a single `.html` file, and generates a PDF in the format destination folder. This can be used to make print book.
-
-Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
-
-We would like to enable support for PanDoc, wkhtmltopdf down the road, although those programs don't have the flexibility of Prince XML.
-
-### epub
-
-Not created yet
-
-### mobi
-
-Not created yet
+```json
+{
+  "plugins" : []
+}
+```
 
 ### Liquid
 
-This plugin is **enabled by default**. It allows you to use Liquid templating in your source files. By default, each file will receive an object that looks like the following.
+This plugin allows you to use Liquid templating in your source files. By default, each file will receive an object that looks like the following.
 
 ```json
 {
@@ -256,19 +267,20 @@ Even though `magicbook` has a built-in views, it's possible to use Liquid includ
   "liquid" : {
     "includes" : "my/include/folder"
   },
-  "formats" : {
-    "html" : {
+  "builds" : [{
+    "format" : "html",
+    "liquid" : {
       "includes" : "my/other/include/folder"
     }
-  }
+  }]
 }
 ```
 
-This makes it possible to either have includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
+This makes it possible to either have different includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
 
 ### Frontmatter
 
-This plugin is **enabled by default**. In combination with the `liquid` plugin, this plugin allows you to specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
+In combination with the `liquid` plugin, this plugin allows you to specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
 
 ```markdown
 ---
@@ -296,7 +308,7 @@ This only works for the following configuration variables:
 
 ### Stylesheets
 
-This plugin is **enabled by default**. The stylesheets plugin allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
+The stylesheets plugin allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
 
 ```json
 {
@@ -313,15 +325,14 @@ You can also override this for a particular format.
 
 ```json
 {
-  "formats" : {
-    "html" : {
-      "stylesheets" : {
-        "files" : [
-          "myhtmlstyles.css"
-        ]
-      }
+  "builds" : [{
+    "format" : "html",
+    "stylesheets" : {
+      "files" : [
+        "myhtmlstyles.css"
+      ]
     }
-  }
+  }]
 }
 ```
 
@@ -385,19 +396,9 @@ The `digest` option will add a the md5 checksum of the file content to the filen
 
 ### Katex
 
-This plugin is **enabled by default**. The katex plugin allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is hell when it comes to these things.
+The katex plugin allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is hell when it comes to these things.
 
-To use, first enable the katex plugin, by adding it to your config plugins array.
-
-```json
-{
-  "plugins" : [
-    "katex"
-  ]
-}
-```
-
-Then you can write inline and block math equations in your markdown.
+Here's an example with an inline and block math equations in your markdown.
 
 ```md
 This is an inline equation: $$5 + 5$$. The following is a block equation:
