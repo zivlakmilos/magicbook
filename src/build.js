@@ -139,10 +139,14 @@ module.exports = function(jsonConfig) {
     config.buildNumber = i + 1;
     delete config.builds;
 
-    // if there are extraPlugins, add it to plugins. This will add them
-    // at the end. We might want to have a way to define order?
-    if(config.extraPlugins) {
-      config.plugins = config.plugins.concat(config.extraPlugins);
+    // if there are addPlugins, add it to end of plugins.
+    if(config.addPlugins) {
+      config.plugins = config.plugins.concat(config.addPlugins);
+    }
+
+    // if there are removePlugins, remove them from plugins.
+    if(config.removePlugins) {
+      config.plugins = _.difference(config.plugins, config.removePlugins);
     }
 
     // figure out the build folder for this format
