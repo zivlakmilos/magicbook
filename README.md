@@ -28,7 +28,7 @@ Then run the new project generator:
 magicbook new myproject
 ```
 
-Then `cd` into the new project and build the book.
+This will give you a very basic project folder with a `magicbook.json` configuration file. Now `cd` into the new project and build the book.
 
 ```bash
 cd myproject
@@ -75,9 +75,13 @@ If you choose to write in HTML, it's up to you whether you want to use HTMLBook 
 
 ## Configuration
 
-To specify configuration for your project, `magicbook` uses a file called `magicbook.json` in your project folder. Here's a walk-through of all the available settings. Most of these settings can be overridden per build, by adding the same setting to the build object.
+To specify configuration for your project, `magicbook` uses a file called `magicbook.json` in your project folder. When you run `magicbook build`, the configuration file will automatically be detected. If you wish to have a custom name and location for the configuration file, you can use the `--config` command line argument.
 
-### Files
+```bash
+magicbook build --config=myfolder/myconfig.json
+```
+
+## Source files
 
 You can specify the files to build by adding a `files` array to your `magicbook.json` file. If you do not have a `files` array, it will look for all markdown files in `content/*.md`.
 
@@ -112,9 +116,9 @@ Using an array, you can also specify each of the files you want to build.
 }
 ```
 
-### Builds
+## Builds
 
-You must add a `builds` array that specifies your builds. Here's an example with the bare minimum setting to build a website.
+You must add a `builds` array to your configuration that specifies your build settings. Here's an example with the bare minimum setting to build a website.
 
 ```json
 {
@@ -147,19 +151,18 @@ Here's a slightly more advanced example, with two builds, and specific settings 
 }
 ```
 
-`magicbook` comes with these built-in formats:
+These are the built-in formats:
 
-- `html` will save all source files as separate `.html` files in the format destination folder. This can be used to build static websites.
-- `pdf` will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. This can be used to make print book. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
+- `html` will save all source files as separate `.html` files as a static website.
+- `pdf` will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
 - `epub` TODO
 - `mobi` TODO
 
-Using the `builds` array, you can built a specific format several times. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
+Using the `builds` array, you can build a specific format several times. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
 
+## Build destination
 
-### Destination
-
-`destination` specifies where to put the output formats. Because there are multiple output formats, the default destination is `build/:build`, which will create a build folder within `build` for each build (`build/build1`, `build/build2`, etc).
+`destination` specifies where to put the builds. Because you can have many builds, the default destination is `build/:build`, which will create a build folder within `build` for each build (`build/build1`, `build/build2`, etc).
 
 You can change this setting in your configuration file.
 
@@ -180,7 +183,7 @@ You can also override the destination per format.
 }
 ```
 
-### Layout
+## Layout
 
 Like most web frameworks, magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
 
@@ -216,37 +219,9 @@ Like most other settings, you can set the layout for each format.
 
 Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
 
-## Plugins
+## Liquid
 
-Almost all functionality in `magicbook` is written via plugins. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
-
-```json
-{
-  "extraPlugins" : ["plugins/myplugin"]
-}
-```
-
-You can also create plugins as NPM packages, simply using the name of the package.
-
-```json
-{
-  "extraPlugins" : ["mypackage"]
-}
-```
-
-The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see what's possible with plugins. Using the `extraPlugins` will add your custom plugins at the end of the plugin pipe, after the built-in plugins. This setting is also available inside the `builds` array, so each build can have different plugins.
-
-It is also possible to disable the native plugins, and decide the load order, by using the `plugins` setting. The following will completely disable all plugins in `magicbook`.
-
-```json
-{
-  "plugins" : []
-}
-```
-
-### Liquid
-
-This plugin allows you to use Liquid templating in your source files. By default, each file will receive an object that looks like the following.
+It is also possible to use Liquid templating in your source files. By default, each file will receive an object that looks like the following.
 
 ```json
 {
@@ -256,11 +231,11 @@ This plugin allows you to use Liquid templating in your source files. By default
 }
 ```
 
-- `format` is a string with the name of the format. This can be used show show or hide specific markup in each format.
+- `format` is a string with the name of the format. This can be used to show or hide specific markup in each format.
 - `config` is an object with all the configuration settings for the specific format.
-- `page` is an object with variables assigned to `file.config` during the build process. Right now, this is mostly done in the `frontmatter` plugin, but you can easily write a plugin that adds extra variables to this object.
+- `page` is an object with the YAML frontmatter variables from the particular file.
 
-Even though `magicbook` has a built-in views, it's possible to use Liquid includes. The default search location is in `/includes`, but you can customize this as a general setting or a format setting.
+Even though `magicbook` has a built-in views, it's possible to use Liquid includes. The default search location is in `/includes`, but you can customize this as a general setting or a build setting.
 
 ```json
 {
@@ -278,9 +253,17 @@ Even though `magicbook` has a built-in views, it's possible to use Liquid includ
 
 This makes it possible to either have different includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
 
-### Frontmatter
+This functionality is in the `liquid` plugin, and it can be disabled using the `removePlugins` array.
 
-In combination with the `liquid` plugin, this plugin allows you to specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
+```json
+{
+  "removePlugins" : ["liquid"]
+}
+```
+
+## YAML Frontmatter
+
+You can specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
 
 ```markdown
 ---
@@ -305,10 +288,18 @@ This only works for the following configuration variables:
 - `layout`
 - `includes`
 
+This functionality is in the `frontmatter` plugin, and it can be disabled using the `removePlugins` array.
 
-### Stylesheets
+```json
+{
+  "removePlugins" : ["frontmatter"]
+}
+```
 
-The stylesheets plugin allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
+
+## Stylesheets
+
+You can style all your builds using CSS or SCSS. The `stylesheets` configuration allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
 
 ```json
 {
@@ -321,7 +312,7 @@ The stylesheets plugin allows you to specify an array of `.css` or `.scss` files
 }
 ```
 
-You can also override this for a particular format.
+You can also override this for a particular build.
 
 ```json
 {
@@ -351,7 +342,7 @@ You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liqu
 
 By using different files for each format, you can have a book that looks very different across formats. To share styles between the formats, you can use SCSS `@import`.
 
- It is also possible to control where these stylesheets are stored. You can specify a custom destination folder by using the `destination` property. It defaults to `/assets`.
+It is also possible to control where these stylesheets are stored. You can specify a custom destination folder by using the `destination` property. It defaults to `/assets`.
 
 ```json
 {
@@ -393,10 +384,17 @@ The `digest` option will add a the md5 checksum of the file content to the filen
 }
 ```
 
+This functionality is in the `stylesheets` plugin, and it can be disabled using the `removePlugins` array.
 
-### Katex
+```json
+{
+  "removePlugins" : ["stylesheets"]
+}
+```
 
-The katex plugin allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is hell when it comes to these things.
+## Math
+
+`magicbook` allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is problematic when it comes to these things.
 
 Here's an example with an inline and block math equations in your markdown.
 
@@ -408,7 +406,53 @@ $$
 $$
 ```
 
-The plugin will automatically include the required JavaScript libraries for the different formats.
+The required JavaScript libraries will automatically be added to the build assets during the build process (TODO).
+
+This functionality is in the `katex` plugin, and it can be disabled using the `removePlugins` array.
+
+```json
+{
+  "removePlugins" : ["katex"]
+}
+```
+
+## Plugins
+
+Almost all functionality in `magicbook` is written via plugins. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
+
+```json
+{
+  "addPlugins" : ["plugins/myplugin"]
+}
+```
+
+You can also create plugins as NPM packages, simply using the name of the package.
+
+```json
+{
+  "addPlugins" : ["mypackage"]
+}
+```
+
+The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see the structure of a plugin. Using the `addPlugins` will add your custom plugins at the end of the plugin pipeline, after the built-in plugins. This setting is also available inside the `builds` array, so each build can have different plugins.
+
+If you want to remove native plugins, you can use the `removePlugins` property.
+
+```json
+{
+  "removePlugins" : ["katex"]
+}
+```
+
+If you want complete control over all plugins and their order, you can use the `plugins` setting. This specifies the exact order of all plugins, and plugins not present in that array will be disabled. The following will completely disable all plugins in `magicbook`.
+
+```json
+{
+  "plugins" : []
+}
+```
+
+Take a look at the default plugins in `src/build.js` to see what's available.
 
 ## Command line
 
