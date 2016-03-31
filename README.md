@@ -10,8 +10,9 @@ This project operates under a few assumptions:
 - You want to use CSS to design the look of your book
 - You want to use JavaScript to add interactivity to digital formats
 - You want an easy way to define custom elements that can look and behave differently in every format
+- You want to use a command-line tool for all of this
 
-Although a small number of open source publishing frameworks already exists, it's very hard to find frameworks that are flexible enough to create modern, interactive books for the web while also supporting print-ready PDF export.
+Although a small number of open source publishing frameworks already exists, it's hard to find any that are flexible enough to create modern, interactive books for the web while also doing print-ready PDF export.
 
 ## Getting Started
 

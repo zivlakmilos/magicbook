@@ -1,6 +1,5 @@
 ## MUST
 
-- formats should be builds.
 - Internal links
   - should have data-type
   - should link to file in HTML version

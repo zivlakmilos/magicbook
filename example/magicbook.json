@@ -1,23 +1,24 @@
 {
   "title" : "My Book",
+  "destination" : "build/:build",
   "files" : [
     "content/first-chapter.md",
     "content/second-chapter.html"
   ],
-  "destination" : "build/:format",
-  "enabledFormats" : ["pdf", "html"],
-  "formats" : {
-    "pdf" : {
+  "builds" : [
+    {
+      "format" : "pdf",
       "layout" : "layouts/pdf.html",
       "stylesheets" : {
         "files" : ["stylesheets/pdf.scss"]
       }
     },
-    "html" : {
+    {
+      "format" : "html",
       "layout" : "layouts/html.html",
       "stylesheets" : {
         "files" : ["stylesheets/html.scss"]
       }
     }
-  }
+  ]
 }
