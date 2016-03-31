@@ -8,7 +8,7 @@ Plugin.prototype = {
 
   hooks: {
 
-    load: function(format, config, stream, extras, callback) {
+    load: function(config, stream, extras, callback) {
 
       stream = stream.pipe(
         through.obj(function(file, enc, cb) {
@@ -35,7 +35,7 @@ Plugin.prototype = {
         })
       );
 
-      callback(null, format, config, stream, extras);
+      callback(null, config, stream, extras);
     }
   }
 }

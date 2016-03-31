@@ -71,11 +71,11 @@ Plugin.prototype = {
 
   hooks: {
 
-    setup: function(format, config, extras, callback) {
+    setup: function(config, extras, callback) {
 
       // get the stylesheets needed for this format
       var stylesheets = _.get(config, "stylesheets.files");
-      var formatFolder = helpers.destination(config.destination, format);
+      var formatFolder = helpers.destination(config.destination, config.buildNumber);
       var assetsFolder = _.get(config, "stylesheets.destination") || "assets";
       var stylesheetsFolder = path.join(formatFolder, assetsFolder);
 
@@ -108,11 +108,11 @@ Plugin.prototype = {
           .pipe(liquidLocals(extras.locals, formatFolder, stylesheetsFolder))
           .pipe(vfs.dest(stylesheetsFolder))
           .on('finish', function() {
-            callback(null, format, config, extras);
+            callback(null, config, extras);
           });
 
       } else {
-        callback(null, format, config, extras);
+        callback(null, config, extras);
       }
     }
   }

@@ -384,7 +384,7 @@ The `digest` option will add a the md5 checksum of the file content to the filen
 
 ### Katex
 
-This plugin is **disabled by default**. The katex plugin allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is hell when it comes to these things.
+This plugin is **enabled by default**. The katex plugin allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is hell when it comes to these things.
 
 To use, first enable the katex plugin, by adding it to your config plugins array.
 

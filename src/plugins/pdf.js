@@ -9,22 +9,22 @@ Plugin.prototype = {
 
   hooks: {
 
-    convert: function(format, config, stream, extras, callback) {
+    convert: function(config, stream, extras, callback) {
 
       // if this is the pdf format
-      if(format == "pdf") {
+      if(config.format == "pdf") {
 
         // consolidate all files into a single one
         stream = stream.pipe(concat('consolidated.html'));
       }
 
-      callback(null, format, config, stream, extras);
+      callback(null, config, stream, extras);
 
     },
 
-    finish: function(format, config, stream, extras, callback) {
+    finish: function(config, stream, extras, callback) {
 
-      if(format == "pdf") {
+      if(config.format == "pdf") {
 
         // save consolidated file to destination
         stream = stream.pipe(vfs.dest(extras.destination));
@@ -38,7 +38,7 @@ Plugin.prototype = {
             .output(path.join(extras.destination, "consolidated.pdf"))
             .execute()
             .then(function () {
-              callback(null, format, config, stream, extras);
+              callback(null, config, stream, extras);
             }, function (error) {
               console.log("Prince XML error")
               callback(error);
@@ -47,7 +47,7 @@ Plugin.prototype = {
 
       }
       else {
-        callback(null, format, config, stream, extras);
+        callback(null, config, stream, extras);
       }
 
     }

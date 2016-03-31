@@ -23,9 +23,8 @@ var layoutCache = {};
 var defaults = {
   "verbose" : true,
   "files" : "content/*.md",
-  "destination" : "build/:format",
-  "enabledFormats" : ["html", "epub", "mobi", "pdf"],
-  "plugins" : ["frontmatter", "liquid", "stylesheets", "html", "pdf"],
+  "destination" : "build/:build",
+  "plugins" : ["frontmatter", "liquid", "katex", "stylesheets", "html", "pdf"],
   "liquid" : {
     "includes" : "includes"
   }
@@ -80,7 +79,7 @@ function duplicate() {
 
 // Assigns layouts to the files in the stream.
 // Prioritizes format layout over main layout.
-function layouts(config, format, extraLocals) {
+function layouts(config, extraLocals) {
 
   return through.obj(function(file, enc, cb) {
 
@@ -91,7 +90,7 @@ function layouts(config, format, extraLocals) {
       // create the object to pass into liquid for this file
       var locals = {
         content: file.contents.toString(),
-        format: format,
+        format: config.format,
         config: config,
         page: file.config
       }
@@ -118,20 +117,36 @@ function layouts(config, format, extraLocals) {
 // Main
 // --------------------------------------------
 
-module.exports = function(cmdConfig) {
+module.exports = function(jsonConfig) {
+
+  // if there is no builds array or it's empty,
+  // return an error message
+  if(!_.isArray(jsonConfig.builds) || _.isEmpty(jsonConfig.builds)) {
+    return console.log("No build settings detected. Please add a builds array to your config");
+  }
 
   // run build for each format
-  _.each(cmdConfig.enabledFormats || defaults.enabledFormats, function(format) {
+  _.each(jsonConfig.builds, function(build, i) {
 
-    // make a config object that consists of the format config,
+    // if there is no format in the build object
+    if(!build.format) return console.log("no format in build setting. Skipping build " + (i+1))
+
+    // make a config object that consists of the build config,
     // with the main config and defaults merged on top of it.
-    // We remove the "formats" property
-    var config = _.get(cmdConfig, "formats." + format) || {};
-    _.defaults(config, cmdConfig, defaults);
-    delete config.formats;
+    // We remove the "builds" property and add the build number.
+    var config = build;
+    _.defaults(config, jsonConfig, defaults);
+    config.buildNumber = i + 1;
+    delete config.builds;
+
+    // if there are extraPlugins, add it to plugins. This will add them
+    // at the end. We might want to have a way to define order?
+    if(config.extraPlugins) {
+      config.plugins = config.plugins.concat(config.extraPlugins);
+    }
 
     // figure out the build folder for this format
-    var destination = helpers.destination(config.destination, format);
+    var destination = helpers.destination(config.destination, config.buildNumber);
 
     // we create a converter for each format, as each format
     // can have different markdown settings.
@@ -149,27 +164,27 @@ module.exports = function(cmdConfig) {
     rimraf(destination, function() {
 
       // hook: setup
-      helpers.callHook('setup', plugins, [format, config, { md: md, locals:extraLocals }], function() {
+      helpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals }], function() {
 
         // create our stream
         var stream = vfs.src(config.files);
 
         // hook: load
-        helpers.callHook('load', plugins, [format, config, stream, {}], function(format, config, stream) {
+        helpers.callHook('load', plugins, [config, stream, {}], function(config, stream) {
 
           stream = stream.pipe(markdown(md));
 
-          helpers.callHook('convert', plugins, [format, config, stream, {}], function(format, config, stream) {
+          helpers.callHook('convert', plugins, [config, stream, {}], function(config, stream) {
 
-            stream = stream.pipe(layouts(config, format, extraLocals));
+            stream = stream.pipe(layouts(config, extraLocals));
 
-            helpers.callHook('layout', plugins, [format, config, stream, {}], function(format, config, stream) {
+            helpers.callHook('layout', plugins, [config, stream, {}], function(config, stream) {
 
-              helpers.callHook('finish', plugins, [format, config, stream, { destination: destination}], function(format, config, stream) {
+              helpers.callHook('finish', plugins, [config, stream, { destination: destination}], function(config, stream) {
 
-                if(config.verbose) console.log(format + " finished.")
+                if(config.verbose) console.log(config.format + " finished.")
                 if(config.finish) {
-                  config.finish(format, null);
+                  config.finish(config.format, null);
                 }
 
               });

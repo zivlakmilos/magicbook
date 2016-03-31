@@ -15,8 +15,8 @@ var helpers = {
 
   // Get build destination for a single format
   // Returns: string
-  destination: function(dest, format) {
-    return dest.replace(":format", format);
+  destination: function(dest, buildNumber) {
+    return dest.replace(":build", 'build' + buildNumber);
   },
 
   // Check whether a vinyl file is a markdown file

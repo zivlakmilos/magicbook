@@ -17,8 +17,7 @@ Plugin.prototype = {
   // the build process.
   //
   // Common to all plugins is that they receive the following parameters.
-  // format   - String with the name of the format being built
-  // config   - Object with the config settings for the format
+  // config   - Object with the config settings for the format being built. Includes "format" property with string name of the format
   // stream   - The transform stream with source files. Setup hook does not have this argument as files have not been loaded.
   // extras   - Object holding extra objects for the particular hook
   // cb       - Function that MUST be called with error/null, and the same arguments as input.
@@ -29,33 +28,33 @@ Plugin.prototype = {
     // extras:
     // md     - a markdown-it instance for this format
     // locals - locals passed to liquid
-    setup: function(format, config, extras, cb) {
-      cb(null, format, config, extras);
+    setup: function(config, extras, cb) {
+      cb(null, config, extras);
     },
 
     // load is called right after the files are sourced, and
     // before the markdown conversion happens.
-    load: function(format, config, stream, extras, cb) {
-      cb(null, format, config, stream, extras);
+    load: function(config, stream, extras, cb) {
+      cb(null, config, stream, extras);
     },
 
     // convert is called right after markdown conversion.
-    convert: function(format, config, stream, extras, cb) {
-      cb(null, format, config, stream, extras);
+    convert: function(config, stream, extras, cb) {
+      cb(null, config, stream, extras);
     },
 
     // layout is called right after layouts have been added
     // to the HTML files.
-    layout: function(format, config, stream, extras, cb) {
-      cb(null, format, config, stream, extras);
+    layout: function(config, stream, extras, cb) {
+      cb(null, config, stream, extras);
     },
 
     // finish is called right before the stream ends. This is mostly
     // used for plugins that define formats.
     // extras:
     // destination  - build destination folder for this format
-    finish: function(format, config, stream, extras, cb) {
-      cb(null, format, config, stream, extras);
+    finish: function(config, stream, extras, cb) {
+      cb(null, config, stream, extras);
     }
   }
 }

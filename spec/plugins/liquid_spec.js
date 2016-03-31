@@ -8,9 +8,9 @@ describe("Liquid plugin", function() {
         liquid: {
           includes: "spec/support/book/includes"
         },
-        enabledFormats: ["html"],
+        builds: [{ format: "html" }],
         finish: function() {
-          expect(buildPath(uid, "html/liquid.html")).toHaveContent("Include working");
+          expect(buildPath(uid, "build1/liquid.html")).toHaveContent("Include working");
           done();
         }
       });
@@ -22,16 +22,14 @@ describe("Liquid plugin", function() {
         liquid: {
           includes: "spec/support/book/includes"
         },
-        formats: {
-          html: {
-            liquid: {
-              includes: "spec/support/book/includes/otherfolder"
-            }
+        builds: [{
+          format: "html",
+          liquid: {
+            includes: "spec/support/book/includes/otherfolder"
           }
-        },
-        enabledFormats: ["html"],
+        }],
         finish: function() {
-          expect(buildPath(uid, "html/liquid.html")).toHaveContent("Other include working");
+          expect(buildPath(uid, "build1/liquid.html")).toHaveContent("Other include working");
           done();
         }
       });

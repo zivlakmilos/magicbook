@@ -2,11 +2,10 @@ describe("Katex plugin", function() {
 
   it("should convert $$ to katex", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
-      plugins: [ 'katex', 'html' ],
+      builds: [{ format: "html" }],
       finish: function() {
-        expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<math>")
-        expect(buildPath(uid, "html/first-chapter.html")).not.toHaveContent("$$")
+        expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<math>")
+        expect(buildPath(uid, "build1/first-chapter.html")).not.toHaveContent("$$")
         done();
       }
     });
@@ -14,10 +13,9 @@ describe("Katex plugin", function() {
 
   it("should include katex.css in the stylesheets", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
-      plugins: [ 'katex', 'stylesheets' ],
+      builds: [{ format: "html" }],
       finish: function() {
-        expect(buildPath(uid, "html/assets/katex.css")).toHaveContent("KaTeX_Main");
+        expect(buildPath(uid, "build1/assets/katex.css")).toHaveContent("KaTeX_Main");
         done();
       }
     });

@@ -2,7 +2,7 @@ describe("Stylesheets plugin", function() {
 
   it("should move CSS and compiled SCSS to assets folder", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
+      builds: [{ format: "html" }],
       stylesheets: {
         files: [
           "spec/support/book/stylesheets/styles.css",
@@ -10,8 +10,8 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "html/assets/styles.css")).toHaveContent("color: green");
-        expect(buildPath(uid, "html/assets/otherstyles.css")).toHaveContent("color: red");
+        expect(buildPath(uid, "build1/assets/styles.css")).toHaveContent("color: green");
+        expect(buildPath(uid, "build1/assets/otherstyles.css")).toHaveContent("color: red");
         done();
       }
     });
@@ -19,7 +19,7 @@ describe("Stylesheets plugin", function() {
 
   it("should use custom stylesheets destination folder", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
+      builds: [{ format: "html" }],
       stylesheets: {
         destination: "myassets/css",
         files: [
@@ -27,7 +27,7 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "html/myassets/css/styles.css")).toExist();
+        expect(buildPath(uid, "build1/myassets/css/styles.css")).toExist();
         done();
       }
     });
@@ -35,7 +35,7 @@ describe("Stylesheets plugin", function() {
 
   it("should compress stylesheets", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
+      builds: [{ format: "html" }],
       stylesheets: {
         compress: true,
         files: [
@@ -43,7 +43,7 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "html/assets/styles.css")).toHaveContent("color:green");
+        expect(buildPath(uid, "build1/assets/styles.css")).toHaveContent("color:green");
         done();
       }
     });
@@ -51,7 +51,7 @@ describe("Stylesheets plugin", function() {
 
   it("should digest stylesheets", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
+      builds: [{ format: "html" }],
       stylesheets: {
         digest: true,
         files: [
@@ -59,7 +59,7 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "html/assets/styles-b71c3f4f5d.css")).toExist();
+        expect(buildPath(uid, "build1/assets/styles-b71c3f4f5d.css")).toExist();
         done();
       }
     });
@@ -67,7 +67,7 @@ describe("Stylesheets plugin", function() {
 
   it("should bundle stylesheets with default name", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
+      builds: [{ format: "html" }],
       stylesheets: {
         bundle: true,
         files: [
@@ -76,8 +76,8 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: red;");
-        expect(buildPath(uid, "html/assets/bundle.css")).toHaveContent("color: green;");
+        expect(buildPath(uid, "build1/assets/bundle.css")).toHaveContent("color: red;");
+        expect(buildPath(uid, "build1/assets/bundle.css")).toHaveContent("color: green;");
         done();
       }
     });
@@ -85,7 +85,7 @@ describe("Stylesheets plugin", function() {
 
   it("should bundle stylesheets with custom name", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
+      builds: [{ format: "html" }],
       stylesheets: {
         bundle: "mybundle.css",
         files: [
@@ -94,7 +94,7 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "html/assets/mybundle.css")).toExist();
+        expect(buildPath(uid, "build1/assets/mybundle.css")).toExist();
         done();
       }
     });
@@ -102,7 +102,7 @@ describe("Stylesheets plugin", function() {
 
   it("should insert stylesheets in layout", function(done) {
     var uid = triggerBuild({
-      enabledFormats: ["html"],
+      builds: [{ format: "html" }],
       layout: "spec/support/book/layouts/assets.html",
       stylesheets: {
         files: [
@@ -111,8 +111,8 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/styles.css\">");
-        expect(buildPath(uid, "html/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/otherstyles.css\">");
+        expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/styles.css\">");
+        expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/otherstyles.css\">");
         done();
       }
     });

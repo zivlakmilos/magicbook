@@ -11,7 +11,7 @@ global.triggerBuild = function(config) {
   var uid = uuid.v4().replace('-', "").substring(0, 10);
   _.defaults(config, {
     files: ["spec/support/book/content/first-chapter.md", "spec/support/book/content/second-chapter.html"],
-    destination: "spec/support/book/tmp/"+uid+"/:format"
+    destination: "spec/support/book/tmp/"+uid+"/:build"
   });
   build(config);
   return uid;

@@ -8,7 +8,7 @@ Plugin.prototype = {
 
   hooks: {
 
-    setup: function(format, config, extras, callback) {
+    setup: function(config, extras, callback) {
 
       // make sure we parse $-$ and $$-$$ into katex markup
       extras.md.use(require('markdown-it-katex'));
@@ -20,7 +20,7 @@ Plugin.prototype = {
       config.stylesheets.files = config.stylesheets.files || [];
       config.stylesheets.files.push(css);
 
-      callback(null, format, config, extras);
+      callback(null, config, extras);
     }
 
   }
