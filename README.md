@@ -483,4 +483,10 @@ magicbook build --watch
 
 ## Running the tests
 
+Run the jasmine tests:
+
 `npm test`
+
+Run a V8 profiling build of the example folder:
+
+`npm run profile`

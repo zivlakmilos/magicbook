@@ -36,3 +36,5 @@ node_modules
 **/tmp
 
 example/build
+example/processed.txt
+example/*.log

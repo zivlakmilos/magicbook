@@ -1,6 +1,6 @@
 ## MUST
 
-- Do a test that runs profiling and see what's taking up memory.  
+- UPGRADE NODE: Do a test that runs profiling and see what's taking up memory.  
 - Internal markdown links should have data-type xref
 - Figure out page numbers in in PDF links
 - Image support WITH resizing
