@@ -41,7 +41,7 @@ You now have a `myproject/build` directory with two builds: a website and a PDF.
 
 You can write your book in `.md`, `.html`, or both. As HTML doesn't define book-specific markup, we use a very simple spec called [HTMLBook](http://oreillymedia.github.io/HTMLBook) to define various elements in the book. It's very easy to learn, and it introduces no new HTML tags.
 
-### Writing in Markdown
+### Using Markdown
 
 If you chose to write your book in Markdown, `magicbook` will automatically convert your markdown to HTMLBook. A simple file like the following...
 
@@ -69,9 +69,13 @@ If you chose to write your book in Markdown, `magicbook` will automatically conv
 
 This gives you a common way to style your book with CSS across formats.
 
-### Writing in HTML
+### Using HTML
 
 If you choose to write in HTML, it's up to you whether you want to use HTMLBook or not. You can write your entire book using just HTML5, and use CSS to style your markup.
+
+### Links
+
+If you wish to link between files, you can simply use an anchor link (`<a href="#myid">My link</a>` or `[My link](#myid)`), while making sure that this ID exists in one of the files in the build. `magicbook` will automatically insert the filename in the formats that need it.
 
 ## Configuration
 

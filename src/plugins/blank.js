@@ -26,25 +26,29 @@ Plugin.prototype = {
 
     // setup is called right before build start for every format.
     // extras:
-    // md     - a markdown-it instance for this format
-    // locals - locals passed to liquid
+    // md          - a markdown-it instance for this format
+    // locals      - locals passed to liquid
+    // destination - destination folder for the files
     setup: function(config, extras, cb) {
       cb(null, config, extras);
     },
 
     // load is called right after the files are sourced, and
     // before the markdown conversion happens.
+    // destination - destination folder for the files
     load: function(config, stream, extras, cb) {
       cb(null, config, stream, extras);
     },
 
     // convert is called right after markdown conversion.
+    // destination - destination folder for the files
     convert: function(config, stream, extras, cb) {
       cb(null, config, stream, extras);
     },
 
     // layout is called right after layouts have been added
     // to the HTML files.
+    // destination - destination folder for the files
     layout: function(config, stream, extras, cb) {
       cb(null, config, stream, extras);
     },

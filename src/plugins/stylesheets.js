@@ -55,10 +55,10 @@ function scss() {
 	});
 }
 
-function liquidLocals(locals, formatFolder, stylesheetsFolder) {
+function liquidLocals(locals, destination, stylesheetsFolder) {
   locals.stylesheets = "";
   return through.obj(function(file, enc, cb) {
-    var relativeFolder = path.relative(formatFolder, stylesheetsFolder);
+    var relativeFolder = path.relative(destination, stylesheetsFolder);
     var relativeFile = path.join(relativeFolder, path.basename(file.path));
     locals.stylesheets += "<link rel=\"stylesheet\" href=\""+ relativeFile +"\">\n"
     cb(null, file);
@@ -75,9 +75,8 @@ Plugin.prototype = {
 
       // get the stylesheets needed for this format
       var stylesheets = _.get(config, "stylesheets.files");
-      var formatFolder = helpers.destination(config.destination, config.buildNumber);
       var assetsFolder = _.get(config, "stylesheets.destination") || "assets";
-      var stylesheetsFolder = path.join(formatFolder, assetsFolder);
+      var stylesheetsFolder = path.join(extras.destination, assetsFolder);
 
       // if the array exists
       if(stylesheets) {
@@ -105,7 +104,7 @@ Plugin.prototype = {
 
         // finish
         cssStream
-          .pipe(liquidLocals(extras.locals, formatFolder, stylesheetsFolder))
+          .pipe(liquidLocals(extras.locals, extras.destination, stylesheetsFolder))
           .pipe(vfs.dest(stylesheetsFolder))
           .on('finish', function() {
             callback(null, config, extras);

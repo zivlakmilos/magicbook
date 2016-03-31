@@ -24,7 +24,7 @@ var defaults = {
   "verbose" : true,
   "files" : "content/*.md",
   "destination" : "build/:build",
-  "plugins" : ["frontmatter", "liquid", "katex", "stylesheets", "html", "pdf"],
+  "plugins" : ["frontmatter", "liquid", "katex", "links", "stylesheets", "html", "pdf"],
   "liquid" : {
     "includes" : "includes"
   }
@@ -168,23 +168,23 @@ module.exports = function(jsonConfig) {
     rimraf(destination, function() {
 
       // hook: setup
-      helpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals }], function() {
+      helpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals, destination: destination }], function() {
 
         // create our stream
         var stream = vfs.src(config.files);
 
         // hook: load
-        helpers.callHook('load', plugins, [config, stream, {}], function(config, stream) {
+        helpers.callHook('load', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
           stream = stream.pipe(markdown(md));
 
-          helpers.callHook('convert', plugins, [config, stream, {}], function(config, stream) {
+          helpers.callHook('convert', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
             stream = stream.pipe(layouts(config, extraLocals));
 
-            helpers.callHook('layout', plugins, [config, stream, {}], function(config, stream) {
+            helpers.callHook('layout', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
-              helpers.callHook('finish', plugins, [config, stream, { destination: destination}], function(config, stream) {
+              helpers.callHook('finish', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
                 if(config.verbose) console.log(config.format + " finished.")
                 if(config.finish) {
