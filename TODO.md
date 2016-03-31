@@ -1,14 +1,13 @@
 ## MUST
 
-- UPGRADE NODE: Do a test that runs profiling and see what's taking up memory.  
-- Internal markdown links should have data-type xref
-- Figure out page numbers in in PDF links
-- Image support WITH resizing
-- Custom views
-- katex font files: "extraFiles" glob to transfer into a specific place
-- Add Epub and Mobi (with XHTML serialization with xmlserializer)
+- Image support with resizing
 - Add support for JS
-- Referencing a figure? Numbering figures?
 - Add next/prev functionality
-- body should have data-type book
-- footnotes should have data-type
+- Custom views
+- Add Epub and Mobi (with XHTML serialization with xmlserializer)
+- Referencing a figure? Numbering figures?
+- Markdown HTMLBook elements.
+  - body should have data-type book
+  - internal links should have data-type xref
+  - footnotes should have data-type footnote
+- katex should move files into destination. Easy to do within plugin.

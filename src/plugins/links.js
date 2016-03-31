@@ -18,6 +18,7 @@ Plugin.prototype = {
       var ids = {};
       var files = [];
 
+      // this is called for each file
       var onFile = function(file, enc, cb) {
 
         // create cheerio element
@@ -70,8 +71,7 @@ Plugin.prototype = {
             // add cheerio html back to file contents
             file.contents = new Buffer(file.$el.html());
 
-            // emit a data event with the file. I'm still not entirely sure how
-            // streams work, but I got this from gulp-order.
+            // emit a data event with the file.
             ending.push(file);
           }
         });

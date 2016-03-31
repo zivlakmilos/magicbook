@@ -77,6 +77,8 @@ If you choose to write in HTML, it's up to you whether you want to use HTMLBook 
 
 If you wish to link between files, you can simply use an anchor link (`<a href="#myid">My link</a>` or `[My link](#myid)`), while making sure that this ID exists in one of the files in the build. `magicbook` will automatically insert the filename in the formats that need it.
 
+If you want to insert page numbers in link text for print, it's [easy with Prince XML and CSS](http://www.princexml.com/doc/7.1/cross-references/).
+
 ## Configuration
 
 To specify configuration for your project, `magicbook` uses a file called `magicbook.json` in your project folder. When you run `magicbook build`, the configuration file will automatically be detected. If you wish to have a custom name and location for the configuration file, you can use the `--config` command line argument.
