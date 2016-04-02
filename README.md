@@ -115,9 +115,11 @@ Using an array, you can also specify each of the files you want to build.
 }
 ```
 
+*This setting is also available in the configuration for each build*, which you can read more about below.
+
 ## Builds
 
-You must add a `builds` array to your configuration that specifies your build settings. Here's an example with the bare minimum setting to build a website.
+You must add a `builds` array to your configuration that as a minimum defines the format of each build. Here's a simple example with the bare minimum configuration to build your book into a website.
 
 ```json
 {
@@ -127,39 +129,43 @@ You must add a `builds` array to your configuration that specifies your build se
 }
 ```
 
-Here's a slightly more advanced example, with two builds, and specific settings per build. You can read about these settings further down.
-
-```json
-{
-  "builds" : [
-    {
-      "format" : "pdf",
-      "layout" : "layouts/pdf.html",
-      "stylesheets" : {
-        "files" : ["stylesheets/pdf.scss"]
-      }
-    },
-    {
-      "format" : "html",
-      "layout" : "layouts/html.html",
-      "stylesheets" : {
-        "files" : ["stylesheets/html.scss"]
-      }
-    }
-  ]
-}
-```
-
-These are the built-in formats:
+`magicbook` has the following built-in formats:
 
 - `html` will save all source files as separate `.html` files as a static website.
 - `pdf` will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
 - `epub` TODO
 - `mobi` TODO
 
-Using the `builds` array, you can build a specific format several times. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
+The `builds` array is a very powerful concept, as it further allows you to specify specific settings for each build. For example, here's a book that uses a different introduction for the HTML and PDF builds.
 
-## Build destination
+```json
+{
+  "builds" : [
+    {
+      "format" : "pdf",
+      "files" : [
+        "content/print-introduction.md",
+        "content/chapter-1.md",
+        "content/chapter-2.md"
+      ]
+    },
+    {
+      "format" : "html",
+      "files" : [
+        "content/web-introduction.md",
+        "content/chapter-1.md",
+        "content/chapter-2.md"
+      ]
+    }
+  ]
+}
+```
+
+Almost all settings in `magicbook` can be specified as either a global setting or a build setting. Below, each setting will state *This setting is also available as a build setting* if this is true.
+
+Using the `builds` array, you can have several builds that uses the same format. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
+
+### Build destination folder
 
 `destination` specifies where to put the builds. Because you can have many builds, the default destination is `build/:build`, which will create a build folder within `build` for each build (`build/build1`, `build/build2`, etc).
 
@@ -171,16 +177,7 @@ You can change this setting in your configuration file.
 }
 ```
 
-You can also override the destination per format.
-
-```json
-{
-  "builds" : [{
-    "format" : "html",
-    "destination" : "my/custom/folder/html"
-  }]
-}
-```
+*This setting is also available as a build setting.*
 
 ## Internal links
 
@@ -206,6 +203,8 @@ or
 
 During the build process, `magicbook` will transfer all files located in `images` to the asset folder of each build and replace the image src attribute appropriately.
 
+### Source folder
+
 You can change the default image source folder in the configuration, which for the image tag above would make `magicbook` look for the image in `custom/folder/images/myimage.jpg`.
 
 ```json
@@ -216,18 +215,9 @@ You can change the default image source folder in the configuration, which for t
 }
 ```
 
-As always, you can override this per build.
+*This setting is also available as a build setting.*
 
-```json
-{
-  "builds" : [{
-    "format" : "html",
-    "images" : {
-      "source" : "custom/images/folder"
-    }
-  }]
-}
-```
+### Destination folder
 
 It is also possible to control where the images are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
 
@@ -239,20 +229,23 @@ It is also possible to control where the images are stored in the build. You can
 }
 ```
 
-As always, this configuration can be changed per build.
+*This setting is also available as a build setting.*
+
+### Digest
+
+The `digest` option will add a md5 checksum of the image content to the filename, to allow you to set long caching headers for a production website.
 
 ```json
 {
-  "builds" : [{
-    "format" : "html",
-    "images" : {
-      "destination" : "custom/assets/folder"
-    }
-  }]
+  "images" : {
+    "digest" : true
+  }
 }
 ```
 
-## Layout
+*This setting is also available as a build setting.*
+
+## Layouts
 
 Like most web frameworks, magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
 
@@ -275,18 +268,9 @@ To specify a layout to use, you can use the `layout` property in the JSON config
 }
 ```
 
-Like most other settings, you can set the layout for each format.
-
-```json
-{
-  "builds" : [{
-    "format" : "html",
-    "layout" : "layouts/website.html"
-  }]
-}
-```
-
 Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
+
+*This setting is also available as a build setting.*
 
 ## Liquid
 
@@ -304,31 +288,19 @@ It is also possible to use Liquid templating in your source files. By default, e
 - `config` is an object with all the configuration settings for the specific format.
 - `page` is an object with the YAML frontmatter variables from the particular file.
 
-Even though `magicbook` has a built-in views, it's possible to use Liquid includes. The default search location is in `/includes`, but you can customize this as a general setting or a build setting.
+Even though `magicbook` has a built-in views, it's possible to use Liquid includes. The default search location is in `/includes`, but you can easily change this.
 
 ```json
 {
   "liquid" : {
     "includes" : "my/include/folder"
-  },
-  "builds" : [{
-    "format" : "html",
-    "liquid" : {
-      "includes" : "my/other/include/folder"
-    }
-  }]
+  }
 }
 ```
 
 This makes it possible to either have different includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
 
-This functionality is in the `liquid` plugin, and it can be disabled using the `removePlugins` array.
-
-```json
-{
-  "removePlugins" : ["liquid"]
-}
-```
+*This setting is also available as a build setting.*
 
 ## YAML Frontmatter
 
@@ -357,15 +329,6 @@ This only works for the following configuration variables:
 - `layout`
 - `includes`
 
-This functionality is in the `frontmatter` plugin, and it can be disabled using the `removePlugins` array.
-
-```json
-{
-  "removePlugins" : ["frontmatter"]
-}
-```
-
-
 ## Stylesheets
 
 You can style all your builds using CSS or SCSS. The `stylesheets` configuration allows you to specify an array of `.css` or `.scss` files to include in the build. The following example shows a configuration file specifying two stylesheets to include in all builds.
@@ -381,22 +344,7 @@ You can style all your builds using CSS or SCSS. The `stylesheets` configuration
 }
 ```
 
-You can also override this for a particular build.
-
-```json
-{
-  "builds" : [{
-    "format" : "html",
-    "stylesheets" : {
-      "files" : [
-        "myhtmlstyles.css"
-      ]
-    }
-  }]
-}
-```
-
-You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liquid variable tag.
+You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liquid variable tag. This will insert each file as a separate `<link>` element.
 
 ```html
 <html>
@@ -411,6 +359,10 @@ You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liqu
 
 By using different files for each format, you can have a book that looks very different across formats. To share styles between the formats, you can use SCSS `@import`.
 
+*This setting is also available as a build setting.*
+
+### Destination
+
 It is also possible to control where these stylesheets are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
 
 ```json
@@ -421,7 +373,9 @@ It is also possible to control where these stylesheets are stored in the build. 
 }
 ```
 
-For each CSS file in the array, `magicbook` will add a `<link>` tag in the final format. If you're building a website for deployment, there's a number of built-in options you might consider.
+*This setting is also available as a build setting.*
+
+### Compress
 
 The `compress` property will remove whitespace from the CSS file, resulting in much smaller file sizes.
 
@@ -433,6 +387,10 @@ The `compress` property will remove whitespace from the CSS file, resulting in m
 }
 ```
 
+*This setting is also available as a build setting.*
+
+### Bundle
+
 The `bundle` option will combine all the files in the `stylesheets` array into a single CSS file in the output. This, combined with the `compress` option, is recommended to improve the loading speed of a production website. You can set it to `true` or the desired name of the bundle.
 
 ```json
@@ -442,6 +400,10 @@ The `bundle` option will combine all the files in the `stylesheets` array into a
   }
 }
 ```
+
+*This setting is also available as a build setting.*
+
+### Digest
 
 The `digest` option will add a the md5 checksum of the file content to the filename, to allow you to set long caching headers for a production website.
 
@@ -453,13 +415,8 @@ The `digest` option will add a the md5 checksum of the file content to the filen
 }
 ```
 
-This functionality is in the `stylesheets` plugin, and it can be disabled using the `removePlugins` array.
+*This setting is also available as a build setting.*
 
-```json
-{
-  "removePlugins" : ["stylesheets"]
-}
-```
 
 ## Math
 
@@ -477,17 +434,13 @@ $$
 
 The required JavaScript libraries will automatically be added to the build assets during the build process (TODO).
 
-This functionality is in the `katex` plugin, and it can be disabled using the `removePlugins` array.
-
-```json
-{
-  "removePlugins" : ["katex"]
-}
-```
-
 ## Plugins
 
-Almost all functionality in `magicbook` is written via plugins. It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
+Almost all functionality in `magicbook` is written via plugins. This makes it both possible to disable almost any functionality that you don't want, as well as easily adding new functionality in a custom plugin.
+
+### Adding plugins
+
+It's easy to write custom plugins for your book. You can place a file in your book repo and reference it in the plugins array. The following will try to load a file located at `plugins/myplugin.js` in the book folder.
 
 ```json
 {
@@ -505,7 +458,9 @@ You can also create plugins as NPM packages, simply using the name of the packag
 
 The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see the structure of a plugin. Using the `addPlugins` will add your custom plugins at the end of the plugin pipeline, after the built-in plugins. This setting is also available inside the `builds` array, so each build can have different plugins.
 
-If you want to remove native plugins, you can use the `removePlugins` property.
+### Removing plugins
+
+If you want to remove native plugins, you can use the `removePlugins` property. By using this property, you can disable almost all functionality in `magicbook`. Plugins are included based on their filenames, so you can easily figure out plugin names by looking at the [plugins source folder](https://github.com/magicbookproject/magicbook/tree/master/src/plugins).
 
 ```json
 {
@@ -513,15 +468,15 @@ If you want to remove native plugins, you can use the `removePlugins` property.
 }
 ```
 
-If you want complete control over all plugins and their order, you can use the `plugins` setting. This specifies the exact order of all plugins, and plugins not present in that array will be disabled. The following will completely disable all plugins in `magicbook`.
+### Resetting plugins
+
+If you want complete control over all plugins and their order, you can use the `plugins` setting. This specifies the exact order of all plugins, and plugins not present in the array will be disabled. The following will completely disable all plugins in `magicbook`.
 
 ```json
 {
   "plugins" : []
 }
 ```
-
-Take a look at the default plugins in `src/build.js` to see what's available.
 
 ## Command line
 
