@@ -8,7 +8,6 @@ var vfs = require('vinyl-fs');
 var through = require('through2');
 var MarkdownIt = require('markdown-it')
 var gutil = require('gulp-util');
-var rimraf = require('rimraf');
 var tinyliquid = require('tinyliquid');
 var sass = require('node-sass');
 var mkdirp = require('mkdirp');
@@ -172,34 +171,30 @@ module.exports = function(jsonConfig) {
     // in liquid.
     var extraLocals = {};
 
-    // delete everything in build folder
-    rimraf(destination, function() {
+    // hook: setup
+    helpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals, destination: destination }], function() {
 
-      // hook: setup
-      helpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals, destination: destination }], function() {
+      // create our stream
+      var stream = vfs.src(config.files);
 
-        // create our stream
-        var stream = vfs.src(config.files);
+      // hook: load
+      helpers.callHook('load', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
-        // hook: load
-        helpers.callHook('load', plugins, [config, stream, { destination: destination }], function(config, stream) {
+        stream = stream.pipe(markdown(md));
 
-          stream = stream.pipe(markdown(md));
+        helpers.callHook('convert', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
-          helpers.callHook('convert', plugins, [config, stream, { destination: destination }], function(config, stream) {
+          stream = stream.pipe(layouts(config, extraLocals));
 
-            stream = stream.pipe(layouts(config, extraLocals));
+          helpers.callHook('layout', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
-            helpers.callHook('layout', plugins, [config, stream, { destination: destination }], function(config, stream) {
+            helpers.callHook('finish', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
-              helpers.callHook('finish', plugins, [config, stream, { destination: destination }], function(config, stream) {
+              if(config.verbose) console.log(config.format + " finished.")
+              if(config.finish) {
+                config.finish(config.format, null);
+              }
 
-                if(config.verbose) console.log(config.format + " finished.")
-                if(config.finish) {
-                  config.finish(config.format, null);
-                }
-
-              });
             });
           });
         });

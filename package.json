@@ -29,7 +29,6 @@
     "prince": "^1.1.7",
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
-    "rimraf": "^2.5.2",
     "through2": "^2.0.1",
     "tinyliquid": "^0.2.31",
     "vinyl-fs": "^2.4.2",
