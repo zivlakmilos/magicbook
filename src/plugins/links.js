@@ -7,7 +7,7 @@ var Plugin = function(){};
 Plugin.prototype = {
 
   hooks: {
-    layout: function(config, stream, extras, cb) {
+    convert: function(config, stream, extras, cb) {
 
       // don't do anything for PDF
       if(config.format == "pdf") {
