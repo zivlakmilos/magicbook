@@ -1,8 +1,6 @@
 ## MUST
 
-- LINKS SHOULD WORK ON CONVERT
-- Finish image support
-- Add image README and example
+- Image resize support
 - Add support for JS
 - Add next/prev functionality
 - Custom views

@@ -12,11 +12,16 @@ var Plugin = function(){};
 // old -> image names.
 function mapImages(imageMap, srcFolder, destFolder) {
 
+  // find the absolute path to source images
   var srcAbsolute = path.join(process.cwd(), srcFolder);
 
+  // for each file
   return through.obj(function(file, enc, cb) {
-    var relativeFrom = path.relative(srcAbsolute, file.path);
-    var relativeTo = path.join(destFolder, relativeFrom);
+
+    // find the relative path to image. If any pipe has changed the filename,
+    // it's the original is set in orgPath, so we look at that first.
+    var relativeFrom = path.relative(srcAbsolute, file.orgPath || file.path);
+    var relativeTo = path.join(destFolder, path.relative(srcAbsolute, file.path));
     imageMap[relativeFrom] = relativeTo;
     cb(null, file)
   });
@@ -75,12 +80,15 @@ Plugin.prototype = {
       }
 
       // load all files in the source folder
-      var imagesStream = vfs.src(srcFolder + "/**/*.*")
+      var imagesStream = vfs.src(srcFolder + "/**/*.*");
 
-        // todo: digest pipe
+        // digest
+        if(_.get(config, "images.digest")) {
+          imagesStream = imagesStream.pipe(helpers.digest());
+        }
 
         // save map of old and new file names
-        .pipe(mapImages(this.imageMap, srcFolder, destFolder))
+        imagesStream.pipe(mapImages(this.imageMap, srcFolder, destFolder))
 
         // vinyl-fs dest automatically determines whether a file
         // should be updated or not, based on the mtime timestamp.

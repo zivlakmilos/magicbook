@@ -3,9 +3,14 @@ var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
+var through = require('through2');
 var beautify = require('js-beautify').html;
 var parse5 = require('parse5');
 var dom = parse5.treeAdapters.default;
+var revHash = require('rev-hash');
+var revPath = require('rev-path');
+var modifyFilename = require('modify-filename');
+
 
 var headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 var newHeadings = ['h1', 'h1', 'h2', 'h3', 'h4', 'h5'];
@@ -215,6 +220,23 @@ var helpers = {
     });
 
     return stream;
+  },
+
+  // through2 function to add checksum of file content to filename
+  // Returns: Vinyl filestream
+  digest: function() {
+    return through.obj(function(file, enc, cb) {
+      file.orgPath = file.path;
+      file.revHash = revHash(file.contents);
+      file.path = modifyFilename(file.path, function(filename, extension) {
+  		  var extIndex = filename.indexOf('.');
+  		  filename = extIndex === -1 ?
+  			  revPath(filename, file.revHash) :
+  			  revPath(filename.slice(0, extIndex), file.revHash) + filename.slice(extIndex);
+        return filename + extension;
+  	  });
+      cb(null, file);
+    });
   },
 
   // Function to make HTMLBook sections from heading hierachy in a markdown-it
