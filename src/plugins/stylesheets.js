@@ -75,11 +75,12 @@ Plugin.prototype = {
 
       // get the stylesheets needed for this format
       var stylesheets = _.get(config, "stylesheets.files");
-      var assetsFolder = _.get(config, "stylesheets.destination") || "assets";
-      var stylesheetsFolder = path.join(extras.destination, assetsFolder);
 
       // if the array exists
       if(stylesheets) {
+
+        var assetsFolder = config.stylesheets.destination;
+        var stylesheetsFolder = path.join(extras.destination, assetsFolder);
 
         // gather the files
         var cssStream = vfs.src(stylesheets)

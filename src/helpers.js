@@ -56,6 +56,31 @@ var helpers = {
 
   },
 
+  // Fast way to copy a file in Node. Taken from here:
+  copyFile : function(source, target, cb) {
+    var cbCalled = false;
+
+    var rd = fs.createReadStream(source);
+    rd.on("error", function(err) {
+      done(err);
+    });
+    var wr = fs.createWriteStream(target);
+    wr.on("error", function(err) {
+      done(err);
+    });
+    wr.on("close", function(ex) {
+      done();
+    });
+    rd.pipe(wr);
+
+    function done(err) {
+      if (!cbCalled) {
+        cb(err);
+        cbCalled = true;
+      }
+    }
+  },
+
   createFile: function(filename, content, cb) {
     mkdirp(path.dirname(filename), function(err) {
       if(err) return console.log("Error creating folder", err);

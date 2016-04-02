@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "test": "jasmine",
-    "profile" : "cd example && node --prof ../src/index.js build && node --prof-process \"$(ls isolate*.log)\" > processed.txt && atom processed.txt"
+    "profile": "cd example && node --prof ../src/index.js build && node --prof-process \"$(ls isolate*.log)\" > processed.txt && atom processed.txt"
   },
   "dependencies": {
     "async": "^1.5.2",

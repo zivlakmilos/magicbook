@@ -1,6 +1,7 @@
 ## MUST
 
 - Image support with resizing
+- Add image README and example
 - Add support for JS
 - Add next/prev functionality
 - Custom views
