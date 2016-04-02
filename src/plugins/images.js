@@ -8,6 +8,8 @@ var cheerio = require('cheerio');
 
 var Plugin = function(){};
 
+// through2 pipe function that creates a hasmap of
+// old -> image names.
 function mapImages(imageMap, srcFolder, destFolder) {
 
   var srcAbsolute = path.join(process.cwd(), srcFolder);
@@ -20,6 +22,8 @@ function mapImages(imageMap, srcFolder, destFolder) {
   });
 }
 
+// through2 pipe function that replaces images src attributes
+// based on values in hashmap.
 function replaceSrc(imageMap) {
   return through.obj(function(file, enc, cb) {
 
@@ -30,20 +34,25 @@ function replaceSrc(imageMap) {
 
     // loop over each image
     $('img').each(function(i, el) {
+
+      // convert el to cheerio el
       var jel = $(this)
       var src = jel.attr('src');
+
+      // if this image exists in source folder,
+      // replace src with new source
       if(imageMap[src]) {
         changed = true;
         jel.attr('src', imageMap[src]);
       }
     });
 
+    // only if we find an image, replace contents in file
     if(changed) {
       file.contents = new Buffer($.html());
     }
 
     cb(null, file);
-
   });
 }
 
