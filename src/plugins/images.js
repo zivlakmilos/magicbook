@@ -13,10 +13,10 @@ Plugin.prototype = {
 
     setup: function(config, extras, callback) {
 
-      var srcFolder = config.images.sourceFolder;
+      var srcFolder = config.images.source;
       var destFolder = path.join(extras.destination, _.get(config, "images.destination") || "assets");
 
-      // if sourceFolder does not exist, return
+      // if source does not exist, return
       if(!fs.existsSync(srcFolder)) {
         callback(null, config, extras);
         return;

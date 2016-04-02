@@ -29,7 +29,7 @@ var defaults = {
     "includes" : "includes"
   },
   "images" : {
-    "sourceFolder" : "images",
+    "source" : "images",
     "destination" : "assets"
   },
   "stylesheets" : {
@@ -141,8 +141,9 @@ module.exports = function(jsonConfig) {
     // make a config object that consists of the build config,
     // with the main config and defaults merged on top of it.
     // We remove the "builds" property and add the build number.
-    var config = build;
-    _.defaults(config, jsonConfig, defaults);
+    var config = {};
+    // _.defaults(config, jsonConfig, defaults);
+    _.merge(config, defaults, jsonConfig, build);
     config.buildNumber = i + 1;
     delete config.builds;
 

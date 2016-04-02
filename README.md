@@ -11,6 +11,7 @@ This project is for you, if:
 - You want to use JavaScript to add interactivity to digital formats
 - You want the ability to define custom elements that behave differently in every format
 - You want to use a command-line tool for all of this
+- You want that command-line tool be be written in Node-only. No more XSLT.
 
 Although a small number of open source publishing frameworks already exists, it's hard to find any that are flexible enough to create modern, interactive books for the web while also doing print-ready PDF export.
 
