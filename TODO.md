@@ -1,10 +1,12 @@
 ## MUST
 
-- Image support with resizing
+- LINKS SHOULD WORK ON CONVERT
+- Finish image support
 - Add image README and example
 - Add support for JS
 - Add next/prev functionality
 - Custom views
+- Table of contents
 - Add Epub and Mobi (with XHTML serialization with xmlserializer)
 - Referencing a figure? Numbering figures?
 - Markdown HTMLBook elements.
