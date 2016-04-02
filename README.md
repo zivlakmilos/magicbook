@@ -179,7 +179,7 @@ You can change this setting in your configuration file.
 
 *This setting is also available as a build setting.*
 
-## Internal links
+## Links
 
 If you wish to link internally between files, you can simply use an anchor link (`<a href="#myid">My link</a>` or `[My link](#myid)`), while making sure that this ID exists in one of the files in the build. `magicbook` will automatically insert the filename in the formats that need it.
 
