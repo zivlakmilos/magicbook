@@ -205,7 +205,7 @@ During the build process, `magicbook` will transfer all files located in `images
 
 ### Source folder
 
-You can change the default image source folder in the configuration, which for the image tag above would make `magicbook` look for the image in `custom/folder/images/myimage.jpg`.
+You can change the default image source folder in the configuration, which for the image tag above would make `magicbook` look for the image in `custom/images/folder/myimage.jpg`.
 
 ```json
 {
