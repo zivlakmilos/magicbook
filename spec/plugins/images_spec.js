@@ -115,14 +115,14 @@ describe("Images plugin", function() {
       });
     });
   });
-  //
-  // describe("Digest", function() {
-  //   it("should add digest to filename");
-  //   it("should use digest in image src");
-  // });
-  //
-  // describe("Resize", function() {
-  //   it("should resize images using sizes array");
-  // });
+  
+  describe("Digest", function() {
+    it("should add digest to filename");
+    it("should use digest in image src");
+  });
+
+  describe("Resize", function() {
+    it("should resize images using sizes array");
+  });
 
 });

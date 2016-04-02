@@ -38,11 +38,19 @@ magicbook build
 
 You now have a `myproject/build` directory with two builds: a website and a PDF. This is of course a very basic setup. Consult the rest of this README for all the available functionality.
 
-## Writing
+## Configuration
 
-You can write your book in `.md`, `.html`, or both. As HTML doesn't define book-specific markup, we use a very simple spec called [HTMLBook](http://oreillymedia.github.io/HTMLBook) to define various elements in the book. It's very easy to learn, and it introduces no new HTML tags.
+To specify configuration for your project, `magicbook` uses a file called `magicbook.json` in your project folder. When you run `magicbook build`, the configuration file will automatically be detected. If you wish to have a custom name and location for the configuration file, you can use the `--config` command line argument.
 
-### Using Markdown
+```bash
+magicbook build --config=myfolder/myconfig.json
+```
+
+## Source files
+
+You can write your book in `.md`, `.html`, or both. `magicbook` uses a very simple layer on top of HTML5 called [HTMLBook](http://oreillymedia.github.io/HTMLBook) to define the various elements in a book. This mostly means using a few `data-type` attributes to specify chapters and sections, and it's very easy to learn. It is also what makes it possible `magicbook` to do its magic when generating table of contents, etc.
+
+### Writing in Markdown
 
 If you chose to write your book in Markdown, `magicbook` will automatically convert your markdown to HTMLBook. A simple file like the following...
 
@@ -68,27 +76,11 @@ If you chose to write your book in Markdown, `magicbook` will automatically conv
 </section>
 ```
 
-This gives you a common way to style your book with CSS across formats.
+### Writing in HTML
 
-### Using HTML
+If you choose to write in HTML, you will need to make sure that you're using the HTMLBook `data-type` attributes. `magicbook` will not break if you don't use them, but it won't be possible to generate a table of contents, etc.
 
-If you choose to write in HTML, it's up to you whether you want to use HTMLBook or not. You can write your entire book using just HTML5, and use CSS to style your markup.
-
-### Links
-
-If you wish to link between files, you can simply use an anchor link (`<a href="#myid">My link</a>` or `[My link](#myid)`), while making sure that this ID exists in one of the files in the build. `magicbook` will automatically insert the filename in the formats that need it.
-
-If you want to insert page numbers in link text for print, it's [easy with Prince XML and CSS](http://www.princexml.com/doc/7.1/cross-references/).
-
-## Configuration
-
-To specify configuration for your project, `magicbook` uses a file called `magicbook.json` in your project folder. When you run `magicbook build`, the configuration file will automatically be detected. If you wish to have a custom name and location for the configuration file, you can use the `--config` command line argument.
-
-```bash
-magicbook build --config=myfolder/myconfig.json
-```
-
-## Source files
+### Building source files
 
 You can specify the files to build by adding a `files` array to your `magicbook.json` file. If you do not have a `files` array, it will look for all markdown files in `content/*.md`.
 
@@ -186,6 +178,76 @@ You can also override the destination per format.
   "builds" : [{
     "format" : "html",
     "destination" : "my/custom/folder/html"
+  }]
+}
+```
+
+## Internal links
+
+If you wish to link internally between files, you can simply use an anchor link (`<a href="#myid">My link</a>` or `[My link](#myid)`), while making sure that this ID exists in one of the files in the build. `magicbook` will automatically insert the filename in the formats that need it.
+
+If you want to insert page numbers in link text for print, it's [easy with Prince XML and CSS](http://www.princexml.com/doc/7.1/cross-references/).
+
+## Images
+
+When you want to insert an image, simply create a folder called `images` in your book, save your image into this folder, and create an image tag using the name of your image.
+
+For an image saved to `images/myimage.jpg`, the following would be the appropriate markup.
+
+```md
+![This is an image](myimage.jpg)
+```
+
+or
+
+```html
+<img src="myimage.jpg" alt="This is an image" />
+```
+
+During the build process, `magicbook` will transfer all files located in `images` to the asset folder of each build and replace the image src attribute appropriately.
+
+You can change the default image source folder in the configuration, which for the image tag above would make `magicbook` look for the image in `custom/folder/images/myimage.jpg`.
+
+```json
+{
+  "images" : {
+    "source" : "custom/images/folder"
+  }
+}
+```
+
+As always, you can override this per build.
+
+```json
+{
+  "builds" : [{
+    "format" : "html",
+    "images" : {
+      "source" : "custom/images/folder"
+    }
+  }]
+}
+```
+
+It is also possible to control where the images are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
+
+```json
+{
+  "images" : {
+    "destination" : "custom/assets/folder"
+  }
+}
+```
+
+As always, this configuration can be changed per build.
+
+```json
+{
+  "builds" : [{
+    "format" : "html",
+    "images" : {
+      "destination" : "custom/assets/folder"
+    }
   }]
 }
 ```
@@ -349,7 +411,7 @@ You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liqu
 
 By using different files for each format, you can have a book that looks very different across formats. To share styles between the formats, you can use SCSS `@import`.
 
-It is also possible to control where these stylesheets are stored. You can specify a custom destination folder by using the `destination` property. It defaults to `/assets`.
+It is also possible to control where these stylesheets are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
 
 ```json
 {
