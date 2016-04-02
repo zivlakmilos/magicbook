@@ -118,21 +118,21 @@ describe("Images plugin", function() {
 
   describe("Digest", function() {
 
-    // it("should add digest to filename", function(done) {
-    //   var uid = triggerBuild({
-    //     files: "spec/support/book/content/images.md",
-    //     builds: [{ format: "html" }],
-    //     images: {
-    //       source: "spec/support/book/images",
-    //       digest: true
-    //     },
-    //     finish: function() {
-    //       expect(buildPath(uid, "build1/assets/bruce.jpg")).not.toExist();
-    //       expect(buildPath(uid, "build1/assets/bruce-d83101cb2d.jpg")).toExist();
-    //       done();
-    //     }
-    //   });
-    // });
+    it("should add digest to filename", function(done) {
+      var uid = triggerBuild({
+        files: "spec/support/book/content/images.md",
+        builds: [{ format: "html" }],
+        images: {
+          source: "spec/support/book/images",
+          digest: true
+        },
+        finish: function() {
+          expect(buildPath(uid, "build1/assets/bruce.jpg")).not.toExist();
+          expect(buildPath(uid, "build1/assets/bruce-d83101cb2d.jpg")).toExist();
+          done();
+        }
+      });
+    });
 
     it("should replace src with digested name", function(done) {
       var uid = triggerBuild({
