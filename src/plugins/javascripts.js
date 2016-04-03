@@ -47,11 +47,11 @@ Plugin.prototype = {
         if(_.get(config, "javascripts.compress")) {
           jsStream = jsStream.pipe(uglify());
         }
-        //
-        // // digest
-        // if(_.get(config, "javascripts.digest")) {
-        //   jsStream = jsStream.pipe(helpers.digest());
-        // }
+
+        // digest
+        if(_.get(config, "javascripts.digest")) {
+          jsStream = jsStream.pipe(helpers.digest());
+        }
 
         // finish
         jsStream

@@ -35,7 +35,7 @@ describe("JavaScripts plugin", function() {
     });
   });
 
-  it("should compress stylesheets", function(done) {
+  it("should compress javascripts", function(done) {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
       javascripts: {
@@ -50,31 +50,31 @@ describe("JavaScripts plugin", function() {
       }
     });
   });
-  //
-  // it("should digest stylesheets", function(done) {
+
+  it("should digest javascripts", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      javascripts: {
+        digest: true,
+        files: [
+          "spec/support/book/javascripts/scripts.js",
+        ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/assets/scripts-b71c3f4f5d.css")).toExist();
+        done();
+      }
+    });
+  });
+
+  // it("should bundle javascripts with default name", function(done) {
   //   var uid = triggerBuild({
   //     builds: [{ format: "html" }],
-  //     stylesheets: {
-  //       digest: true,
-  //       files: [
-  //         "spec/support/book/stylesheets/scripts.js",
-  //       ]
-  //     },
-  //     finish: function() {
-  //       expect(buildPath(uid, "build1/assets/styles-b71c3f4f5d.css")).toExist();
-  //       done();
-  //     }
-  //   });
-  // });
-  //
-  // it("should bundle stylesheets with default name", function(done) {
-  //   var uid = triggerBuild({
-  //     builds: [{ format: "html" }],
-  //     stylesheets: {
+  //     javascripts: {
   //       bundle: true,
   //       files: [
-  //         "spec/support/book/stylesheets/scripts.js",
-  //         "spec/support/book/stylesheets/otherstyles.scss"
+  //         "spec/support/book/javascripts/scripts.js",
+  //         "spec/support/book/javascripts/otherstyles.scss"
   //       ]
   //     },
   //     finish: function() {
@@ -85,14 +85,14 @@ describe("JavaScripts plugin", function() {
   //   });
   // });
   //
-  // it("should bundle stylesheets with custom name", function(done) {
+  // it("should bundle javascripts with custom name", function(done) {
   //   var uid = triggerBuild({
   //     builds: [{ format: "html" }],
-  //     stylesheets: {
+  //     javascripts: {
   //       bundle: "mybundle.css",
   //       files: [
-  //         "spec/support/book/stylesheets/scripts.js",
-  //         "spec/support/book/stylesheets/otherstyles.scss"
+  //         "spec/support/book/javascripts/scripts.js",
+  //         "spec/support/book/javascripts/otherstyles.scss"
   //       ]
   //     },
   //     finish: function() {
@@ -102,14 +102,14 @@ describe("JavaScripts plugin", function() {
   //   });
   // });
   //
-  // it("should insert stylesheets in layout", function(done) {
+  // it("should insert javascripts in layout", function(done) {
   //   var uid = triggerBuild({
   //     builds: [{ format: "html" }],
   //     layout: "spec/support/book/layouts/assets.html",
-  //     stylesheets: {
+  //     javascripts: {
   //       files: [
-  //         "spec/support/book/stylesheets/scripts.js",
-  //         "spec/support/book/stylesheets/otherstyles.scss"
+  //         "spec/support/book/javascripts/scripts.js",
+  //         "spec/support/book/javascripts/otherstyles.scss"
   //       ]
   //     },
   //     finish: function() {
