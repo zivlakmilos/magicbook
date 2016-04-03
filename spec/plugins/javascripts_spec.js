@@ -85,40 +85,40 @@ describe("JavaScripts plugin", function() {
       }
     });
   });
-  //
-  // it("should bundle javascripts with custom name", function(done) {
-  //   var uid = triggerBuild({
-  //     builds: [{ format: "html" }],
-  //     javascripts: {
-  //       bundle: "mybundle.css",
-  //       files: [
-  //         "spec/support/book/javascripts/scripts.js",
-  //         "spec/support/book/javascripts/otherscripts.js"
-  //       ]
-  //     },
-  //     finish: function() {
-  //       expect(buildPath(uid, "build1/assets/mybundle.css")).toExist();
-  //       done();
-  //     }
-  //   });
-  // });
-  //
-  // it("should insert javascripts in layout", function(done) {
-  //   var uid = triggerBuild({
-  //     builds: [{ format: "html" }],
-  //     layout: "spec/support/book/layouts/assets.html",
-  //     javascripts: {
-  //       files: [
-  //         "spec/support/book/javascripts/scripts.js",
-  //         "spec/support/book/javascripts/otherscripts.js"
-  //       ]
-  //     },
-  //     finish: function() {
-  //       expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/scripts.js\">");
-  //       expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/otherscripts.js\">");
-  //       done();
-  //     }
-  //   });
-  // });
+
+  it("should bundle javascripts with custom name", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      javascripts: {
+        bundle: "mybundle.js",
+        files: [
+          "spec/support/book/javascripts/scripts.js",
+          "spec/support/book/javascripts/otherscripts.js"
+        ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/assets/mybundle.js")).toExist();
+        done();
+      }
+    });
+  });
+
+  it("should insert javascripts in layout", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      layout: "spec/support/book/layouts/assets.html",
+      javascripts: {
+        files: [
+          "spec/support/book/javascripts/scripts.js",
+          "spec/support/book/javascripts/otherscripts.js"
+        ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<script src=\"assets/scripts.js\"></script>");
+        expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<script src=\"assets/otherscripts.js\"></script>");
+        done();
+      }
+    });
+  });
 
 });

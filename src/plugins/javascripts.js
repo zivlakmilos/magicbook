@@ -7,15 +7,15 @@ var path = require('path');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 
-// function liquidLocals(locals, destination, javascriptsFolder) {
-//   locals.javascripts = "";
-//   return through.obj(function(file, enc, cb) {
-//     var relativeFolder = path.relative(destination, javascriptsFolder);
-//     var relativeFile = path.join(relativeFolder, path.basename(file.path));
-//     locals.javascripts += "<link rel=\"stylesheet\" href=\""+ relativeFile +"\">\n"
-//     cb(null, file);
-//   });
-// }
+function liquidLocals(locals, destination, javascriptsFolder) {
+  locals.javascripts = "";
+  return through.obj(function(file, enc, cb) {
+    var relativeFolder = path.relative(destination, javascriptsFolder);
+    var relativeFile = path.join(relativeFolder, path.basename(file.path));
+    locals.javascripts += "<script src=\""+ relativeFile +"\"></script>\n"
+    cb(null, file);
+  });
+}
 
 var Plugin = function(){}
 
@@ -56,7 +56,7 @@ Plugin.prototype = {
 
         // finish
         jsStream
-          //.pipe(liquidLocals(extras.locals, extras.destination, javascriptsFolder))
+          .pipe(liquidLocals(extras.locals, extras.destination, javascriptsFolder))
           .pipe(vfs.dest(javascriptsFolder))
           .on('finish', function() {
             callback(null, config, extras);
