@@ -360,7 +360,7 @@ You can style all your builds using CSS or SCSS. The `stylesheets` configuration
   "stylesheets" : {
     "files" : [
       "css/first.css",
-      "css/first.scss",
+      "css/second.scss",
     ]
   }
 }
@@ -427,11 +427,99 @@ The `bundle` option will combine all the files in the `stylesheets` array into a
 
 ### Digest
 
-The `digest` option will add a the md5 checksum of the file content to the filename, to allow you to set long caching headers for a production website.
+The `digest` option will add the md5 checksum of the file content to the filename, to allow you to set long caching headers for a production website.
 
 ```json
 {
   "stylesheets" : {
+    "digest" : true
+  }
+}
+```
+
+*This setting is also available as a build setting.*
+
+## JavaScripts
+
+The `javascripts` configuration allows you to specify an array of `.js` files to include in the build. The following example shows a configuration file specifying two JavaScript files to include in all builds.
+
+```json
+{
+  "javascripts" : {
+    "files" : [
+      "css/first.js",
+      "css/second.js",
+    ]
+  }
+}
+```
+
+You can insert links to the JavaScript files in the layout using the `{{ javascripts }}` liquid variable tag. This will insert each file as a separate `<script>` element.
+
+```html
+<html>
+  <head>
+    {{ stylesheets }}
+  </head>
+  <body>
+    {{ content }}
+  </body>
+</html>
+```
+
+As this is available as a build setting, you can easily add JavaScript files to some builds, while keeping other builds static.
+
+*This setting is also available as a build setting.*
+
+### Destination
+
+It is also possible to control where these JavaScript files are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
+
+```json
+{
+  "javascripts" : {
+    "destination" : "customfolder"
+  }
+}
+```
+
+*This setting is also available as a build setting.*
+
+### Compress
+
+The `compress` property will remove whitespace from the JavaScript files using UglifyJS, resulting in much smaller file sizes.
+
+```json
+{
+  "javascripts" : {
+    "compress" : true
+  }
+}
+```
+
+*This setting is also available as a build setting.*
+
+### Bundle
+
+The `bundle` option will combine all the files in the `javascripts` array into a single JS file in the output. This, combined with the `compress` option, is recommended to improve the loading speed of a production website. You can set it to `true` or the desired name of the bundle.
+
+```json
+{
+  "javascripts" : {
+    "bundle" : "mybundle.js"
+  }
+}
+```
+
+*This setting is also available as a build setting.*
+
+### Digest
+
+The `digest` option will add the md5 checksum of the file content to the filename, to allow you to set long caching headers for a production website.
+
+```json
+{
+  "javascripts" : {
     "digest" : true
   }
 }
