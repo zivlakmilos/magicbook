@@ -274,21 +274,43 @@ Layouts support the use of liquid includes (even when the `liquid` plugin has be
 
 ## Liquid
 
-It is also possible to use Liquid templating in your source files. By default, each file will receive an object that looks like the following.
+It is also possible to use Liquid templating in your source files. By default, each file has access to the following variables:
 
-```json
-{
-  "format" : "",
-  "config" : {},
-  "page" : {}
-}
-```
-
-- `format` is a string with the name of the format. This can be used to show or hide specific markup in each format.
+- `format` is a string with the name of the build format.
 - `config` is an object with all the configuration settings for the specific format.
 - `page` is an object with the YAML frontmatter variables from the particular file.
 
-Even though `magicbook` has a built-in views, it's possible to use Liquid includes. The default search location is in `/includes`, but you can easily change this.
+Using these variables, you can create books that have different markup in the different formats. Here's a simple file example.
+
+```md
+{% if format == 'pdf' %}
+  Here's some text for the PDF
+{% else %}
+  Here's some text for all the other formats
+{% endif %}
+```
+
+### Includes
+
+You can use Liquid includes to re-use the same markup without copy/pasting. By default, `magicbook` will search for includes in the `includes` folder, so without any configuration settings, you can create a file in `includes/myview.html` that looks like this:
+
+```html
+<p>This is my include</p>
+```
+
+... and use the include in any files like this:
+
+```md
+{% include myview %}
+```
+
+If you want to pass variables to the include, you can add an attribute list to the `include` command, and those variables will be available in the include in `include.VARIABLENAME`.
+
+```md
+{% include myview onevar="This is one variable" anothervar="This is another variable" %}
+```
+
+You can change where `magicbook` looks for includes with the `includes` configuration setting.
 
 ```json
 {
