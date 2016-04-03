@@ -1,10 +1,9 @@
 ## MUST
 
-- Image resize support
-- Add support for JS
+- JavaScript support
 - Add next/prev functionality
-- Custom views
 - Table of contents
+- Image resize support
 - Add Epub and Mobi (with XHTML serialization with xmlserializer)
 - Referencing a figure? Numbering figures?
 - Markdown HTMLBook elements.
