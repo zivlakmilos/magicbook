@@ -8,12 +8,12 @@ describe("JavaScripts plugin", function() {
       javascripts: {
         files: [
           "spec/support/book/javascripts/scripts.js",
-          "spec/support/book/javascripts/modulescripts.js",
+          "spec/support/book/javascripts/otherscripts.js",
         ]
       },
       finish: function() {
         expect(buildPath(uid, "build1/assets/scripts.js")).toHaveContent("console.log('scripts')");
-        expect(buildPath(uid, "build1/assets/modulescripts.js")).toHaveContent("console.log('modulescripts')");
+        expect(buildPath(uid, "build1/assets/otherscripts.js")).toHaveContent("console.log('otherscripts')");
         done();
       }
     });
@@ -61,29 +61,30 @@ describe("JavaScripts plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "build1/assets/scripts-b71c3f4f5d.css")).toExist();
+        expect(buildPath(uid, "build1/assets/scripts.js")).not.toExist();
+        expect(buildPath(uid, "build1/assets/scripts-13efbd017f.js")).toExist();
         done();
       }
     });
   });
 
-  // it("should bundle javascripts with default name", function(done) {
-  //   var uid = triggerBuild({
-  //     builds: [{ format: "html" }],
-  //     javascripts: {
-  //       bundle: true,
-  //       files: [
-  //         "spec/support/book/javascripts/scripts.js",
-  //         "spec/support/book/javascripts/otherstyles.scss"
-  //       ]
-  //     },
-  //     finish: function() {
-  //       expect(buildPath(uid, "build1/assets/bundle.css")).toHaveContent("color: red;");
-  //       expect(buildPath(uid, "build1/assets/bundle.css")).toHaveContent("color: green;");
-  //       done();
-  //     }
-  //   });
-  // });
+  it("should bundle javascripts with default name", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      javascripts: {
+        bundle: true,
+        files: [
+          "spec/support/book/javascripts/scripts.js",
+          "spec/support/book/javascripts/otherscripts.js"
+        ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/assets/bundle.js")).toHaveContent("console.log('scripts')");
+        expect(buildPath(uid, "build1/assets/bundle.js")).toHaveContent("console.log('otherscripts')");
+        done();
+      }
+    });
+  });
   //
   // it("should bundle javascripts with custom name", function(done) {
   //   var uid = triggerBuild({
@@ -92,7 +93,7 @@ describe("JavaScripts plugin", function() {
   //       bundle: "mybundle.css",
   //       files: [
   //         "spec/support/book/javascripts/scripts.js",
-  //         "spec/support/book/javascripts/otherstyles.scss"
+  //         "spec/support/book/javascripts/otherscripts.js"
   //       ]
   //     },
   //     finish: function() {
@@ -109,7 +110,7 @@ describe("JavaScripts plugin", function() {
   //     javascripts: {
   //       files: [
   //         "spec/support/book/javascripts/scripts.js",
-  //         "spec/support/book/javascripts/otherstyles.scss"
+  //         "spec/support/book/javascripts/otherscripts.js"
   //       ]
   //     },
   //     finish: function() {

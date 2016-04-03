@@ -59,6 +59,7 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
+        expect(buildPath(uid, "build1/assets/styles.css")).not.toExist();
         expect(buildPath(uid, "build1/assets/styles-b71c3f4f5d.css")).toExist();
         done();
       }

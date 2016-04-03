@@ -6,7 +6,7 @@ var helpers = require('../helpers');
 var path = require('path');
 var sass = require('node-sass');
 var CleanCSS = require('clean-css');
-var concatCss = require('gulp-concat-css');
+var concat = require('gulp-concat');
 
 // through2 function to remove whitespace from CSS files
 // Returns: Vinyl filestream
@@ -70,7 +70,7 @@ Plugin.prototype = {
         var bundle = _.get(config, "stylesheets.bundle");
         if(bundle) {
           var filename = _.isString(bundle) ? bundle : "bundle.css"
-          cssStream = cssStream.pipe(concatCss(filename));
+          cssStream = cssStream.pipe(concat(filename));
         }
 
         // compress

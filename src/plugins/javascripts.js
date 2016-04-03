@@ -5,6 +5,7 @@ var through = require('through2');
 var helpers = require('../helpers');
 var path = require('path');
 var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
 
 // function liquidLocals(locals, destination, javascriptsFolder) {
 //   locals.javascripts = "";
@@ -37,12 +38,12 @@ Plugin.prototype = {
         var jsStream = vfs.src(javascripts);
 
         // bundle
-        // var bundle = _.get(config, "javascripts.bundle");
-        // if(bundle) {
-        //   var filename = _.isString(bundle) ? bundle : "bundle.css"
-        //   jsStream = jsStream.pipe(concatCss(filename));
-        // }
-        //
+        var bundle = _.get(config, "javascripts.bundle");
+        if(bundle) {
+          var filename = _.isString(bundle) ? bundle : "bundle.js"
+          jsStream = jsStream.pipe(concat(filename));
+        }
+
         // compress
         if(_.get(config, "javascripts.compress")) {
           jsStream = jsStream.pipe(uglify());
