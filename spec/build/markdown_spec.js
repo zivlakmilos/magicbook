@@ -14,10 +14,10 @@ describe("Markdown", function() {
 
   it("should make HTMLBook sections from heading hierarchy", function(done) {
     var uid = triggerBuild({
-      files: "spec/support/book/content/htmlbook.md",
+      files: "spec/support/book/content/sections.md",
       builds: [{ format: "html" }],
       finish: function() {
-        expect(buildContent(uid, "build1/htmlbook.html")).toDiffLines(fileContent("spec/support/fixtures/htmlbook.html"));
+        expect(buildContent(uid, "build1/sections.html")).toDiffLines(fileContent("spec/support/fixtures/htmlbook.html"));
         done();
       }
     });
@@ -35,7 +35,6 @@ describe("Markdown", function() {
           done();
         }
       });
-
     });
 
   });

@@ -60,7 +60,7 @@ var helpers = {
     var newChildren = [];
 
     // find all internal links and add data-type to them
-    $("a[href^=#)").each(function() {
+    $("a[href^=#]").each(function() {
       $(this).attr('data-type', 'xref');
     });
 
@@ -79,6 +79,12 @@ var helpers = {
       "indent_size": 2,
       "wrap-line-length" : 0
     });
+  },
+
+  navigationize: function($) {
+
+    
+
   }
 };
 
