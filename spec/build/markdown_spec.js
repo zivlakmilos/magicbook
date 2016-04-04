@@ -27,7 +27,6 @@ describe("Markdown", function() {
 
     it("should add data-type to internal links", function(done) {
       var uid = triggerBuild({
-        files: "spec/support/book/content/first-chapter.md",
         builds: [{ format: "html" }],
         finish: function() {
           var $ = cheerio.load(buildContent(uid, "build1/first-chapter.html"));
@@ -44,7 +43,5 @@ describe("Markdown", function() {
     });
 
   });
-
-
 
 });
