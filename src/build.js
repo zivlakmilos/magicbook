@@ -187,11 +187,17 @@ module.exports = function(jsonConfig) {
 
         helpers.callHook('convert', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
+          console.log('after convert');
+
           stream = stream.pipe(layouts(config, extraLocals));
 
           helpers.callHook('layout', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
+            console.log('after layout')
+
             helpers.callHook('finish', plugins, [config, stream, { destination: destination }], function(config, stream) {
+
+              console.log('after finish')
 
               if(config.verbose) console.log(config.format + " finished.")
               if(config.finish) {

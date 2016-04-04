@@ -2,26 +2,27 @@ var through = require('through2');
 var cheerio = require('cheerio');
 var path = require('path');
 var _ = require('lodash');
+var helpers = require('../helpers');
 var Plugin = function(){};
 
 Plugin.prototype = {
 
   hooks: {
-    convert: function(config, stream, extras, cb) {
+
+    convert: function(config, stream, extras, callback) {
 
       // don't do anything for PDF
       if(config.format == "pdf") {
-        cb(null, config, stream, extras);
+        callback(null, config, stream, extras);
         return;
       }
 
       var ids = {};
-      var files = [];
 
-      // this is called for each file
-      var onFile = function(file, enc, cb) {
+      // first find all ID's in all files
+      stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-        // create cheerio element
+        // create cheerio element for file
         var content = file.contents.toString();
         file.$el = cheerio.load(content);
 
@@ -31,19 +32,21 @@ Plugin.prototype = {
           ids[file.$el(this).attr("id")] = path.basename(file.path)
         });
 
-        // put file in file array
-        files.push(file);
-
         cb(null, file);
-      }
+      }));
 
-      // This is called at the end of the stream.
-      var onEnd = function(cb) {
 
-        var ending = this;
+      // now finish the stream so we know all files have been parsed.
+      // create new stream where we parse links. Then return new stream.
+      helpers.finishWithFiles(stream, function(files) {
 
-        // loop through all the files
-        _.each(files, function(file) {
+        // create new stream from the files
+        stream = helpers.streamFromArray(files);
+
+        // knowing that our ids map holds all id's from all files,
+        // we can now pipe through the files and change the internal
+        // links if needed.
+        stream.pipe(through.obj(function(file, enc, cb) {
 
           var changed = false;
 
@@ -67,23 +70,15 @@ Plugin.prototype = {
           });
 
           if(changed) {
-
             // add cheerio html back to file contents
             file.contents = new Buffer(file.$el.html());
-
-            // emit a data event with the file.
-            ending.push(file);
           }
-        });
 
-        cb();
+          cb(null, file);
+        }));
 
-      }
-
-      stream = stream.pipe(through.obj(onFile, onEnd))
-
-
-      cb(null, config, stream, extras);
+        callback(null, config, stream, extras);
+      });
     }
   }
 }

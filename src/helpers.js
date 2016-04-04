@@ -309,8 +309,36 @@ var helpers = {
       "indent_size": 2,
       "wrap-line-length" : 0
     });
-  }
+  },
 
+  // Function that takes a stream, assembles all the files in the stream
+  // in an array, waits for it to finish, and calls the cb with the files array
+  finishWithFiles: function(stream, cb) {
+
+    var files = [];
+
+    // push each file into the array
+    stream.pipe(through.obj(function(file, enc, cb) {
+      files.push(file);
+      cb(null, file);
+    }))
+
+    // when this stream is done, call cb with files
+    .on('finish', function() {
+      cb(files);
+    });
+
+  },
+
+  // function that creates a new stream from a vinyl array
+  streamFromArray: function(files) {
+    var stream = through.obj();
+    _.each(files, function(file) {
+      stream.write(file);
+    });
+    stream.end();
+    return stream;
+  }
 };
 
 module.exports = helpers;

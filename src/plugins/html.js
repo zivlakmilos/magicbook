@@ -14,7 +14,6 @@ Plugin.prototype = {
         stream.on('finish', function() {
           callback(null, config, stream, extras);
         });
-
       }
       else {
         callback(null, config, stream, extras);

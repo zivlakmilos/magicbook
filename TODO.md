@@ -1,6 +1,6 @@
 ## MUST
 
-- JavaScript support
+- FIX LINKS WITH MULTIPLE STREAMS
 - Add next/prev functionality
 - Table of contents
 - Image resize support
