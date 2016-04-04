@@ -459,7 +459,7 @@ You can insert links to the JavaScript files in the layout using the `{{ javascr
 ```html
 <html>
   <head>
-    {{ stylesheets }}
+    {{ javascripts }}
   </head>
   <body>
     {{ content }}
