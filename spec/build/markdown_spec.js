@@ -25,7 +25,7 @@ describe("Markdown", function() {
 
   describe("XREFs", function() {
 
-    it("should add data-type to internal links", function(done) {
+    it("should add data-type to internal links and not external links", function(done) {
       var uid = triggerBuild({
         builds: [{ format: "html" }],
         finish: function() {
@@ -35,10 +35,6 @@ describe("Markdown", function() {
           done();
         }
       });
-
-    });
-
-    it("should not add data-type to external links", function() {
 
     });
 

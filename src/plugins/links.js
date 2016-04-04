@@ -52,7 +52,7 @@ Plugin.prototype = {
           var changed = false;
 
           // find all internal links in file
-          file.$el("a[href^='#']").each(function(i) {
+          file.$el("a[data-type='xref']").each(function(i) {
 
             var link = file.$el(this);
             var href = link.attr('href');

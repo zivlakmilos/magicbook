@@ -12,15 +12,15 @@ describe("Links plugin", function() {
       });
     });
 
-    // it("should add not filename to link in PDF", function(done) {
-    //   var uid = triggerBuild({
-    //     builds: [{ format: "pdf" }],
-    //     finish: function() {
-    //       expect(buildPath(uid, "build1/consolidated.html")).not.toHaveContent("second-chapter.html#my-anchor");
-    //       done();
-    //     }
-    //   });
-    // });
+    it("should add not filename to link in PDF", function(done) {
+      var uid = triggerBuild({
+        builds: [{ format: "pdf" }],
+        finish: function() {
+          expect(buildPath(uid, "build1/consolidated.html")).not.toHaveContent("second-chapter.html#my-anchor");
+          done();
+        }
+      });
+    });
 
   });
 

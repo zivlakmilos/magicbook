@@ -181,7 +181,25 @@ You can change this setting in your configuration file.
 
 ## Links
 
-If you wish to link internally between files, you can simply use an anchor link (`<a href="#myid">My link</a>` or `[My link](#myid)`), while making sure that this ID exists in one of the files in the build. `magicbook` will automatically insert the filename in the formats that need it.
+`magicbook` can automatically resolve cross references. If you're writing in Markdown, simply create an ID in your destination document:
+
+```html
+<a id="mytarget"></a>
+```
+
+... and then link to that ID from any file:
+
+```md
+[Go to my target](#mytarget)
+```
+
+The same is true if you're writing in HTML, but you need your link to have a the `xref` HTMLBook `data-type`:
+
+```html
+<a href="#mytarget" data-type="xref">Go to my target</a>
+```
+
+`magicbook` will automatically figure out whether or not to insert the destination file into the `href`, depending on the build settings.
 
 If you want to insert page numbers in link text for print, it's [easy with Prince XML and CSS](http://www.princexml.com/doc/7.1/cross-references/).
 
