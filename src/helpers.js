@@ -241,7 +241,7 @@ var helpers = {
 
   // Function to make HTMLBook sections from heading hierachy in a markdown-it
   // converted file
-  sectionify: function(html) {
+  makeHtmlBook: function(html) {
 
     var doc = parse5.parseFragment('<div>' + html + '</div>');
     var children = doc.childNodes[0].childNodes;

@@ -12,6 +12,7 @@ var tinyliquid = require('tinyliquid');
 var sass = require('node-sass');
 var mkdirp = require('mkdirp');
 var path = require('path');
+var cheerio = require('cheerio');
 
 // Variables
 // --------------------------------------------
@@ -67,7 +68,7 @@ function markdown(md) {
       var fileHTML = md.render(file.contents.toString());
 
       // make HTMLBook sections from headings
-      var sectionHTML = helpers.sectionify(fileHTML);
+      var sectionHTML = helpers.makeHtmlBook(fileHTML);
 
       // put that back into the file
       file.contents = new Buffer(sectionHTML);

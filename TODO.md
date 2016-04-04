@@ -1,13 +1,10 @@
 ## MUST
 
-- FIX LINKS WITH MULTIPLE STREAMS
-- Add next/prev functionality
+- Internal links should only work on data-type xref + README
 - Table of contents
+- Add next/prev functionality
 - Image resize support
+- Footnotes
 - Add Epub and Mobi (with XHTML serialization with xmlserializer)
 - Referencing a figure? Numbering figures?
-- Markdown HTMLBook elements.
-  - body should have data-type book
-  - internal links should have data-type xref
-  - footnotes should have data-type footnote
 - katex should move files into destination. Easy to do within plugin.
