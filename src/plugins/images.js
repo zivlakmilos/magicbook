@@ -3,7 +3,7 @@ var path = require('path');
 var _ = require('lodash');
 var vfs = require('vinyl-fs');
 var through = require('through2');
-var helpers = require('../helpers');
+var streamHelpers = require('../helpers/stream');
 var cheerio = require('cheerio');
 
 var Plugin = function(){};
@@ -84,7 +84,7 @@ Plugin.prototype = {
 
         // digest
         if(_.get(config, "images.digest")) {
-          imagesStream = imagesStream.pipe(helpers.digest());
+          imagesStream = imagesStream.pipe(streamHelpers.digest());
         }
 
         // save map of old and new file names

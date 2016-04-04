@@ -6,7 +6,7 @@ var fs = require("fs");
 var _ = require('lodash');
 var chokidar = require('chokidar');
 var path = require('path');
-var helpers = require('./helpers');
+var helpers = require('./helpers/helpers');
 var argv = require('yargs').argv;
 var cmd = argv._[0];
 

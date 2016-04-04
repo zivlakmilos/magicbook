@@ -1,7 +1,11 @@
 // Require
 // --------------------------------------------
 
-var helpers = require('./helpers');
+var helpers = require('./helpers/helpers');
+var fileHelpers = require('./helpers/file');
+var pluginHelpers = require('./helpers/plugin');
+var htmlbookHelpers = require('./helpers/htmlbook');
+
 var _ = require('lodash');
 var fs = require('fs');
 var vfs = require('vinyl-fs');
@@ -62,13 +66,13 @@ function getMarkdownConverter() {
 // Returns: Vinyl filestream
 function markdown(md) {
   return through.obj(function (file, enc, cb) {
-    if(helpers.isMarkdown(file)) {
+    if(fileHelpers.isMarkdown(file)) {
 
       // convert md to HTML
       var fileHTML = md.render(file.contents.toString());
 
       // make HTMLBook sections from headings
-      var sectionHTML = helpers.makeHtmlBook(fileHTML);
+      var sectionHTML = htmlbookHelpers.makeHtmlBook(fileHTML);
 
       // put that back into the file
       file.contents = new Buffer(sectionHTML);
@@ -168,31 +172,31 @@ module.exports = function(jsonConfig) {
     var md = getMarkdownConverter();
 
     // require and instantiate plugins for this format
-    pluginsCache = helpers.requireFiles(pluginsCache, config.plugins, "plugins", config.verbose)
-    var plugins = helpers.instantiatePlugins(pluginsCache, config.plugins);
+    pluginsCache = fileHelpers.requireFiles(pluginsCache, config.plugins, "plugins", config.verbose)
+    var plugins = pluginHelpers.instantiatePlugins(pluginsCache, config.plugins);
 
     // Object passed to plugins to allow them to set locals
     // in liquid.
     var extraLocals = {};
 
     // hook: setup
-    helpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals, destination: destination }], function() {
+    pluginHelpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals, destination: destination }], function() {
 
       // create our stream
       var stream = vfs.src(config.files);
 
       // hook: load
-      helpers.callHook('load', plugins, [config, stream, { destination: destination }], function(config, stream) {
+      pluginHelpers.callHook('load', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
         stream = stream.pipe(markdown(md));
 
-        helpers.callHook('convert', plugins, [config, stream, { destination: destination }], function(config, stream) {
+        pluginHelpers.callHook('convert', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
           stream = stream.pipe(layouts(config, extraLocals));
 
-          helpers.callHook('layout', plugins, [config, stream, { destination: destination }], function(config, stream) {
+          pluginHelpers.callHook('layout', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
-            helpers.callHook('finish', plugins, [config, stream, { destination: destination }], function(config, stream) {
+            pluginHelpers.callHook('finish', plugins, [config, stream, { destination: destination }], function(config, stream) {
 
               if(config.verbose) console.log(config.format + " finished.")
               if(config.finish) {

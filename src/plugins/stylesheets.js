@@ -2,7 +2,8 @@ var _ = require('lodash');
 var vfs = require('vinyl-fs');
 var gutil = require('gulp-util');
 var through = require('through2');
-var helpers = require('../helpers');
+var fileHelpers = require('../helpers/file');
+var streamHelpers = require('../helpers/stream');
 var path = require('path');
 var sass = require('node-sass');
 var CleanCSS = require('clean-css');
@@ -23,7 +24,7 @@ function compress() {
 // Returns: Vinyl filestream
 function scss() {
   return through.obj(function (file, enc, cb) {
-    if(helpers.isScss(file)) {
+    if(fileHelpers.isScss(file)) {
       sass.render({ file: file.path }, function(err, result) {
         file.contents = result.css;
         file.path = gutil.replaceExtension(file.path, '.css');
@@ -80,7 +81,7 @@ Plugin.prototype = {
 
         // digest
         if(_.get(config, "stylesheets.digest")) {
-          cssStream = cssStream.pipe(helpers.digest());
+          cssStream = cssStream.pipe(streamHelpers.digest());
         }
 
         // finish

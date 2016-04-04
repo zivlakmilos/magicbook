@@ -2,7 +2,8 @@ var through = require('through2');
 var cheerio = require('cheerio');
 var path = require('path');
 var _ = require('lodash');
-var helpers = require('../helpers');
+var fileHelpers = require('../helpers/file');
+var streamHelpers = require('../helpers/stream');
 var Plugin = function(){};
 
 Plugin.prototype = {
@@ -38,10 +39,10 @@ Plugin.prototype = {
 
       // now finish the stream so we know all files have been parsed.
       // create new stream where we parse links. Then return new stream.
-      helpers.finishWithFiles(stream, function(files) {
+      streamHelpers.finishWithFiles(stream, function(files) {
 
         // create new stream from the files
-        stream = helpers.streamFromArray(files);
+        stream = streamHelpers.streamFromArray(files);
 
         // knowing that our ids map holds all id's from all files,
         // we can now pipe through the files and change the internal

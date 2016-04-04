@@ -1,6 +1,6 @@
 var through = require('through2');
 var tinyliquid = require('tinyliquid');
-var helpers = require('../helpers');
+var helpers = require('../helpers/helpers');
 
 var Plugin = function(){};
 

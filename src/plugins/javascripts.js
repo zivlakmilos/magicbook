@@ -2,7 +2,7 @@ var _ = require('lodash');
 var vfs = require('vinyl-fs');
 var gutil = require('gulp-util');
 var through = require('through2');
-var helpers = require('../helpers');
+var streamHelpers = require('../helpers/stream');
 var path = require('path');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
@@ -51,7 +51,7 @@ Plugin.prototype = {
 
         // digest
         if(_.get(config, "javascripts.digest")) {
-          jsStream = jsStream.pipe(helpers.digest());
+          jsStream = jsStream.pipe(streamHelpers.digest());
         }
 
         // finish
