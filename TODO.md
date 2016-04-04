@@ -1,6 +1,5 @@
 ## MUST
 
-- Internal links should only work on data-type xref + README
 - Table of contents
 - Add next/prev functionality
 - Image resize support
