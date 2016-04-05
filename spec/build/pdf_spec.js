@@ -7,7 +7,6 @@ describe("PDF", function() {
         expect(buildPath(uid, "build1/consolidated.html")).toExist();
         expect(buildPath(uid, "build1/consolidated.html")).toHaveContent("First Heading</h1>");
         expect(buildPath(uid, "build1/consolidated.html")).toHaveContent("Second Heading</h1>");
-
         done();
       }
     });

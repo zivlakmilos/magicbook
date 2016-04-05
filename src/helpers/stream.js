@@ -6,6 +6,13 @@ var modifyFilename = require('modify-filename');
 
 var helpers = {
 
+  resetCheerio: function() {
+    return through.obj(function(file, enc, cb) {
+      file.$el = undefined;
+      cb(null, file);
+    });
+  },
+
   // through2 function to add checksum of file content to filename
   // Returns: Vinyl filestream
   digest: function() {

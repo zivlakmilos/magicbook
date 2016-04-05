@@ -32,7 +32,7 @@ Plugin.prototype = {
         // loop through anything with an id and add the id
         // as key and the filename as value
         file.$el('[id]').each(function(i, elem) {
-          ids[file.$el(this).attr("id")] = path.basename(file.path)
+          ids[file.$el(this).attr("id")] = file.relative;
         });
 
         cb(null, file);

@@ -2,6 +2,7 @@ var vfs = require('vinyl-fs');
 var concat = require('gulp-concat');
 var Prince = require("prince");
 var path = require('path');
+var streamHelpers = require('../helpers/stream');
 
 var Plugin = function(){};
 
@@ -15,7 +16,8 @@ Plugin.prototype = {
       if(config.format == "pdf") {
 
         // consolidate all files into a single one
-        stream = stream.pipe(concat('consolidated.html'));
+        stream = stream.pipe(concat('consolidated.html'))
+          .pipe(streamHelpers.resetCheerio());
       }
 
       callback(null, config, stream, extras);

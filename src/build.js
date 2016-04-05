@@ -25,7 +25,7 @@ var defaults = {
   "verbose" : true,
   "files" : "content/*.md",
   "destination" : "build/:build",
-  "plugins" : ["frontmatter", "ids", "katex", "links", "images", "stylesheets", "javascripts", "liquid", "html", "pdf"],
+  "plugins" : ["frontmatter", "ids", "toc", "katex", "links", "images", "stylesheets", "javascripts", "liquid", "html", "pdf"],
   "liquid" : {
     "includes" : "includes"
   },

@@ -81,9 +81,9 @@ var helpers = {
     });
   },
 
-  navigationize: function($) {
+  getNavigation: function($) {
 
-    
+
 
   }
 };
