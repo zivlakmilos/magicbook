@@ -20,7 +20,6 @@ Plugin.prototype = {
           file.$el = cheerio.load(content);
         }
 
-
         // create navigation
         nav[file.path] = htmlbookHelpers.navigationize(file.$el);
         console.log(nav[file.path]);

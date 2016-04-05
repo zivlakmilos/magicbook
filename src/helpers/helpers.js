@@ -31,6 +31,7 @@ var helpers = {
     // render
     template(context, function(err) {
       file.contents = new Buffer(context.getBuffer());
+      file.$el = undefined;
       cb(err, file);
     });
 

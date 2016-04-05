@@ -9,10 +9,11 @@ describe("ID plugin", function() {
         "spec/support/book/content/ids.html"
       ],
       finish: function() {
-        var $ = cheerio.load(buildContent(uid, "build1/ids.html"));
+        var content = buildContent(uid, "build1/ids.html").toString();
+        var $ = cheerio.load(content);
         expect($('section[data-type=sect1]').eq(0).attr('id')).toEqual("existing");
-        expect($('section[data-type=sect1]').eq(1).attr('id')).toEqual("WHAT??");
-        expect($('section[data-type=sect5]').eq(1).attr('id')).toEqual("WHAT??");
+        expect($('section[data-type=sect1]').eq(1).attr('id')).toEqual("mb-sect-1-voqIN");
+        expect($('section[data-type=sect5]').eq(0).attr('id')).toEqual("mb-sect-5-v7oI2");
         done();
       }
     });
