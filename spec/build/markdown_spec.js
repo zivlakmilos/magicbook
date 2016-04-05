@@ -36,8 +36,6 @@ describe("Markdown", function() {
             expect(dt($(children[1]).children()[3])).toEqual('sect2')
           expect(children[2].name).toEqual('section')
           expect(dt(children[2])).toEqual('sect1')
-
-        //expect(buildContent(uid, "build1/sections.html")).toDiffLines(fileContent("spec/support/fixtures/htmlbook.html"));
         done();
       }
     });

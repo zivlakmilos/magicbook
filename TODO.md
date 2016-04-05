@@ -1,6 +1,10 @@
 ## Before 0.1.0
 
-- Table of contents
+- Table of contents:
+  - Why isn't the second file showing up in TOC?
+  - Write tests
+  - Add README
+  - Add TOC includes to example folder
 - Add next/prev functionality
 - katex should move files into destination. Easy to do within plugin.
 
