@@ -203,6 +203,10 @@ The same is true if you're writing in HTML, but you need your link to have a the
 
 If you want to insert page numbers in link text for print, it's [easy with Prince XML and CSS](http://www.princexml.com/doc/7.1/cross-references/).
 
+## Auto-generated ID's
+
+By default, `magicbook` will add an auto-generated ID on every section with a HTMLBook `data-type` attribute. This is used internally to generate the table of contents. If you add an ID to a section, this ID will override the auto-generated ID.
+
 ## Images
 
 When you want to insert an image, simply create a folder called `images` in your book, save your image into this folder, and create an image tag using the name of your image.
@@ -262,112 +266,6 @@ The `digest` option will add a md5 checksum of the image content to the filename
 ```
 
 *This setting is also available as a build setting.*
-
-## Layouts
-
-Like most web frameworks, magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
-
-```html
-<html>
-  <head>
-    <title>My Book</title>
-  </head>
-  <body>
-    {{ content }}
-  </body>
-</html>
-```
-
-To specify a layout to use, you can use the `layout` property in the JSON config.
-
-```json
-{
-  "layout" : "layouts/main.html"
-}
-```
-
-Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
-
-*This setting is also available as a build setting.*
-
-## Liquid
-
-It is also possible to use Liquid templating in your source files. By default, each file has access to the following variables:
-
-- `format` is a string with the name of the build format.
-- `config` is an object with all the configuration settings for the specific format.
-- `page` is an object with the YAML frontmatter variables from the particular file.
-
-Using these variables, you can create books that have different markup in the different formats. Here's a simple file example.
-
-```md
-{% if format == 'pdf' %}
-  Here's some text for the PDF
-{% else %}
-  Here's some text for all the other formats
-{% endif %}
-```
-
-### Includes
-
-You can use Liquid includes to re-use the same markup without copy/pasting. By default, `magicbook` will search for includes in the `includes` folder, so without any configuration settings, you can create a file in `includes/myview.html` that looks like this:
-
-```html
-<p>This is my include</p>
-```
-
-... and use the include in any files like this:
-
-```md
-{% include myview %}
-```
-
-If you want to pass variables to the include, you can add an attribute list to the `include` command, and those variables will be available in the include in `include.VARIABLENAME`.
-
-```md
-{% include myview onevar="This is one variable" anothervar="This is another variable" %}
-```
-
-You can change where `magicbook` looks for includes with the `includes` configuration setting.
-
-```json
-{
-  "liquid" : {
-    "includes" : "my/include/folder"
-  }
-}
-```
-
-This makes it possible to either have different includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
-
-*This setting is also available as a build setting.*
-
-## YAML Frontmatter
-
-You can specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
-
-```markdown
----
-name: Rune Madsen
----
-
-# About the author
-
-The author, {{ name }}, was born in Denmark.
-```
-
-The YAML Frontmatter also allows you to override some configuration for each file. For example, you can specify a custom layout for a file. This will override any settings in the configuration file.
-
-```markdown
----
-layout: layouts/introduction.html
----
-```
-
-This only works for the following configuration variables:
-
-- `layout`
-- `includes`
 
 ## Stylesheets
 
@@ -544,6 +442,112 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 ```
 
 *This setting is also available as a build setting.*
+
+## Layouts
+
+Like most web frameworks, magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
+
+```html
+<html>
+  <head>
+    <title>My Book</title>
+  </head>
+  <body>
+    {{ content }}
+  </body>
+</html>
+```
+
+To specify a layout to use, you can use the `layout` property in the JSON config.
+
+```json
+{
+  "layout" : "layouts/main.html"
+}
+```
+
+Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
+
+*This setting is also available as a build setting.*
+
+## Liquid
+
+It is also possible to use Liquid templating in your source files. By default, each file has access to the following variables:
+
+- `format` is a string with the name of the build format.
+- `config` is an object with all the configuration settings for the specific format.
+- `page` is an object with the YAML frontmatter variables from the particular file.
+
+Using these variables, you can create books that have different markup in the different formats. Here's a simple file example.
+
+```md
+{% if format == 'pdf' %}
+  Here's some text for the PDF
+{% else %}
+  Here's some text for all the other formats
+{% endif %}
+```
+
+### Includes
+
+You can use Liquid includes to re-use the same markup without copy/pasting. By default, `magicbook` will search for includes in the `includes` folder, so without any configuration settings, you can create a file in `includes/myview.html` that looks like this:
+
+```html
+<p>This is my include</p>
+```
+
+... and use the include in any files like this:
+
+```md
+{% include myview %}
+```
+
+If you want to pass variables to the include, you can add an attribute list to the `include` command, and those variables will be available in the include in `include.VARIABLENAME`.
+
+```md
+{% include myview onevar="This is one variable" anothervar="This is another variable" %}
+```
+
+You can change where `magicbook` looks for includes with the `includes` configuration setting.
+
+```json
+{
+  "liquid" : {
+    "includes" : "my/include/folder"
+  }
+}
+```
+
+This makes it possible to either have different includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
+
+*This setting is also available as a build setting.*
+
+## YAML Frontmatter
+
+You can specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
+
+```markdown
+---
+name: Rune Madsen
+---
+
+# About the author
+
+The author, {{ name }}, was born in Denmark.
+```
+
+The YAML Frontmatter also allows you to override some configuration for each file. For example, you can specify a custom layout for a file. This will override any settings in the configuration file.
+
+```markdown
+---
+layout: layouts/introduction.html
+---
+```
+
+This only works for the following configuration variables:
+
+- `layout`
+- `includes`
 
 
 ## Math
