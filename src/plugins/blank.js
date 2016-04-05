@@ -43,6 +43,29 @@ Plugin.prototype = {
     // convert is called right after markdown conversion.
     // destination - destination folder for the files
     convert: function(config, stream, extras, cb) {
+
+      // IMPORTANT NOTE:
+      //
+      // If you write a custom plugin that needs to change the HTML,
+      // you can check to see if a cheerio caching element is present
+      // and use that element before re-parsing the HTML. All native
+      // plugins use this variable so they don't need to parse the
+      // HTML over and over again.
+      //
+      // stream = stream.pipe(through.obj(function(file, enc, cb) {
+      //   if(!file.$el) file.$el = cheerio.load(file.contents.toString());
+      //   // use file.$el
+      // }))
+      //
+      // On the other hand, if you change file.contents without using the
+      // file.$el cheerio element, you must set file.$el to undefined.
+      // That will make the following plugins parse the HTML into file.$el.
+      //
+      // stream = stream.pipe(through.obj(function(file, enc, cb) {
+      //   // change HTML without cheerio here
+      //   file.$el = undefined;
+      // }))
+
       cb(null, config, stream, extras);
     },
 

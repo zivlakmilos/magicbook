@@ -13,10 +13,7 @@ var through = require('through2');
 var MarkdownIt = require('markdown-it')
 var gutil = require('gulp-util');
 var tinyliquid = require('tinyliquid');
-var sass = require('node-sass');
-var mkdirp = require('mkdirp');
 var path = require('path');
-var cheerio = require('cheerio');
 
 // Variables
 // --------------------------------------------

@@ -24,8 +24,10 @@ Plugin.prototype = {
       stream = stream.pipe(through.obj(function(file, enc, cb) {
 
         // create cheerio element for file
-        var content = file.contents.toString();
-        file.$el = cheerio.load(content);
+        if(!file.$el) {
+          var content = file.contents.toString();
+          file.$el = cheerio.load(content);
+        }
 
         // loop through anything with an id and add the id
         // as key and the filename as value

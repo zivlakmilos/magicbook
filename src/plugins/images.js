@@ -32,16 +32,18 @@ function mapImages(imageMap, srcFolder, destFolder) {
 function replaceSrc(imageMap) {
   return through.obj(function(file, enc, cb) {
 
-    // parse doc into cheerio
+    if(!file.$el) {
+      var content = file.contents.toString();
+      file.$el = cheerio.load(content);
+    }
+
     var changed = false;
-    var content = file.contents.toString();
-    $ = cheerio.load(content);
 
     // loop over each image
-    $('img').each(function(i, el) {
+    file.$el('img').each(function(i, el) {
 
       // convert el to cheerio el
-      var jel = $(this)
+      var jel = file.$el(this);
       var src = jel.attr('src');
 
       // if this image exists in source folder,
@@ -54,7 +56,7 @@ function replaceSrc(imageMap) {
 
     // only if we find an image, replace contents in file
     if(changed) {
-      file.contents = new Buffer($.html());
+      file.contents = new Buffer(file.$el.html());
     }
 
     cb(null, file);

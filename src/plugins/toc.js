@@ -15,11 +15,14 @@ Plugin.prototype = {
       stream = stream.pipe(through.obj(function(file, enc, cb) {
 
         // create cheerio element for file
-        var content = file.contents.toString();
-        var $ = cheerio.load(content);
+        if(!file.$el) {
+          var content = file.contents.toString();
+          file.$el = cheerio.load(content);
+        }
+
 
         // create navigation
-        nav[file.path] = htmlbookHelpers.navigationize($);
+        nav[file.path] = htmlbookHelpers.navigationize(file.$el);
         console.log(nav[file.path]);
 
         cb(null, file);
