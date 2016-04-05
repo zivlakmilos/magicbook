@@ -1,5 +1,7 @@
 # The Magic Book Project
 
+*This project is still working towards a 0.1.0 release, which means that the API is in active development. EPUB and MOBI formats are still not supported. We encourage developers to try the releases and report any issues in the issue tracker.*
+
 The Magic Book Project is an open source project funded by New York University's Interactive Telecommunications Program. It aims to be the best free tool for creating print and digital books from a single source.
 
 This project is for you, if:
