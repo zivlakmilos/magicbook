@@ -45,6 +45,8 @@ function getMarkdownConverter() {
 
   var md = new MarkdownIt({
 
+    html: true,
+
     // make sure that we add htmlbook to code examples
     highlight: function (str, lang) {
       var langClass = _.isEmpty(lang) ? '' : ' data-code-language="'+lang+'"';
@@ -172,28 +174,24 @@ module.exports = function(jsonConfig) {
     pluginsCache = fileHelpers.requireFiles(pluginsCache, config.plugins, "plugins", config.verbose)
     var plugins = pluginHelpers.instantiatePlugins(pluginsCache, config.plugins);
 
-    // Object passed to plugins to allow them to set locals
-    // in liquid.
-    var extraLocals = {};
-
     // hook: setup
-    pluginHelpers.callHook('setup', plugins, [config, { md: md, locals:extraLocals, destination: destination }], function() {
+    pluginHelpers.callHook('setup', plugins, [config, { md: md, locals:{}, destination: destination }], function(config, extras) {
 
       // create our stream
       var stream = vfs.src(config.files);
 
       // hook: load
-      pluginHelpers.callHook('load', plugins, [config, stream, { destination: destination }], function(config, stream) {
+      pluginHelpers.callHook('load', plugins, [config, stream, extras], function(config, stream, extras) {
 
         stream = stream.pipe(markdown(md));
 
-        pluginHelpers.callHook('convert', plugins, [config, stream, { destination: destination }], function(config, stream) {
+        pluginHelpers.callHook('convert', plugins, [config, stream, extras], function(config, stream, extras) {
 
-          stream = stream.pipe(layouts(config, extraLocals));
+          stream = stream.pipe(layouts(config, extras.locals));
 
-          pluginHelpers.callHook('layout', plugins, [config, stream, { destination: destination }], function(config, stream) {
+          pluginHelpers.callHook('layout', plugins, [config, stream, extras], function(config, stream, extras) {
 
-            pluginHelpers.callHook('finish', plugins, [config, stream, { destination: destination }], function(config, stream) {
+            pluginHelpers.callHook('finish', plugins, [config, stream, extras], function(config, stream, extras) {
 
               if(config.verbose) console.log(config.format + " finished.")
               if(config.finish) {

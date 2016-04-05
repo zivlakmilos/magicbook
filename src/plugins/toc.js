@@ -1,5 +1,7 @@
 var through = require('through2');
 var htmlbookHelpers = require('../helpers/htmlbook');
+var streamHelpers = require('../helpers/stream');
+var _ = require('lodash');
 
 var Plugin = function(){};
 
@@ -29,7 +31,7 @@ var maxLevel = 3;
 // takes an element and finds all direct section in its children.
 // recursively calls itself on all section children to get a tree
 // of sections.
-function getSections($, root) {
+function getSections($, root, href) {
 
   var items = [];
 
@@ -61,10 +63,10 @@ function getSections($, root) {
     }
 
     // find href of section
-    item.href = "SOMETHING"
+    item.href = href + "#" + item.id;
 
     if(level <= maxLevel) {
-      item.children = getSections($, jel);
+      item.children = getSections($, jel, href);
     }
 
     items.push(item);
@@ -77,31 +79,51 @@ Plugin.prototype = {
 
   hooks: {
 
-    layout: function(config, stream, extras, cb) {
+    layout: function(config, stream, extras, callback) {
 
-      var nav = {};
+      var toc = {
+        type: 'book',
+        children: []
+      };
 
-      // first create hashmap of files and their sections
+      // First run through every file and get a tree of the section
+      // navigation within that file. Save to our nac object.
       stream = stream.pipe(through.obj(function(file, enc, cb) {
 
         // create cheerio element for file
-        // if(!file.$el) {
-        //   var content = file.contents.toString();
-        //   file.$el = cheerio.load(content);
-        // }
-        //
-        // // make this work whether or not we have a
-        // // full HTML file.
-        // var root = file.$el.root();
-        // var body = file.$el('body');
-        // if(body.length) root = body;
-        //
-        // console.log(getSections(file.$el, root));
+        if(!file.$el) {
+          var content = file.contents.toString();
+          file.$el = cheerio.load(content);
+        }
+
+        // make this work whether or not we have a
+        // full HTML file.
+        var root = file.$el.root();
+        var body = file.$el('body');
+        if(body.length) root = body;
+
+        // add this files sections to the book children
+        var sections = getSections(file.$el, root, file.relative);
+        if(!_.isEmpty(sections)) {
+          toc.children = toc.children.concat(sections);
+        }
 
         cb(null, file);
       }));
 
-      cb(null, config, stream, extras);
+      // Now wait for the stream to finish and assign the
+      // full nav object to the liquid locals.
+      // now finish the stream so we know all files have been parsed.
+      // create new stream where we parse links. Then return new stream.
+      streamHelpers.finishWithFiles(stream, function(files) {
+
+        extras.locals.toc = toc;
+
+        // create new stream from the files
+        stream = streamHelpers.streamFromArray(files);
+
+        callback(null, config, stream, extras);
+      });
     }
   }
 }
