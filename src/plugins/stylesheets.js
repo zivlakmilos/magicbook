@@ -86,7 +86,7 @@ Plugin.prototype = {
 
         // finish
         cssStream
-          .pipe(liquidLocals(extras.locals, extras.destination, stylesheetsFolder))
+          //.pipe(liquidLocals(extras.locals, extras.destination, stylesheetsFolder))
           .pipe(vfs.dest(stylesheetsFolder))
           .on('finish', function() {
             callback(null, config, extras);

@@ -7,16 +7,6 @@ var path = require('path');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 
-function liquidLocals(locals, destination, javascriptsFolder) {
-  locals.javascripts = "";
-  return through.obj(function(file, enc, cb) {
-    var relativeFolder = path.relative(destination, javascriptsFolder);
-    var relativeFile = path.join(relativeFolder, path.basename(file.path));
-    locals.javascripts += "<script src=\""+ relativeFile +"\"></script>\n"
-    cb(null, file);
-  });
-}
-
 var Plugin = function(){}
 
 Plugin.prototype = {
@@ -25,14 +15,16 @@ Plugin.prototype = {
 
     setup: function(config, extras, callback) {
 
+      var allFiles = [];
+
       // get the javascripts needed for this format
       var javascripts = _.get(config, "javascripts.files");
 
       // if the array exists
       if(javascripts) {
 
-        var assetsFolder = config.javascripts.destination;
-        var javascriptsFolder = path.join(extras.destination, assetsFolder);
+        var jsFolder = config.javascripts.destination;
+        var jsFolderAbsolute = path.join(extras.destination, jsFolder);
 
         // gather the files
         var jsStream = vfs.src(javascripts);
@@ -54,10 +46,16 @@ Plugin.prototype = {
           jsStream = jsStream.pipe(streamHelpers.digest());
         }
 
+        // put all the filenames in the javascripts array
+        jsStream = jsStream.pipe(through.obj(function(file, enc, cb) {
+          // save the path to the js file from within the build folder
+          allFiles.push(path.join(jsFolder, file.relative));
+          cb(null, file);
+        }));
+
         // finish
         jsStream
-          .pipe(liquidLocals(extras.locals, extras.destination, javascriptsFolder))
-          .pipe(vfs.dest(javascriptsFolder))
+          .pipe(vfs.dest(jsFolderAbsolute))
           .on('finish', function() {
             callback(null, config, extras);
           });
@@ -65,6 +63,29 @@ Plugin.prototype = {
       } else {
         callback(null, config, extras);
       }
+
+      this.allFiles = allFiles;
+    },
+
+    load: function(config, stream, extras, callback) {
+
+      var allFiles = this.allFiles;
+
+      // add the locals to the files liquidLocals
+      stream = stream.pipe(through.obj(function(file, enc, cb) {
+
+        var scripts = "";
+        _.each(allFiles, function(js) {
+          scripts += '<script src="' + path.relative(path.dirname(file.relative), js) +'"></script>';
+        });
+
+        file.liquidLocalsLayout = file.liquidLocals || {};
+        file.liquidLocalsLayout.javascripts = scripts;
+
+        cb(null, file);
+      }));
+
+      callback(null, config, stream, extras);
     }
   }
 }

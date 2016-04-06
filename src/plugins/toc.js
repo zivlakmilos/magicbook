@@ -129,7 +129,8 @@ Plugin.prototype = {
           }
         });
 
-        extras.locals.toc = toc;
+        // THIS SHOULD BE file.liquidLocalsLayout AND file.liquidLocalsFile
+        //extras.locals.toc = toc;
 
         // create new stream from the files
         stream = streamHelpers.streamFromArray(files);

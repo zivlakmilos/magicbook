@@ -23,7 +23,9 @@ Plugin.prototype = {
         }
 
         // add extra liquid locals from the build pipeline
-        _.assign(locals, extras.locals);
+        if(file.liquidLocalsFile) {
+            _.assign(locals, file.liquidLocalsFile);
+        }
 
         helpers.renderLiquidTemplate(template, locals, file, config, cb)
       }));

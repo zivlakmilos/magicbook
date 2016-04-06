@@ -27,7 +27,6 @@ Plugin.prototype = {
     // setup is called right before build start for every format.
     // extras:
     // md          - a markdown-it instance for this format
-    // locals      - locals passed to liquid
     // destination - destination folder for the files
     setup: function(config, extras, cb) {
       cb(null, config, extras);

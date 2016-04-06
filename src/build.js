@@ -101,7 +101,7 @@ function duplicate() {
 
 // Assigns layouts to the files in the stream.
 // Prioritizes format layout over main layout.
-function layouts(config, extraLocals) {
+function layouts(config) {
 
   return through.obj(function(file, enc, cb) {
 
@@ -117,8 +117,8 @@ function layouts(config, extraLocals) {
         page: file.config
       }
 
-      if(extraLocals) {
-        _.assign(locals, extraLocals);
+      if(file.liquidLocalsLayout) {
+        _.assign(locals, file.liquidLocalsLayout);
       }
 
       if(layoutCache[layout]) {
@@ -184,7 +184,7 @@ module.exports = function(jsonConfig) {
     var plugins = pluginHelpers.instantiatePlugins(pluginsCache, config.plugins);
 
     // hook: setup
-    pluginHelpers.callHook('setup', plugins, [config, { md: md, locals:{}, destination: destination }], function(config, extras) {
+    pluginHelpers.callHook('setup', plugins, [config, { md: md, destination: destination }], function(config, extras) {
 
       // create our stream
       var stream = vfs.src(config.files);
@@ -198,7 +198,7 @@ module.exports = function(jsonConfig) {
 
         pluginHelpers.callHook('convert', plugins, [config, stream, extras], function(config, stream, extras) {
 
-          stream = stream.pipe(layouts(config, extras.locals));
+          stream = stream.pipe(layouts(config));
 
           pluginHelpers.callHook('layout', plugins, [config, stream, extras], function(config, stream, extras) {
 
