@@ -16,8 +16,20 @@ var helpers = {
     // start iterating nodes from i
     while(i < nodes.length) {
 
-      // if this is heading
-      var headingIndex = headings.indexOf(nodes[i].tagName);
+      var headingNode = nodes[i];
+
+      // if this is a header, get the heading inside
+      // the header.
+      if(headingNode.tagName == 'header') {
+        var actualHeading = $('h1, h2, h3, h4, h5').get(0);
+        if(actualHeading) {
+          headingNode = actualHeading;
+        }
+      }
+
+      // if this is a heading
+      var headingIndex = headings.indexOf(headingNode.tagName);
+
       if(headingIndex > -1) {
 
         // if this is a heading of the level we're looking for
@@ -28,7 +40,7 @@ var helpers = {
 
           // change the heading to the htmlbook heading,
           // and add it to the subsection.
-          nodes[i].tagName = newHeadings[headingIndex];
+          headingNode.tagName = newHeadings[headingIndex];
           subsection.childNodes.push(nodes[i]);
 
           // add the subsection to the newNodes
@@ -40,6 +52,7 @@ var helpers = {
         // if this is not the level we're looking for, it means that
         // this document doesn't have heading in the correct order.
         else {
+          console.warn("WARNING: cannot parse Markdown into HTMLBook sections. Heading out of order: " + nodes[i].tagName)
           return i;
         }
 
@@ -79,12 +92,6 @@ var helpers = {
       "indent_size": 2,
       "wrap-line-length" : 0
     });
-  },
-
-  getNavigation: function($) {
-
-
-
   }
 };
 

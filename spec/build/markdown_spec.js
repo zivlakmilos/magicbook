@@ -16,29 +16,55 @@ describe("Markdown", function() {
     });
   });
 
-  it("should make HTMLBook sections from heading hierarchy", function(done) {
-    var uid = triggerBuild({
-      files: "spec/support/book/content/sections.md",
-      builds: [{ format: "html" }],
-      finish: function() {
-        var content = buildContent(uid, "build1/sections.html").toString();
-        var $ = cheerio.load(content);
-        var root = $.root().children()[0];
-        var children = $(root).children();
-        expect(dt(root)).toEqual('chapter');
-          expect(children[0].name).toEqual('h1')
-          expect(children[1].name).toEqual('section')
-          expect(dt(children[1])).toEqual('sect1')
-            expect($(children[1]).children()[0].name).toEqual('h1')
-            expect($(children[1]).children()[1].name).toEqual('p')
-            expect($(children[1]).children()[2].name).toEqual('pre')
-            expect($(children[1]).children()[3].name).toEqual('section')
-            expect(dt($(children[1]).children()[3])).toEqual('sect2')
-          expect(children[2].name).toEqual('section')
-          expect(dt(children[2])).toEqual('sect1')
-        done();
-      }
+  describe("HTMLBook", function() {
+
+    it("should make HTMLBook sections from heading hierarchy", function(done) {
+      var uid = triggerBuild({
+        files: "spec/support/book/content/sections.md",
+        builds: [{ format: "html" }],
+        finish: function() {
+          var content = buildContent(uid, "build1/sections.html").toString();
+          var $ = cheerio.load(content);
+          var root = $.root().children()[0];
+          var children = $(root).children();
+          expect(dt(root)).toEqual('chapter');
+            expect(children[0].name).toEqual('h1')
+            expect(children[1].name).toEqual('section')
+            expect(dt(children[1])).toEqual('sect1')
+              expect($(children[1]).children()[0].name).toEqual('h1')
+              expect($(children[1]).children()[1].name).toEqual('p')
+              expect($(children[1]).children()[2].name).toEqual('pre')
+              expect($(children[1]).children()[3].name).toEqual('section')
+              expect(dt($(children[1]).children()[3])).toEqual('sect2')
+            expect(children[2].name).toEqual('section')
+            expect(dt(children[2])).toEqual('sect1')
+          done();
+        }
+      });
     });
+
+    it("should work with a heading element", function(done) {
+      var uid = triggerBuild({
+        files: "spec/support/book/content/sections_header.md",
+        builds: [{ format: "html" }],
+        finish: function() {
+          var content = buildContent(uid, "build1/sections_header.html").toString();
+          var $ = cheerio.load(content);
+          var root = $.root().children()[0];
+          var children = $(root).children();
+          expect(dt(root)).toEqual('chapter');
+            expect(children[0].name).toEqual('header')
+            expect(children[1].name).toEqual('section')
+            expect(dt(children[1])).toEqual('sect1')
+              expect($(children[1]).children()[0].name).toEqual('h1')
+              expect($(children[1]).children()[1].name).toEqual('p')
+              expect($(children[1]).children()[2].name).toEqual('section')
+              expect(dt($(children[1]).children()[2])).toEqual('sect2')
+          done();
+        }
+      });
+    });
+
   });
 
   describe("XREFs", function() {

@@ -1,10 +1,12 @@
 ## Before 0.1.0
 
 - Add next/prev functionality
-- katex should move files into destination. Test on example folder.
+- `fonts` setting
+- katex should move fonts into destination. Test on example folder.
 
 ## Roadmap
 
+- Make MD parser more forgiving: No need for directly nested sections
 - Footnotes
 - Image resize support
 - Add Epub and Mobi (with XHTML serialization with xmlserializer)
