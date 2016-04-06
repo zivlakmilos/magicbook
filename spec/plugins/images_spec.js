@@ -81,7 +81,6 @@ describe("Images plugin", function() {
           source: "spec/support/book/images"
         },
         finish: function() {
-          console.log(uid)
           expect(buildPath(uid, "build1/images.html")).toHaveContent("assets/bruce.jpg");
           expect(buildPath(uid, "build1/images.html")).toHaveContent("assets/subfolder/bruce.png");
           done();

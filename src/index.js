@@ -13,7 +13,6 @@ var cmd = argv._[0];
 // Loads the config file into a JS object
 function loadConfig(path) {
   try {
-    console.log(process.cwd())
     var configJSON = JSON.parse(fs.readFileSync(process.cwd() + "/" + path));
     console.log("Config file detected: " + path)
     return configJSON;

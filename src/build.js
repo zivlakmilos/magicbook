@@ -61,6 +61,15 @@ function getMarkdownConverter() {
 // Pipes
 // --------------------------------------------
 
+// through2 function to remove leading number, - and _
+// in filenames, so people can order their files.
+function removeNumbers() {
+  return through.obj(function (file, enc, cb) {
+    file.path = file.path.replace(/\/[\d-_]*/g, '/');
+    cb(null, file);
+	});
+}
+
 // through2 function to convert a markdown file to html
 // Returns: Vinyl filestream
 function markdown(md) {
@@ -183,7 +192,9 @@ module.exports = function(jsonConfig) {
       // hook: load
       pluginHelpers.callHook('load', plugins, [config, stream, extras], function(config, stream, extras) {
 
-        stream = stream.pipe(markdown(md));
+        stream = stream
+          .pipe(removeNumbers())
+          .pipe(markdown(md));
 
         pluginHelpers.callHook('convert', plugins, [config, stream, extras], function(config, stream, extras) {
 

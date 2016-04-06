@@ -80,6 +80,10 @@ Plugin.prototype = {
 
   hooks: {
 
+    load: function(config, stream, extras, callback) {
+      callback(null, config, stream, extras);
+    },
+
     convert: function(config, stream, extras, callback) {
 
       // First run through every file and get a tree of the section

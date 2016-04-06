@@ -50,9 +50,8 @@ var helpers = {
           i = helpers.sectionize($, level+1, nodes, subsection.childNodes, i+1)
         }
         // if this is not the level we're looking for, it means that
-        // this document doesn't have heading in the correct order.
+        // we're going back in section hierachy.
         else {
-          console.warn("WARNING: cannot parse Markdown into HTMLBook sections. Heading out of order: " + nodes[i].tagName)
           return i;
         }
 

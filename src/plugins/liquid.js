@@ -9,10 +9,7 @@ Plugin.prototype = {
 
   hooks: {
 
-    // this means running liquid after markdown conversion.
-    // This might cause problems? But we don't have a TOC before the
-    // MD files have been converted to HTMLBook.
-    layout: function(config, stream, extras, callback) {
+    load: function(config, stream, extras, callback) {
 
       stream = stream.pipe(through.obj(function(file, enc, cb) {
 

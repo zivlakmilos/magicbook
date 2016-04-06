@@ -5,7 +5,6 @@ var slug = require('slug');
 
 var Plugin = function(){};
 
-var prefix = 'mb';
 var tags = ["section", "div"];
 var needIds = "section[data-type]:not([id]), div[data-type]:not([id])";
 
@@ -54,11 +53,11 @@ Plugin.prototype = {
           // if we have a title, make ID of title and hash
           if(title.length) {
             titleSlug = slug(title.text().toLowerCase());
-            jel.attr('id', prefix + '-' + titleSlug + '-' + hashId);
+            jel.attr('id', titleSlug + '-' + hashId);
           }
           // otherwise just use hash
           else {
-            jel.attr('id', prefix + '-' + hashId);
+            jel.attr('id', hashId);
           }
         });
 

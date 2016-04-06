@@ -1,5 +1,5 @@
 <header>
-  <h1>Chaper heading</h1>
+  <h1>Chapter heading</h1>
 </header>
 
 ## Sect 1
