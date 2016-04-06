@@ -22,13 +22,11 @@ describe("Stylesheets plugin", function() {
       builds: [{ format: "html" }],
       stylesheets: {
         files: [
-          "spec/support/book/**/styles.css",
-          "spec/support/book/**/otherstyles.scss",
+          "spec/support/book/stylesheets/**/subfolderstyles.css",
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "build1/assets/stylesheets/styles.css")).toExist();
-        expect(buildPath(uid, "build1/assets/stylesheets/otherstyles.css")).toExist();
+        expect(buildPath(uid, "build1/assets/subfolder/subfolderstyles.css")).toExist();
         done();
       }
     });
@@ -131,6 +129,25 @@ describe("Stylesheets plugin", function() {
       finish: function() {
         expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/styles.css\">");
         expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<link rel=\"stylesheet\" href=\"assets/otherstyles.css\">");
+        done();
+      }
+    });
+  });
+
+  it("should insert stylesheets in subfolders in layout", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      files: [
+        "spec/support/book/content/**/subfolder-file.md"
+      ],
+      layout: "spec/support/book/layouts/assets.html",
+      stylesheets: {
+        files: [
+          "spec/support/book/stylesheets/**/subfolderstyles.css",
+        ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/subfolder/subfolder-file.html")).toHaveContent("<link rel=\"stylesheet\" href=\"../assets/subfolder/subfolderstyles.css\">");
         done();
       }
     });

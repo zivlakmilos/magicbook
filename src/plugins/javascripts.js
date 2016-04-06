@@ -15,7 +15,8 @@ Plugin.prototype = {
 
     setup: function(config, extras, callback) {
 
-      var allFiles = [];
+      that = this;
+      that.allFiles = [];
 
       // get the javascripts needed for this format
       var javascripts = _.get(config, "javascripts.files");
@@ -49,7 +50,7 @@ Plugin.prototype = {
         // put all the filenames in the javascripts array
         jsStream = jsStream.pipe(through.obj(function(file, enc, cb) {
           // save the path to the js file from within the build folder
-          allFiles.push(path.join(jsFolder, file.relative));
+          that.allFiles.push(path.join(jsFolder, file.relative));
           cb(null, file);
         }));
 
@@ -63,8 +64,6 @@ Plugin.prototype = {
       } else {
         callback(null, config, extras);
       }
-
-      this.allFiles = allFiles;
     },
 
     load: function(config, stream, extras, callback) {
@@ -76,10 +75,10 @@ Plugin.prototype = {
 
         var scripts = "";
         _.each(allFiles, function(js) {
-          scripts += '<script src="' + path.relative(path.dirname(file.relative), js) +'"></script>';
+          scripts += '<script src="' + path.relative(path.dirname(file.relative), js) +'"></script>\n';
         });
 
-        file.liquidLocalsLayout = file.liquidLocals || {};
+        file.liquidLocalsLayout = file.liquidLocalsLayout || {};
         file.liquidLocalsLayout.javascripts = scripts;
 
         cb(null, file);
