@@ -13,7 +13,7 @@ Plugin.prototype = {
 
   hooks: {
 
-    layout: function(config, stream, extras, callback) {
+    convert: function(config, stream, extras, callback) {
 
       // pipe each file
       stream = stream.pipe(through.obj(function(file, enc, cb) {

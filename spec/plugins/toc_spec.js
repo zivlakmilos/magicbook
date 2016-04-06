@@ -1,11 +1,18 @@
 var cheerio = require('cheerio');
 
 function expectTOC($) {
-  expect($('nav > ol > li > a').eq(0).text()).toEqual("First Heading")
-    expect($('nav > ol > li > ol > li > a').eq(0).text()).toEqual("Math")
-    expect($('nav > ol > li > ol > li > a').eq(1).text()).toEqual("Links")
-  expect($('nav > ol > li > a').eq(1).text()).toEqual("Second Heading")
-    expect($('nav > ol > li > ol > li > a').eq(2).text()).toEqual("Second section 1")
+  var level1 = $('nav > ol > li');
+  var level2 = $('nav > ol > li > ol > li');
+  expect(level1.find('> a').eq(0).text()).toEqual("First Heading")
+  expect(level1.find('> a').eq(0).attr('href')).toEqual("first-chapter.html#mb-first-heading-yeYID")
+    expect(level2.find('> a').eq(0).text()).toEqual("Math")
+    expect(level2.find('> a').eq(0).attr('href')).toEqual("first-chapter.html#mb-math-JOQI6")
+    expect(level2.find('> a').eq(1).text()).toEqual("Links")
+    expect(level2.find('> a').eq(1).attr('href')).toEqual("first-chapter.html#mb-links-vlzIA")
+  expect(level1.find('> a').eq(1).text()).toEqual("Second Heading")
+  expect(level1.find('> a').eq(1).attr('href')).toEqual("second-chapter.html#mb-second-heading-yeYID")
+    expect(level2.find('> a').eq(2).text()).toEqual("Second section 1")
+    expect(level2.find('> a').eq(2).attr('href')).toEqual("second-chapter.html#mb-second-section-1-JOQI6")
 }
 
 describe("TOC plugin", function() {
