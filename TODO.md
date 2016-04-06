@@ -1,6 +1,5 @@
 ## Before 0.1.0
 
-- Add README
 - file.relative on everything
 - Add next/prev functionality
 - katex should move files into destination. Easy to do within plugin.

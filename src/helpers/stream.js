@@ -18,6 +18,7 @@ var helpers = {
   digest: function() {
     return through.obj(function(file, enc, cb) {
       file.orgPath = file.path;
+      file.orgRelative = file.relative;
       file.revHash = revHash(file.contents);
       file.path = modifyFilename(file.path, function(filename, extension) {
   		  var extIndex = filename.indexOf('.');
