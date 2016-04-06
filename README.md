@@ -460,7 +460,7 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 }
 ```
 
-There are often big limitations to auto-generated TOC markup, so instead of trying to guess what type of markup you want for your book, you can use liquid includes to generate your own TOC HTML. Every new project generated via the `magicbook new` command will have default includes that gets you started.
+There are often big limitations to auto-generated TOC markup, so instead of trying to guess what type of markup you want for your book, `magicbook` allows you to use liquid includes to generate your own TOC HTML. Every new project generated via the `magicbook new` command will have default includes that gets you started.
 
 ## Layouts
 
