@@ -1,4 +1,5 @@
 var through = require('through2');
+var cheerio = require('cheerio');
 var htmlbookHelpers = require('../helpers/htmlbook');
 var streamHelpers = require('../helpers/stream');
 var _ = require('lodash');
@@ -79,7 +80,7 @@ Plugin.prototype = {
 
   hooks: {
 
-    layout: function(config, stream, extras, callback) {
+    convert: function(config, stream, extras, callback) {
 
       // First run through every file and get a tree of the section
       // navigation within that file. Save to our nac object.
