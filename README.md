@@ -82,7 +82,7 @@ If you chose to write your book in Markdown, `magicbook` will automatically conv
 
 If you choose to write in HTML, you will need to make sure that you're using the HTMLBook `data-type` attributes. `magicbook` will not break if you don't use them, but it won't be possible to generate a table of contents, etc.
 
-### Building source files
+### The files array
 
 You can specify the files to build by adding a `files` array to your `magicbook.json` file. If you do not have a `files` array, it will look for all markdown files in `content/*.md`.
 
@@ -115,6 +115,55 @@ Using an array, you can also specify each of the files you want to build.
     "content/third-file.md"
   ]
 }
+```
+
+Globs are an important concept to learn, as your files array dictates whether or not files in subfolders are transferred to the build folder. This, combined with the fact that the build process will **remove leading numbers, dashes and underscores from folders and filenames**, can help you create just the folder structure you want for your website.
+
+As an example, consider the following folder structure.
+
+```
+contents/
+  01-first-chapter/
+    01-first-file.md
+    02-second-file.md
+```
+
+This files array:
+
+```json
+{
+  "files" : [
+    "contents/**/*.md"
+  ]
+}
+```
+
+... will create a `html` build that looks like this:
+
+```
+build1/
+  first-chapter/
+    first-file.html
+    second-file.html
+```
+
+Because the files glob does not set any ordering, you can use numbers in files and folders to decide the order of the files. Because of the wildcard glob `**`, the subfolder is transfered to the build. However, this files array:
+
+```json
+{
+  "files" : [
+    "contents/01-first-chapter/01-first-file.md",
+    "contents/01-first-chapter/02-second-file.md"
+  ]
+}
+```
+
+... will create a `html` build that looks like this, without a subfolder:
+
+```
+build1/
+  first-file.html
+  second-file.html
 ```
 
 *This setting is also available in the configuration for each build*, which you can read more about below.
