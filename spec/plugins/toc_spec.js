@@ -16,8 +16,12 @@ describe("TOC plugin", function() {
       finish: function() {
         var content = buildContent(uid, "build1/toc.html").toString();
         var $ = cheerio.load(content);
-        console.log(content);
-        //expect($(''))
+
+        expect($('nav > ol > li > a').eq(0).text()).toEqual("First Heading")
+          expect($('nav > ol > li > ol > li > a').eq(0).text()).toEqual("Math")
+          expect($('nav > ol > li > ol > li > a').eq(1).text()).toEqual("Links")
+        expect($('nav > ol > li > a').eq(1).text()).toEqual("Second Heading")
+          expect($('nav > ol > li > ol > li > a').eq(2).text()).toEqual("Second section 1")
         done();
       }
     });

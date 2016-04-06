@@ -5,6 +5,7 @@
   - Write tests
   - Add README
   - Add TOC includes to example folder
+- file.relative on everything
 - Add next/prev functionality
 - katex should move files into destination. Easy to do within plugin.
 

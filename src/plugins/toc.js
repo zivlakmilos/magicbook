@@ -81,11 +81,6 @@ Plugin.prototype = {
 
     layout: function(config, stream, extras, callback) {
 
-      var toc = {
-        type: 'book',
-        children: []
-      };
-
       // First run through every file and get a tree of the section
       // navigation within that file. Save to our nac object.
       stream = stream.pipe(through.obj(function(file, enc, cb) {
@@ -105,7 +100,7 @@ Plugin.prototype = {
         // add this files sections to the book children
         var sections = getSections(file.$el, root, file.relative);
         if(!_.isEmpty(sections)) {
-          toc.children = toc.children.concat(sections);
+          file.navigation = sections;
         }
 
         cb(null, file);
@@ -116,6 +111,18 @@ Plugin.prototype = {
       // now finish the stream so we know all files have been parsed.
       // create new stream where we parse links. Then return new stream.
       streamHelpers.finishWithFiles(stream, function(files) {
+
+        var toc = {
+          type: 'book',
+          children: []
+        };
+
+        // combine the sections of each file
+        _.each(files, function(file) {
+          if(!_.isEmpty(file.navigation)) {
+            toc.children = toc.children.concat(file.navigation);
+          }
+        });
 
         extras.locals.toc = toc;
 
