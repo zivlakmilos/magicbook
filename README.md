@@ -209,6 +209,8 @@ If you want to insert page numbers in link text for print, it's [easy with Princ
 
 By default, `magicbook` will add an auto-generated ID on every section with a HTMLBook `data-type` attribute. This is used internally to generate the table of contents. If you add an ID to a section, this ID will override the auto-generated ID.
 
+You can rely on these ID's for internal references, as they are persistent across builds for documents that don't change. However, if you change the order of the sections, the ID's will change.
+
 ## Images
 
 When you want to insert an image, simply create a folder called `images` in your book, save your image into this folder, and create an image tag using the name of your image.
@@ -444,6 +446,21 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 ```
 
 *This setting is also available as a build setting.*
+
+## Table of Contents
+
+`magicbook` will automatically parse all HTMLBook sections in your builds, and provide you with a JavaScript object tree that holds the entire book navigation.
+
+```js
+{
+  id: "#id-of-the-section",
+  type: "Type of HTMLBook section",
+  label: "Title for section",
+  children: [] // array of child sections
+}
+```
+
+There are often big limitations to auto-generated TOC markup, so instead of trying to guess what type of markup you want for your book, you can use liquid includes to generate your own TOC HTML. Every new project generated via the `magicbook new` command will have default includes that gets you started.
 
 ## Layouts
 
