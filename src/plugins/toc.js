@@ -99,7 +99,7 @@ Plugin.prototype = {
         if(body.length) root = body;
 
         // add this files sections to the book children
-        var sections = getSections(file.$el, root, file.relative);
+        var sections = getSections(file.$el, root, config.format == "pdf" ? '' : file.relative);
         if(!_.isEmpty(sections)) {
           file.navigation = sections;
         }
