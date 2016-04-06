@@ -44,8 +44,14 @@ function replaceSrc(imageMap) {
       // if this image exists in source folder,
       // replace src with new source
       if(imageMap[src]) {
+
+        // this file has changed
         changed = true;
-        jel.attr('src', imageMap[src]);
+
+        // find the relative path from the image to the file
+        var srcRelative = path.relative(path.dirname(file.relative), imageMap[src]);
+
+        jel.attr('src', srcRelative);
       } else if(!src.match(/^http/)) {
         console.log("image not found in source folder: " + src);
       }

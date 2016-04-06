@@ -1,5 +1,3 @@
-
-
 describe("Destination", function() {
 
   it("should prioritize format destination", function(done) {

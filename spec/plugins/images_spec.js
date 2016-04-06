@@ -1,3 +1,5 @@
+var cheerio = require('cheerio');
+
 describe("Images plugin", function() {
 
   describe("Settings", function() {
@@ -81,8 +83,27 @@ describe("Images plugin", function() {
           source: "spec/support/book/images"
         },
         finish: function() {
-          expect(buildPath(uid, "build1/images.html")).toHaveContent("assets/bruce.jpg");
-          expect(buildPath(uid, "build1/images.html")).toHaveContent("assets/subfolder/bruce.png");
+          var content = buildContent(uid, "build1/images.html").toString();
+          var $ = cheerio.load(content);
+          expect($('img').eq(0).attr('src')).toEqual("assets/bruce.jpg");
+          expect($('img').eq(1).attr('src')).toEqual("assets/subfolder/bruce.png");
+          done();
+        }
+      });
+    });
+
+    it("should work with files in subfolders", function(done) {
+      var uid = triggerBuild({
+        files: "spec/support/book/**/images.md",
+        builds: [{ format: "html" }],
+        images: {
+          source: "spec/support/book/images"
+        },
+        finish: function() {
+          var content = buildContent(uid, "build1/content/images.html").toString();
+          var $ = cheerio.load(content);
+          expect($('img').eq(0).attr('src')).toEqual("../assets/bruce.jpg");
+          expect($('img').eq(1).attr('src')).toEqual("../assets/subfolder/bruce.png");
           done();
         }
       });
