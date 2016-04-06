@@ -9,7 +9,7 @@ describe("Destination", function() {
         destination: "spec/support/book/tmp/abcdef/myhtml"
       }],
       finish: function() {
-        expect(buildPath('abcdef', "myhtml/first-chapter.html")).toHaveContent("First Heading</h1>");
+        expect(buildPath('abcdef', "myhtml/first-chapter.html")).toExist();
         done();
       }
     });
@@ -17,7 +17,20 @@ describe("Destination", function() {
 
   describe("Globs", function() {
 
-    it("should use folders from glob file.relative")
+    it("should use folders from glob file.relative", function(done) {
+      var uid = triggerBuild({
+        files: [
+          "spec/support/book/content/first-chapter.md",
+          "spec/support/book/content/**/subfolder-file.md"
+        ],
+        builds: [{ format: "html" }],
+        finish: function() {
+          expect(buildPath(uid, "build1/first-chapter.html")).toExist();
+          expect(buildPath(uid, "build1/subfolder/subfolder-file.html")).toExist();
+          done();
+        }
+      });
+    });
 
   });
 
