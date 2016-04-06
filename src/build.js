@@ -193,7 +193,7 @@ module.exports = function(jsonConfig) {
 
             pluginHelpers.callHook('finish', plugins, [config, stream, extras], function(config, stream, extras) {
 
-              if(config.verbose) console.log(config.format + " finished.")
+              if(config.verbose) console.log('Build', config.buildNumber, 'finished');
               if(config.finish) {
                 config.finish(config.format, null);
               }

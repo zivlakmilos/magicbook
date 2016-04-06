@@ -1,0 +1,9 @@
+{{ content }}
+
+{{% if navigation.prev }}
+<a href="{{ navigation.prev.href }}">{{navigation.prev.label}}</a>
+{{% endif }}
+
+{{% if navigation.next }}
+<a href="{{ navigation.next.href }}">{{navigation.next.label}}</a>
+{{% endif }}

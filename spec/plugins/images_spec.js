@@ -72,6 +72,7 @@ describe("Images plugin", function() {
   });
 
   describe("Replacing image src", function() {
+
     it("should replace src when found in images folder", function(done) {
       var uid = triggerBuild({
         files: "spec/support/book/content/images.md",
@@ -80,6 +81,7 @@ describe("Images plugin", function() {
           source: "spec/support/book/images"
         },
         finish: function() {
+          console.log(uid)
           expect(buildPath(uid, "build1/images.html")).toHaveContent("assets/bruce.jpg");
           expect(buildPath(uid, "build1/images.html")).toHaveContent("assets/subfolder/bruce.png");
           done();

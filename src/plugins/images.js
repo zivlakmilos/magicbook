@@ -11,11 +11,6 @@ var Plugin = function(){};
 // through2 pipe function that creates a hasmap of
 // old -> image names.
 function mapImages(imageMap, srcFolder, destFolder) {
-
-  // find the absolute path to source images
-  var srcAbsolute = path.join(process.cwd(), srcFolder);
-
-  // for each file
   return through.obj(function(file, enc, cb) {
 
     // find the relative path to image. If any pipe has changed the filename,
@@ -51,6 +46,8 @@ function replaceSrc(imageMap) {
       if(imageMap[src]) {
         changed = true;
         jel.attr('src', imageMap[src]);
+      } else if(!src.match(/^http/)) {
+        console.log("image not found in source folder: " + src);
       }
     });
 
@@ -77,6 +74,7 @@ Plugin.prototype = {
 
       // if source does not exist, return
       if(!fs.existsSync(srcFolder)) {
+        console.warn("WARNING: images source folder does not exist: " + srcFolder);
         callback(null, config, extras);
         return;
       }
@@ -105,7 +103,7 @@ Plugin.prototype = {
     convert: function(config, stream, extras, callback) {
       stream = stream.pipe(replaceSrc(this.imageMap));
       callback(null, config, stream, extras);
-    },
+    }
   }
 }
 
