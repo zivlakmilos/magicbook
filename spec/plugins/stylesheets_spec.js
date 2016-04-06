@@ -10,8 +10,25 @@ describe("Stylesheets plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "build1/assets/styles.css")).toHaveContent("color: green");
-        expect(buildPath(uid, "build1/assets/otherstyles.css")).toHaveContent("color: red");
+        expect(buildPath(uid, "build1/assets/styles.css")).toExist();
+        expect(buildPath(uid, "build1/assets/otherstyles.css")).toExist();
+        done();
+      }
+    });
+  });
+
+  it("should move CSS into subfolders", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      stylesheets: {
+        files: [
+          "spec/support/book/**/styles.css",
+          "spec/support/book/**/otherstyles.scss",
+        ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/assets/stylesheets/styles.css")).toExist();
+        expect(buildPath(uid, "build1/assets/stylesheets/otherstyles.css")).toExist();
         done();
       }
     });

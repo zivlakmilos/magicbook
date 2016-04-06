@@ -12,8 +12,25 @@ describe("JavaScripts plugin", function() {
         ]
       },
       finish: function() {
-        expect(buildPath(uid, "build1/assets/scripts.js")).toHaveContent("console.log('scripts')");
-        expect(buildPath(uid, "build1/assets/otherscripts.js")).toHaveContent("console.log('otherscripts')");
+        expect(buildPath(uid, "build1/assets/scripts.js")).toExist();
+        expect(buildPath(uid, "build1/assets/otherscripts.js")).toExist();
+        done();
+      }
+    });
+  });
+
+  it("should move JS into subfolders", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      javascripts: {
+        files: [
+          "spec/support/book/**/scripts.js",
+          "spec/support/book/**/otherscripts.js",
+        ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/assets/javascripts/scripts.js")).toExist();
+        expect(buildPath(uid, "build1/assets/javascripts/otherscripts.js")).toExist();
         done();
       }
     });
