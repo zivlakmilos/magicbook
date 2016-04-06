@@ -101,7 +101,7 @@ Plugin.prototype = {
         // add this files sections to the book children
         var sections = getSections(file.$el, root, config.format == "pdf" ? '' : file.relative);
         if(!_.isEmpty(sections)) {
-          file.navigation = sections;
+          file.sections = sections;
         }
 
         cb(null, file);
@@ -120,8 +120,8 @@ Plugin.prototype = {
 
         // combine the sections of each file
         _.each(files, function(file) {
-          if(!_.isEmpty(file.navigation)) {
-            toc.children = toc.children.concat(file.navigation);
+          if(!_.isEmpty(file.sections)) {
+            toc.children = toc.children.concat(file.sections);
           }
         });
 
