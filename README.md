@@ -498,7 +498,16 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 
 ## Table of Contents
 
-`magicbook` will automatically parse all HTMLBook sections in your builds, and provide you with a JavaScript object tree that holds the entire book navigation.
+There are often big limitations to auto-generated TOC markup, so instead of trying to guess what type of markup you want for your book, `magicbook` allows you to use liquid includes to generate your own TOC HTML.
+
+`magicbook` will automatically parse all HTMLBook sections in your builds, and give you the ability to render a custom table of contents to your liking. First you need to add a liquid variable where ever you want your table of contents to appear. This can be in both a layout or content file.
+
+```liquid
+{{ toc }}
+```
+
+As liquid templates are evaluated before markdown conversion, and the table of contents structure is generated after markdown conversion, `magicbook` will first insert a placeholder string during the liquid processing, and then later in the build process replace this placeholder with the output of a special include named `toc.html`. To generate a table of contents, you must have this include in your includes folder. The include will have access to the following object tree:
+
 
 ```js
 {
@@ -509,7 +518,7 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 }
 ```
 
-There are often big limitations to auto-generated TOC markup, so instead of trying to guess what type of markup you want for your book, `magicbook` allows you to use liquid includes to generate your own TOC HTML. Every new project generated via the `magicbook new` command will have default includes that gets you started.
+All projects created with `magicbook new` will have a `toc.html` include, and that's a good reference to see what's possible.
 
 ## Layouts
 
