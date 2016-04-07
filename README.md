@@ -500,7 +500,7 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 
 When you want to use webfonts, simply create a folder called `fonts` in your book repo, save your fonts into this folder, and reference the font in your CSS. By default, fonts will end up in the same `assets` folder as stylesheets, so you can reference the font simply by its name.
 
-```
+```css
 @font-face {
   font-family: 'MyFont';
   src: url('MyFont.eot');
