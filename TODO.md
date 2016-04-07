@@ -1,6 +1,6 @@
 ## Before 0.1.0
 
-- `fonts` setting. Katex should put files into the fonts array
+- add a `font-path()` helper function in scss which can be used to set the font 
 
 ## Roadmap
 

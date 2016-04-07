@@ -22,10 +22,21 @@ function compress() {
 
 // through2 function to convert a scss file to css
 // Returns: Vinyl filestream
-function scss() {
+function scss(config) {
   return through.obj(function (file, enc, cb) {
     if(fileHelpers.isScss(file)) {
-      sass.render({ file: file.path }, function(err, result) {
+      sass.render({
+        file: file.path,
+        functions: {
+          'font-path($filename: 0)' : function(filename) {
+            var f = filename.getValue();
+            var fontsFolder = config.fonts.destination;
+            var cssFile = path.join(config.stylesheets.destination, file.relative);
+            var relativeFolders = path.relative(path.dirname(cssFile), fontsFolder);
+            return new sass.types.String("url('"+path.join(relativeFolders, f)+"')");
+          }
+        }
+      }, function(err, result) {
         file.contents = result.css;
         file.path = gutil.replaceExtension(file.path, '.css');
         cb(err, file);
@@ -58,7 +69,7 @@ Plugin.prototype = {
 
         // gather the files
         var cssStream = vfs.src(stylesheets)
-          .pipe(scss());
+          .pipe(scss(config));
 
         // bundle
         var bundle = _.get(config, "stylesheets.bundle");
@@ -108,8 +119,7 @@ Plugin.prototype = {
           styles += '<link rel="stylesheet" href="' + path.relative(path.dirname(file.relative), js) +'">\n';
         });
 
-        file.layoutLocals = file.layoutLocals || {};
-        file.layoutLocals.stylesheets = styles;
+        _.set(file, "layoutLocals.stylesheets", styles);
 
         cb(null, file);
       }));
