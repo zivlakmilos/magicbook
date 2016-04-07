@@ -37,6 +37,7 @@ function scss(config) {
           }
         }
       }, function(err, result) {
+        if(err) console.log("Error parsing SCSS", err);
         file.contents = result.css;
         file.path = gutil.replaceExtension(file.path, '.css');
         cb(err, file);

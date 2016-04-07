@@ -21,3 +21,11 @@ example of using the `console.log` function.
 ```js
 console.log("hello");
 ```
+
+## Math
+
+This is inline $5 + 5$ math. The next is a block math element.
+
+$$
+10 + 10
+$$

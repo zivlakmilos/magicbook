@@ -15,7 +15,7 @@ Plugin.prototype = {
 
       // add the katex CSS to all formats. This probably needs to
       // change as we test how katex performs in e-readers.
-      var css = path.join(__dirname, "assets", "katex", "katex.css");
+      var css = path.join(__dirname, "assets", "katex", "katex.scss");
       config.stylesheets = config.stylesheets || {};
       config.stylesheets.files = config.stylesheets.files || [];
       if(_.isString(config.stylesheets.files)) {
