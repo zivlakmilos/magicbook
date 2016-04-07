@@ -513,14 +513,14 @@ When you want to use webfonts, simply create a folder called `fonts` in your boo
 }
 ```
 
-### Source folder
+### Source files
 
-You can change the default fonts source folder in the configuration.
+You can change where `magicbook` looks for fonts by supplying an array of globs, just like the general `files` array. The default pattern is `fonts/**/*.*`.
 
 ```json
 {
   "fonts" : {
-    "source" : "custom/images/folder"
+    "files" : "custom/fonts/folder/**/*.ttf"
   }
 }
 ```
