@@ -8,7 +8,7 @@ describe("Images plugin", function() {
       var uid = triggerBuild({
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images"
+          files: ["spec/support/book/images/**/*.*"]
         },
         finish: function() {
           expect(buildPath(uid, "build1/assets/bruce.jpg")).toExist();
@@ -18,30 +18,11 @@ describe("Images plugin", function() {
       });
     });
 
-    it("should prioritize build source", function(done) {
-      var uid = triggerBuild({
-        builds: [{
-          format: "html",
-          images : {
-            source: "spec/support/book/images/subfolder"
-          }
-        }],
-        images: {
-          source: "spec/support/book/images"
-        },
-        finish: function() {
-          expect(buildPath(uid, "build1/assets/bruce.jpg")).not.toExist();
-          expect(buildPath(uid, "build1/assets/bruce.png")).toExist();
-          done();
-        }
-      });
-    });
-
     it("should use destination", function(done) {
       var uid = triggerBuild({
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images",
+          files: ["spec/support/book/images/**/*.*"],
           destination: "myassets/images"
         },
         finish: function() {
@@ -61,7 +42,7 @@ describe("Images plugin", function() {
           }
         }],
         images: {
-          source: "spec/support/book/images",
+          files: ["spec/support/book/images/**/*.*"],
           destination: "NONONO"
         },
         finish: function() {
@@ -80,7 +61,7 @@ describe("Images plugin", function() {
         files: "spec/support/book/content/images.md",
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images"
+          files: ["spec/support/book/images/**/*.*"]
         },
         finish: function() {
           var content = buildContent(uid, "build1/images.html").toString();
@@ -97,7 +78,7 @@ describe("Images plugin", function() {
         files: "spec/support/book/**/images.md",
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images"
+          files: ["spec/support/book/images/**/*.*"]
         },
         finish: function() {
           var content = buildContent(uid, "build1/content/images.html").toString();
@@ -114,7 +95,7 @@ describe("Images plugin", function() {
         files: "spec/support/book/content/images.md",
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images"
+          files: ["spec/support/book/images/**/*.*"]
         },
         finish: function() {
           expect(buildPath(uid, "build1/images.html")).toHaveContent("some/random/image.jpg");
@@ -128,7 +109,7 @@ describe("Images plugin", function() {
         files: "spec/support/book/content/images.md",
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images"
+          files: ["spec/support/book/images/**/*.*"]
         },
         finish: function() {
           expect(buildPath(uid, "build1/images.html")).toHaveContent("http://www.runemadsen.com/image.jpg");
@@ -145,7 +126,7 @@ describe("Images plugin", function() {
         files: "spec/support/book/content/images.md",
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images",
+          files: ["spec/support/book/images/**/*.*"],
           digest: true
         },
         finish: function() {
@@ -161,7 +142,7 @@ describe("Images plugin", function() {
         files: "spec/support/book/content/images.md",
         builds: [{ format: "html" }],
         images: {
-          source: "spec/support/book/images",
+          files: ["spec/support/book/images/**/*.*"],
           digest: true
         },
         finish: function() {
@@ -172,10 +153,6 @@ describe("Images plugin", function() {
       });
     });
 
-  });
-
-  describe("Resize", function() {
-    it("should resize images using sizes array");
   });
 
 });

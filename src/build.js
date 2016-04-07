@@ -44,7 +44,7 @@ var defaults = {
     "includes" : "includes"
   },
   "images" : {
-    "source" : "images",
+    "files" : "images/**/*.*",
     "destination" : "assets"
   },
   "stylesheets" : {

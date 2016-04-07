@@ -1,8 +1,6 @@
-## Before 0.1.0
-
-- add a `font-path()` helper function in scss which can be used to set the font 
-
 ## Roadmap
+
+- images and fonts should be globs as "files"
 
 - Support pretty output: Put files in filename/index.html
 - Footnotes

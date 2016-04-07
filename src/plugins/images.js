@@ -25,6 +25,7 @@ function mapImages(imageMap, srcFolder, destFolder) {
 // through2 pipe function that replaces images src attributes
 // based on values in hashmap.
 function replaceSrc(imageMap) {
+
   return through.obj(function(file, enc, cb) {
 
     if(!file.$el) {
@@ -74,19 +75,8 @@ Plugin.prototype = {
 
       this.imageMap = {};
 
-      var srcFolder = config.images.source;
-      var destFolder = _.get(config, "images.destination") || "assets";
-      var destAbsolute = path.join(extras.destination, destFolder);
-
-      // if source does not exist, return
-      if(!fs.existsSync(srcFolder)) {
-        console.warn("WARNING: images source folder does not exist: " + srcFolder);
-        callback(null, config, extras);
-        return;
-      }
-
       // load all files in the source folder
-      var imagesStream = vfs.src(srcFolder + "/**/*.*");
+      var imagesStream = vfs.src(config.images.files);
 
         // digest
         if(_.get(config, "images.digest")) {
@@ -94,12 +84,12 @@ Plugin.prototype = {
         }
 
         // save map of old and new file names
-        imagesStream.pipe(mapImages(this.imageMap, srcFolder, destFolder))
+        imagesStream.pipe(mapImages(this.imageMap, config.images.files, config.images.destination))
 
         // vinyl-fs dest automatically determines whether a file
         // should be updated or not, based on the mtime timestamp.
         // so we don't need to do that manually.
-        .pipe(vfs.dest(destAbsolute))
+        .pipe(vfs.dest(path.join(extras.destination, config.images.destination)))
         .on('finish', function() {
           callback(null, config, extras);
         });
