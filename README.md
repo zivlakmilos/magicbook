@@ -522,7 +522,7 @@ All projects created with `magicbook new` will have a `toc.html` include, and th
 
 ## Navigation
 
-You can use the liquid `navigation` variable to creating links between pages. This is mostly used for `html` builds, where something like this liquid markup is added to the layout file.
+You can use the liquid `navigation` variable to create links that guides the reader through the pages. This is mostly used for `html` builds, where the liquid markup is used in the layout file.
 
 ```liquid
 {% if navigation.prev %}
