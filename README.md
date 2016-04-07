@@ -498,16 +498,16 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 
 ## Fonts
 
-When you want to use webfonts, simply create a folder called `fonts` in your book repo, save your fonts into this folder, and reference the font in your CSS. By default, fonts will end up in the same `assets` folder as stylesheets, so you can reference the font simply by its name.
+When you want to use webfonts, simply create a folder called `fonts` in your book repo, save your fonts into this folder, and reference the font file using the `font-path()` scss helper function in your CSS.
 
 ```css
 @font-face {
   font-family: 'MyFont';
-  src: url('MyFont.eot');
-  src: url('MyFont.eot?#iefix') format('embedded-opentype'),
-       url('MyFont.woff') format('woff'),
-       url('MyFont.ttf') format('truetype'),
-       url('MyFont.svg#robotobold') format('svg');
+  src: font-path('MyFont.eot');
+  src: font-path('MyFont.eot?#iefix') format('embedded-opentype'),
+       font-path('MyFont.woff') format('woff'),
+       font-path('MyFont.ttf') format('truetype'),
+       font-path('MyFont.svg#robotobold') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -529,7 +529,7 @@ You can change the default fonts source folder in the configuration.
 
 ### Destination folder
 
-It is also possible to control where the fonts are stored in the build. You can specify a custom destination folder by using the `destination` property, but keep in mind that you will need to change your CSS to have a relative link to this folder. It defaults to `assets`.
+By default, fonts will end up in the  `assets` folder in each build. You can change this destination by using the `destination` property. The `font-path()` SCSS helper will automatically update the relative URL to the font.
 
 ```json
 {
