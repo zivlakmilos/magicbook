@@ -513,6 +513,34 @@ When you want to use webfonts, simply create a folder called `fonts` in your boo
 }
 ```
 
+### Source folder
+
+You can change the default fonts source folder in the configuration.
+
+```json
+{
+  "fonts" : {
+    "source" : "custom/images/folder"
+  }
+}
+```
+
+*This setting is also available as a build setting.*
+
+### Destination folder
+
+It is also possible to control where the fonts are stored in the build. You can specify a custom destination folder by using the `destination` property, but keep in mind that you will need to change your CSS to have a relative link to this folder. It defaults to `assets`.
+
+```json
+{
+  "fonts" : {
+    "destination" : "custom/assets/folder"
+  }
+}
+```
+
+*This setting is also available as a build setting.*
+
 ## Table of Contents
 
 There are often big limitations to auto-generated TOC markup, so instead of trying to guess what type of markup you want for your book, `magicbook` allows you to use liquid includes to generate your own TOC HTML.
