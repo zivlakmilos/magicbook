@@ -91,10 +91,8 @@ Plugin.prototype = {
     // the TOC instead of the placeholder.
     load: function(config, stream, extras, callback) {
       stream = stream.pipe(through.obj(function(file, enc, cb) {
-        file.pageLocals = file.pageLocals || {};
-        file.layoutLocals = file.layoutLocals || {};
-        file.pageLocals.toc = placeHolder;
-        file.layoutLocals.toc = placeHolder;
+        _.set(file, "pageLocals.toc", placeHolder);
+        _.set(file, "layoutLocals.toc", placeHolder);
         cb(null, file);
       }));
 
@@ -116,11 +114,8 @@ Plugin.prototype = {
       // navigation within that file. Save to our nac object.
       stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-        // create cheerio element for file
-        if(!file.$el) {
-          var content = file.contents.toString();
-          file.$el = cheerio.load(content);
-        }
+        // create cheerio element for file if not present
+        file.$el = file.$el || cheerio.load(file.contents.toString());
 
         // make this work whether or not we have a
         // full HTML file.
@@ -142,9 +137,9 @@ Plugin.prototype = {
       callback(null, config, stream, extras);
     },
 
-    // After the layouts, we replace the actual placeholder, so we can put
+    // At the end, we replace the actual placeholder, so we can put
     // the {{ toc }} tag in both a file and a layout.
-    layout: function(config, stream, extras, callback) {
+    finish: function(config, stream, extras, callback) {
 
       var toc = this.toc;
 

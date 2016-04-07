@@ -1,6 +1,5 @@
 ## Before 0.1.0
 
-- FIX TOC!!!
 - Add next/prev functionality
 - `fonts` setting
 - katex should move fonts into destination. Test on example folder.

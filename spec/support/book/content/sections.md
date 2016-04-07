@@ -1,4 +1,4 @@
-# Chapter Title
+# Sections Heading
 
 ## Sect 1
 
