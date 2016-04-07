@@ -107,6 +107,11 @@ Plugin.prototype = {
     // TOC generation to work with this.
     convert: function(config, stream, extras, callback) {
 
+      var toc = {
+        type: 'book',
+        children: []
+      };
+
       // First run through every file and get a tree of the section
       // navigation within that file. Save to our nac object.
       stream = stream.pipe(through.obj(function(file, enc, cb) {
@@ -126,11 +131,13 @@ Plugin.prototype = {
         // add this files sections to the book children
         var sections = getSections(file.$el, root, config.format == "pdf" ? '' : file.relative);
         if(!_.isEmpty(sections)) {
-          file.sections = sections;
+          toc.children = toc.children.concat(sections);
         }
 
         cb(null, file);
       }));
+
+      this.toc = toc;
 
       callback(null, config, stream, extras);
     },
@@ -139,22 +146,11 @@ Plugin.prototype = {
     // the {{ toc }} tag in both a file and a layout.
     layout: function(config, stream, extras, callback) {
 
-      // wait for the stream to finish, assign all the file sections
-      // to a global toc object, and start a new stream that replaces
-      // occurences of the placeholder.
+      var toc = this.toc;
+
+      // wait for the stream to finish, knowing all files have been
+      // parsed, and start a new stream that replaces all placeholders.
       streamHelpers.finishWithFiles(stream, function(files) {
-
-        var toc = {
-          type: 'book',
-          children: []
-        };
-
-        // combine the sections of each file
-        _.each(files, function(file) {
-          if(!_.isEmpty(file.sections)) {
-            toc.children = toc.children.concat(file.sections);
-          }
-        });
 
         // create new stream from the files
         stream = streamHelpers.streamFromArray(files)
