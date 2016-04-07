@@ -520,6 +520,20 @@ As liquid templates are evaluated before markdown conversion, and the table of c
 
 All projects created with `magicbook new` will have a `toc.html` include, and that's a good reference to see what's possible.
 
+## Navigation
+
+You can use the liquid `navigation` variable to creating links between pages. This is mostly used for `html` builds, where something like this liquid markup is added to the layout file.
+
+```liquid
+{% if navigation.prev %}
+<a id="prev-link" href="{{ navigation.prev.href }}">Previous: {{navigation.prev.label}}</a>
+{% endif %}
+
+{% if navigation.next %}
+<a id="next-link" href="{{ navigation.next.href }}">Next: {{navigation.next.label}}</a>
+{% endif %}
+```
+
 ## Layouts
 
 Like most web frameworks, magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
