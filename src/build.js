@@ -54,7 +54,7 @@ var defaults = {
     "destination" : "assets"
   },
   "fonts" : {
-    "source" : "fonts",
+    "files" : "fonts/**/*.*",
     "destination" : "assets"
   }
 }

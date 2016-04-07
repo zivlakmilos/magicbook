@@ -4,7 +4,7 @@ describe("Fonts plugin", function() {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
       fonts: {
-        source: "spec/support/book/fonts"
+        files: "spec/support/book/fonts/**/*.*"
       },
       finish: function() {
         expect(buildPath(uid, "build1/assets/KaTeX_AMS-Regular.ttf")).toExist();
@@ -20,7 +20,7 @@ describe("Fonts plugin", function() {
       builds: [{ format: "html" }],
       fonts: {
         destination: "myassets/fonts",
-        source: "spec/support/book/fonts"
+        files: "spec/support/book/fonts/**/*.*"
       },
       finish: function() {
         expect(buildPath(uid, "build1/myassets/fonts/KaTeX_AMS-Regular.ttf")).toExist();

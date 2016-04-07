@@ -278,14 +278,14 @@ or
 
 During the build process, `magicbook` will transfer all files located in `images` to the asset folder of each build and replace the image src attribute appropriately.
 
-### Source folder
+### Source files
 
-You can change the default image source folder in the configuration, which for the image tag above would make `magicbook` look for the image in `custom/images/folder/myimage.jpg`.
+You can change where `magicbook` looks for images by supplying an array of globs, just like the general `files` array. The default pattern is `images/**/*.*`.
 
 ```json
 {
   "images" : {
-    "source" : "custom/images/folder"
+    "files" : "custom/images/folder/**/*.jpg"
   }
 }
 ```
