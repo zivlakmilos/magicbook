@@ -2,6 +2,7 @@ var vfs = require('vinyl-fs');
 var concat = require('gulp-concat');
 var Prince = require("prince");
 var path = require('path');
+var _ = require('lodash');
 var streamHelpers = require('../helpers/stream');
 
 var Plugin = function(){};

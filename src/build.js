@@ -52,6 +52,10 @@ var defaults = {
   },
   "javascripts" : {
     "destination" : "assets"
+  },
+  "fonts" : {
+    "source" : "fonts",
+    "destination" : "assets"
   }
 }
 
