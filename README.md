@@ -496,6 +496,23 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 
 *This setting is also available as a build setting.*
 
+## Fonts
+
+When you want to use webfonts, simply create a folder called `fonts` in your book repo, save your fonts into this folder, and reference the font in your CSS. By default, fonts will end up in the same `assets` folder as stylesheets, so you can reference the font simply by its name.
+
+```
+@font-face {
+  font-family: 'MyFont';
+  src: url('MyFont.eot');
+  src: url('MyFont.eot?#iefix') format('embedded-opentype'),
+       url('MyFont.woff') format('woff'),
+       url('MyFont.ttf') format('truetype'),
+       url('MyFont.svg#robotobold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+```
+
 ## Table of Contents
 
 There are often big limitations to auto-generated TOC markup, so instead of trying to guess what type of markup you want for your book, `magicbook` allows you to use liquid includes to generate your own TOC HTML.
