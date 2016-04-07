@@ -105,7 +105,8 @@ function layouts(config) {
 
   return through.obj(function(file, enc, cb) {
 
-    var layout = _.get(file, "config.layout") || config.layout;
+    var layout = _.get(file, "layoutLocals.page.layout") || config.layout;
+    var includes = _.get(file, "layoutLocals.page.includes") || config.liquid.includes;
 
     if(layout) {
 
@@ -113,23 +114,27 @@ function layouts(config) {
       var locals = {
         content: file.contents.toString(),
         format: config.format,
-        config: config,
-        page: file.config
+        config: config
       }
 
-      if(file.liquidLocalsLayout) {
-        _.assign(locals, file.liquidLocalsLayout);
+      if(file.layoutLocals) {
+        _.assign(locals, file.layoutLocals);
       }
 
-      if(layoutCache[layout]) {
-        helpers.renderLiquidTemplate(layoutCache[layout], locals, file, config, cb);
-      } else {
-        fs.readFile(layout, function (err, data) {
-          if (err) { return console.log(err); }
-          layoutCache[layout] = tinyliquid.compile(data.toString());
-          helpers.renderLiquidTemplate(layoutCache[layout], locals, file, config, cb);
-        });
+      // if the cache has not been loaded, load the file
+      // and create a template from it.
+      if(!layoutCache[layout]) {
+        var layoutContent = fs.readFileSync(layout);
+        layoutCache[layout] = tinyliquid.compile(layoutContent.toString());
       }
+
+      // then render the layout
+      helpers.renderLiquidTemplate(layoutCache[layout], locals, includes, function(err, data) {
+        file.contents = new Buffer(data);
+        file.$el = undefined;
+        cb(err, file);
+      });
+
     } else {
       cb(null, file);
     }

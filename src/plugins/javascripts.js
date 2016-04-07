@@ -78,8 +78,8 @@ Plugin.prototype = {
           scripts += '<script src="' + path.relative(path.dirname(file.relative), js) +'"></script>\n';
         });
 
-        file.liquidLocalsLayout = file.liquidLocalsLayout || {};
-        file.liquidLocalsLayout.javascripts = scripts;
+        file.layoutLocals = file.layoutLocals || {};
+        file.layoutLocals.javascripts = scripts;
 
         cb(null, file);
       }));

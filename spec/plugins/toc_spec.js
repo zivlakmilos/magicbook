@@ -1,4 +1,4 @@
-/*var cheerio = require('cheerio');
+var cheerio = require('cheerio');
 
 function expectTOC($, addFile) {
 
@@ -21,46 +21,63 @@ function expectTOC($, addFile) {
 
 describe("TOC plugin", function() {
 
-  it("should insert TOC into files", function(done) {
-    var uid = triggerBuild({
-      builds: [{ format: "html" }],
-      files: [
-        "spec/support/book/content/toc.html",
-        "spec/support/book/content/first-chapter.md",
-        "spec/support/book/content/second-chapter.html"
-      ],
-      liquid: {
-        includes: "spec/support/book/includes",
-      },
-      finish: function() {
-        var content = buildContent(uid, "build1/toc.html").toString();
-        expectTOC(cheerio.load(content), true)
-        done();
-      }
-    });
-  });
-
-  it("should insert TOC into layouts")
-
-  it("should generate TOC even when content is wrapped", function(done) {
-    var uid = triggerBuild({
-      builds: [{ format: "html" }],
-      layout: "spec/support/book/layouts/container.html",
-      files: [
-        "spec/support/book/content/toc.html",
-        "spec/support/book/content/first-chapter.md",
-        "spec/support/book/content/second-chapter.html"
-      ],
-      liquid: {
-        includes: "spec/support/book/includes",
-      },
-      finish: function() {
-        var content = buildContent(uid, "build1/toc.html").toString();
-        expectTOC(cheerio.load(content), true)
-        done();
-      }
-    });
-  });
+  // it("should insert TOC into files", function(done) {
+  //   var uid = triggerBuild({
+  //     builds: [{ format: "html" }],
+  //     files: [
+  //       "spec/support/book/content/toc.html",
+  //       "spec/support/book/content/first-chapter.md",
+  //       "spec/support/book/content/second-chapter.html"
+  //     ],
+  //     liquid: {
+  //       includes: "spec/support/book/includes",
+  //     },
+  //     finish: function() {
+  //       var content = buildContent(uid, "build1/toc.html").toString();
+  //       expectTOC(cheerio.load(content), true)
+  //       done();
+  //     }
+  //   });
+  // });
+  //
+  // it("should insert TOC into layouts", function(done) {
+  //   var uid = triggerBuild({
+  //     builds: [{ format: "html" }],
+  //     layout: "spec/support/book/layouts/toc.html",
+  //     files: [
+  //       "spec/support/book/content/first-chapter.md",
+  //       "spec/support/book/content/second-chapter.html"
+  //     ],
+  //     liquid: {
+  //       includes: "spec/support/book/includes",
+  //     },
+  //     finish: function() {
+  //       expectTOC(cheerio.load(buildContent(uid, "build1/first-chapter.html").toString()), true);
+  //       expectTOC(cheerio.load(buildContent(uid, "build1/second-chapter.html").toString()), true)
+  //       done();
+  //     }
+  //   });
+  // });
+  //
+  // it("should generate TOC even when content is wrapped", function(done) {
+  //   var uid = triggerBuild({
+  //     builds: [{ format: "html" }],
+  //     layout: "spec/support/book/layouts/container.html",
+  //     files: [
+  //       "spec/support/book/content/toc.html",
+  //       "spec/support/book/content/first-chapter.md",
+  //       "spec/support/book/content/second-chapter.html"
+  //     ],
+  //     liquid: {
+  //       includes: "spec/support/book/includes",
+  //     },
+  //     finish: function() {
+  //       var content = buildContent(uid, "build1/toc.html").toString();
+  //       expectTOC(cheerio.load(content), true)
+  //       done();
+  //     }
+  //   });
+  // });
 
   it("should not add filenames in PDF", function(done) {
     var uid = triggerBuild({
@@ -81,4 +98,4 @@ describe("TOC plugin", function() {
     });
   });
 
-});*/
+});

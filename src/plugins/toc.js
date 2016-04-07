@@ -1,5 +1,8 @@
+var fs = require('fs');
 var through = require('through2');
 var cheerio = require('cheerio');
+var tinyliquid = require('tinyliquid');
+var helpers = require('../helpers/helpers');
 var htmlbookHelpers = require('../helpers/htmlbook');
 var streamHelpers = require('../helpers/stream');
 var _ = require('lodash');
@@ -27,6 +30,7 @@ var levels = {
   "sect5": 5
 };
 
+var placeHolder = "MBINSERT:TOC"
 var maxLevel = 3;
 
 // takes an element and finds all direct section in its children.
@@ -80,10 +84,27 @@ Plugin.prototype = {
 
   hooks: {
 
+    // When the files are loaded, we add a liquid local that simply
+    // replace {{ toc }}  with a string placeholder. This is needed because
+    // liquid runs before markdown conversion, and the TOC is generated after
+    // markdown conversion. So in a later hook, we generate the TOC and insert
+    // the TOC instead of the placeholder.
     load: function(config, stream, extras, callback) {
+      stream = stream.pipe(through.obj(function(file, enc, cb) {
+        file.pageLocals = file.pageLocals || {};
+        file.layoutLocals = file.layoutLocals || {};
+        file.pageLocals.toc = placeHolder;
+        file.layoutLocals.toc = placeHolder;
+        cb(null, file);
+      }));
+
       callback(null, config, stream, extras);
     },
 
+    // When the files have been converted, we run the TOC generation.
+    // This is happening before the layouts, because it won't work if
+    // the markup is wrapped in container div's. We should rewrite the
+    // TOC generation to work with this.
     convert: function(config, stream, extras, callback) {
 
       // First run through every file and get a tree of the section
@@ -111,10 +132,16 @@ Plugin.prototype = {
         cb(null, file);
       }));
 
-      // Now wait for the stream to finish and assign the
-      // full nav object to the liquid locals.
-      // now finish the stream so we know all files have been parsed.
-      // create new stream where we parse links. Then return new stream.
+      callback(null, config, stream, extras);
+    },
+
+    // After the layouts, we replace the actual placeholder, so we can put
+    // the {{ toc }} tag in both a file and a layout.
+    layout: function(config, stream, extras, callback) {
+
+      // wait for the stream to finish, assign all the file sections
+      // to a global toc object, and start a new stream that replaces
+      // occurences of the placeholder.
       streamHelpers.finishWithFiles(stream, function(files) {
 
         var toc = {
@@ -129,11 +156,38 @@ Plugin.prototype = {
           }
         });
 
-        // THIS SHOULD BE file.liquidLocalsLayout AND file.liquidLocalsFile
-        //extras.locals.toc = toc;
-
         // create new stream from the files
-        stream = streamHelpers.streamFromArray(files);
+        stream = streamHelpers.streamFromArray(files)
+
+        // loop through each file and replace placeholder
+        // with toc include.
+        // check if there is a placeholder, and then fail if there is
+        // no include names toc.html
+        .pipe(through.obj(function(file, enc, cb) {
+
+          // only if this file has the placeholder
+          if(file.contents.toString().match(placeHolder)) {
+
+            var tmpl = tinyliquid.compile("{% include toc.html %}");
+            var locals = { toc: toc };
+            var includes = _.get(file, "pageLocals.page.includes") || config.liquid.includes;
+
+            helpers.renderLiquidTemplate(tmpl, locals, includes, function(err, data) {
+
+              // now replace the placeholder with the rendered liquid
+              // in the file.
+              var content = file.contents.toString();
+              file.contents = new Buffer(content.replace(placeHolder, data.toString()));
+              file.$el = undefined;
+
+              cb(err, file);
+            });
+
+          } else {
+            cb(null, file);
+          }
+
+        }));
 
         callback(null, config, stream, extras);
       });

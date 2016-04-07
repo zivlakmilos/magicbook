@@ -18,16 +18,20 @@ Plugin.prototype = {
         // main object
         var locals = {
           format: config.format,
-          config: config,
-          page: file.config
+          config: config
         }
 
         // add extra liquid locals from the build pipeline
-        if(file.liquidLocalsFile) {
-            _.assign(locals, file.liquidLocalsFile);
+        if(file.pageLocals) {
+          _.assign(locals, file.pageLocals);
         }
 
-        helpers.renderLiquidTemplate(template, locals, file, config, cb)
+        var includes = _.get(file, "pageLocals.page.includes") || config.liquid.includes;
+        helpers.renderLiquidTemplate(template, locals, includes, function(err, data) {
+          file.contents = new Buffer(data);
+          file.$el = undefined;
+          cb(err, file);
+        });
       }));
 
       callback(null, config, stream, extras);

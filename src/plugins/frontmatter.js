@@ -22,11 +22,11 @@ Plugin.prototype = {
           // delete content from the parsed frontmatter
           delete parsed.__content;
 
-          // assign the frontmatter objects to .config for
-          // processing with the liquid plugin.
+          // Make the .page variable available in both the
+          // pages and the layout liquid rendering.
           if(!_.isEmpty(parsed)) {
-            file.config = file.config || {};
-            _.extend(file.config, parsed);
+            _.set(file, "pageLocals.page", parsed);
+            _.set(file, "layoutLocals.page", parsed);
           }
 
           // pass file through the chain

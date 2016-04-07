@@ -108,8 +108,8 @@ Plugin.prototype = {
           styles += '<link rel="stylesheet" href="' + path.relative(path.dirname(file.relative), js) +'">\n';
         });
 
-        file.liquidLocalsLayout = file.liquidLocalsLayout || {};
-        file.liquidLocalsLayout.stylesheets = styles;
+        file.layoutLocals = file.layoutLocals || {};
+        file.layoutLocals.stylesheets = styles;
 
         cb(null, file);
       }));

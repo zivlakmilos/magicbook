@@ -498,8 +498,6 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 
 ## Table of Contents
 
-**We're currently fixing a few issues around the TOC. Stay tuned for a 0.0.20 updated**
-
 `magicbook` will automatically parse all HTMLBook sections in your builds, and provide you with a JavaScript object tree that holds the entire book navigation.
 
 ```js
