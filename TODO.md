@@ -1,8 +1,6 @@
 ## Before 0.1.0
 
-- Add next/prev functionality
-- `fonts` setting
-- katex should move fonts into destination. Test on example folder.
+- `fonts` setting. Katex should put files into the fonts array
 
 ## Roadmap
 

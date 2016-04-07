@@ -35,6 +35,7 @@ var defaults = {
     "images",
     "stylesheets",
     "javascripts",
+    "fonts",
     "liquid",
     "html",
     "pdf"
