@@ -15,7 +15,17 @@ describe("Katex plugin", function() {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
       finish: function() {
-        expect(buildPath(uid, "build1/assets/katex.css")).toHaveContent("KaTeX_Main");
+        expect(buildPath(uid, "build1/assets/katex.css")).toExist();
+        done();
+      }
+    });
+  });
+
+  it("should include fonts in the fonts", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      finish: function() {
+        expect(buildPath(uid, "build1/assets/KaTeX_AMS-Regular.eot")).toExist();
         done();
       }
     });
