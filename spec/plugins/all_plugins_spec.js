@@ -5,6 +5,7 @@ describe("All plugins", function() {
   it('should enable native plugins by default', function(done) {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
+      removePlugins: [],
       finish: function() {
         expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<math>")
         expect(buildPath(uid, "build1/first-chapter.html")).not.toHaveContent("$$")
