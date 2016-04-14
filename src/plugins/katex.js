@@ -1,6 +1,7 @@
 var through = require('through2');
 var path = require('path');
 var _ = require('lodash');
+var markdownitKatex = require('markdown-it-katex');
 
 var Plugin = function(){}
 
@@ -11,7 +12,7 @@ Plugin.prototype = {
     setup: function(config, extras, callback) {
 
       // make sure we parse $-$ and $$-$$ into katex markup
-      extras.md.use(require('markdown-it-katex'));
+      extras.md.use(markdownitKatex);
 
       // add the katex CSS to all formats. This probably needs to
       // change as we test how katex performs in e-readers.

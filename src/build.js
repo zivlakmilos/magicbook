@@ -31,6 +31,7 @@ var defaults = {
     "toc",
     "katex",
     "links",
+    "footnotes",
     "navigation",
     "images",
     "stylesheets",
