@@ -1,6 +1,8 @@
 var through = require('through2');
 var cheerio = require('cheerio');
 var _ = require('lodash');
+var tinyliquid = require('tinyliquid');
+var helpers = require('../helpers/helpers');
 var markdownitFootnotes = require('./footnotes/markdown-plugin');
 
 var Plugin = function(){};
@@ -16,14 +18,14 @@ Plugin.prototype = {
 
       // insert placeholder in {{ footnotes }}
       stream = stream.pipe(through.obj(function(file, enc, cb) {
-        _.set(file, "pageLocals.footnotes", "MBINSERT:FOOTNOTES");
+        _.set(file, "pageLocals.footnotes", '<div data-placeholder-footnotes />');
         cb(null, file);
       }));
 
       callback(null, config, stream, extras);
     },
 
-    convert: function(config, stream, extras, callback) {
+    finish: function(config, stream, extras, callback) {
       stream = stream.pipe(through.obj(function(file, enc, cb) {
 
         file.$el = file.$el || cheerio.load(file.contents.toString());
@@ -37,22 +39,34 @@ Plugin.prototype = {
 
           // create object to be used to inject footnote in liquid tag
           var fn = {
-            id: i + 1,
+            id: 'fn' + (i + 1),
             label: jel.html()
           }
 
           // replace text of footnote with link
-          jel.html('<a href="#fn'+ fn.id +'">' + fn.id + '</a>')
+          jel.html('<a href="#'+ fn.id +'">' + (i + 1) + '</a>')
 
           footnotes.push(fn);
         });
 
-        // call partial like toc
+        // only if this file has the placeholder
+        if(file.$el('div[data-placeholder-footnotes]').length > 0) {
 
-        // replace like toc
+          var tmpl = tinyliquid.compile("{% include footnotes.html %}");
+          var locals = { footnotes: footnotes };
+          var includes = _.get(file, "pageLocals.page.includes") || config.liquid.includes;
 
-        file.contents = new Buffer(file.$el.html());
-        cb(null, file)
+          helpers.renderLiquidTemplate(tmpl, locals, includes, function(err, data) {
+            // now replace the placeholder with the rendered liquid in the file.
+            file.$el('div[data-placeholder-footnotes]').replaceWith(data.toString())
+            file.contents = new Buffer(file.$el.html());
+            cb(err, file);
+          });
+
+        } else {
+          cb(null, file);
+        }
+
       }));
       callback(null, config, stream, extras);
     }

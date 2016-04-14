@@ -15,13 +15,22 @@ describe("Footnotes plugin", function() {
         var content = buildContent(uid, "build1/footnotes.html").toString();
         var $ = cheerio.load(content);
 
-        // markdown
+        // parse footnotes into ref links
         var fn1 = $('span[data-type=footnote]').eq(0);
         var fn2 = $('span[data-type=footnote]').eq(1);
         expect(fn1.text()).toEqual("1");
         expect(fn1.find('a').attr('href')).toEqual("#fn1");
         expect(fn2.text()).toEqual("2");
         expect(fn2.find('a').attr('href')).toEqual("#fn2");
+
+        // insert footnote text in partials
+        var fns1 = $('ol[data-type=footnotes] li').eq(0);
+        var fns2 = $('ol[data-type=footnotes] li').eq(1);
+        expect(fns1.text()).toEqual("Text of Markdown footnote.");
+        expect(fns1.attr('id')).toEqual("fn1");
+        expect(fns2.text()).toEqual("Text of HTMLBook footnote.");
+        expect(fns2.attr('id')).toEqual("fn2");
+
         done();
       }
     });
