@@ -7,3 +7,4 @@
 - Add Epub and Mobi (with XHTML serialization with xmlserializer)
 - Referencing a figure? Numbering figures?
 - Make sectionify more forgiving: No need for directly nested sections?
+- Right now each plugin does the extra liquid placeholder step. Should we do this once at finish?

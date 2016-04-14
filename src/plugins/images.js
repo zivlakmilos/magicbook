@@ -28,10 +28,7 @@ function replaceSrc(imageMap) {
 
   return through.obj(function(file, enc, cb) {
 
-    if(!file.$el) {
-      var content = file.contents.toString();
-      file.$el = cheerio.load(content);
-    }
+    file.$el = file.$el || cheerio.load(file.contents.toString());
 
     var changed = false;
 

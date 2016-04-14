@@ -17,11 +17,7 @@ Plugin.prototype = {
       // pipe each file
       stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-        // create cheerio element for file
-        if(!file.$el) {
-          var content = file.contents.toString();
-          file.$el = cheerio.load(content);
-        }
+        file.$el = file.$el || cheerio.load(file.contents.toString());
 
         // creating hashing object that uses file.path as salt
         var hashids = new Hashids(file.path, 5);

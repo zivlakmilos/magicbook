@@ -2,7 +2,7 @@ var cheerio = require('cheerio');
 
 describe("Footnotes plugin", function() {
 
-  it("should create HTMLBook footnotes from markdown footnotes", function(done) {
+  it("should convert both HTMLBook and MD footnotes", function(done) {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
       liquid: {
@@ -14,15 +14,17 @@ describe("Footnotes plugin", function() {
       finish: function() {
         var content = buildContent(uid, "build1/footnotes.html").toString();
         var $ = cheerio.load(content);
-        expect($('span[data-type=footnote]').text()).toEqual("Text of footnote.");
+
+        // markdown
+        var fn1 = $('span[data-type=footnote]').eq(0);
+        var fn2 = $('span[data-type=footnote]').eq(1);
+        expect(fn1.text()).toEqual("1");
+        expect(fn1.find('a').attr('href')).toEqual("#fn1");
+        expect(fn2.text()).toEqual("2");
+        expect(fn2.find('a').attr('href')).toEqual("#fn2");
         done();
       }
     });
   });
-
-  it("should insert HTMLBook footnotes in liquid tag");
-    // CHECK LINK
-    // CHECK INSERT IN LIQUID TAG
-    // THIS WILL BREAK THE TEST ABOVE
 
 });
