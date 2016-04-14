@@ -30,8 +30,9 @@ module.exports = function sub_plugin(md) {
     // We found the end of the link, and know for a fact it's a valid link;
     // so all that's left to do is to call tokenizer.
     if (!silent) {
+      var label = md.renderInline(state.src.slice(labelStart, labelEnd));
       var token = state.push('footnote_ref', '', 0);
-      token.meta = { label: state.src.slice(labelStart, labelEnd) };
+      token.meta = { label: label };
     }
 
     state.pos = labelEnd + 1;

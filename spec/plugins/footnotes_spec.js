@@ -26,7 +26,7 @@ describe("Footnotes plugin", function() {
         // insert footnote text in partials
         var fns1 = $('ol[data-type=footnotes] li').eq(0);
         var fns2 = $('ol[data-type=footnotes] li').eq(1);
-        expect(fns1.text()).toEqual("Text of Markdown footnote.");
+        expect(fns1.html()).toEqual("Text of <em>Markdown</em> footnote.");
         expect(fns1.attr('id')).toEqual("fn1");
         expect(fns2.text()).toEqual("Text of HTMLBook footnote.");
         expect(fns2.attr('id')).toEqual("fn2");

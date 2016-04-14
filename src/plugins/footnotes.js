@@ -37,7 +37,6 @@ Plugin.prototype = {
         file.$el('span[data-type=footnote]').each(function(i) {
 
           var jel = file.$el(this);
-
           // create object to be used to inject footnote in liquid tag
           var fn = {
             id: 'fn' + (i + 1),
