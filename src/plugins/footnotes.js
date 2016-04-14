@@ -19,6 +19,7 @@ Plugin.prototype = {
       // insert placeholder in {{ footnotes }}
       stream = stream.pipe(through.obj(function(file, enc, cb) {
         _.set(file, "pageLocals.footnotes", '<div data-placeholder-footnotes />');
+        _.set(file, "layoutLocals.footnotes", '<div data-placeholder-footnotes />');
         cb(null, file);
       }));
 
@@ -49,20 +50,20 @@ Plugin.prototype = {
           footnotes.push(fn);
         });
 
-        // only if this file has the placeholder
-        if(file.$el('div[data-placeholder-footnotes]').length > 0) {
+        // if we have any footnotes
+        var placeholder = file.$el('div[data-placeholder-footnotes]');
+        if(placeholder.length > 0) {
 
+          // render the footnotes
           var tmpl = tinyliquid.compile("{% include footnotes.html %}");
           var locals = { footnotes: footnotes };
           var includes = _.get(file, "pageLocals.page.includes") || config.liquid.includes;
 
           helpers.renderLiquidTemplate(tmpl, locals, includes, function(err, data) {
-            // now replace the placeholder with the rendered liquid in the file.
-            file.$el('div[data-placeholder-footnotes]').replaceWith(data.toString())
+            placeholder.replaceWith(data.toString())
             file.contents = new Buffer(file.$el.html());
             cb(err, file);
           });
-
         } else {
           cb(null, file);
         }
