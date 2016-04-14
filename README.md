@@ -260,6 +260,38 @@ By default, `magicbook` will add an auto-generated ID on every section with a HT
 
 You can rely on these ID's for internal references, as they are persistent across builds for documents that don't change. However, if you change the order of the sections, the ID's will change.
 
+## Footnotes
+
+`magicbook` will automatically parse Markdown or HTMLBook footnotes in your content, and give you the ability to render a custom footnotes section to your liking. First, write footnotes in Markdown.
+
+```md
+Denmark has 5 million people.^[I made that up]
+```
+
+... or HTML
+
+```html
+<p>Denmark has 5 million people.<span data-type="footnote">I made that up</span></p>
+``
+
+Then add a liquid variable where ever you want your compiled footnotes to appear.
+
+```liquid
+{{ footnotes }}
+```
+
+As liquid templates are evaluated before markdown conversion, and the footnotes are compiled after markdown conversion, `magicbook` will first insert a placeholder string during the liquid processing, and then later in the build process replace this placeholder with the output of a special include named `footnotes.html`. To generate a footnotes, you must have this include in your includes folder. The include will have access to the following array of footnotes:
+
+
+```js
+[{
+  id: "fn1",
+  label: "Text of footnotes",
+}]
+```
+
+All projects created with `magicbook new` will have a `footnotes.html` include, and that's a good reference to see what's possible.
+
 ## Images
 
 When you want to insert an image, simply create a folder called `images` in your book, save your image into this folder, and create an image tag using the name of your image.

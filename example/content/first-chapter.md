@@ -29,3 +29,11 @@ This is inline $5 + 5$ math. The next is a block math element.
 $$
 10 + 10
 $$
+
+## Footnotes
+
+You can also write footnotes using the Markdown syntax^[They are great], or the HTMLBook syntax<span data-type="footnote">They are great too</span>.
+
+Then you use the following `footnotes` liquid tag to insert the footnote references on the page. This is often done at the bottom of the page.
+
+{{ footnotes}}
