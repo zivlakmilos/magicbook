@@ -26,13 +26,13 @@ Plugin.prototype = {
           // if there was a file before this one, add placeholders
           if(files[i-1]) {
             file.prev = files[i-1];
-            nav.prev = { label: "MBINSERT:PREV:LABEL", href: "MBINSERT:PREV:HREF" }
+            nav.prev = { label: "MBINSERTPREVLABEL", href: "MBINSERTPREVHREF" }
           }
 
           // if there is a file after this one, add placeholders
           if(files[i+1]) {
             file.next = files[i+1];
-            nav.next = { label: "MBINSERT:NEXT:LABEL", href: "MBINSERT:NEXT:HREF" }
+            nav.next = { label: "MBINSERTNEXTLABEL", href: "MBINSERTNEXTHREF" }
           }
 
           _.set(file, "pageLocals.navigation", nav);
@@ -60,18 +60,18 @@ Plugin.prototype = {
           changed = true;
           file.prev.$el = file.prev.$el || cheerio.load(file.prev.contents.toString());
           var title = file.prev.$el('h1').first().text();
-          contents = contents.replace("MBINSERT:PREV:LABEL", title);
+          contents = contents.replace(/MBINSERTPREVLABEL/g, title);
           var href = path.relative(path.dirname(file.relative), file.prev.relative);
-          contents = contents.replace("MBINSERT:PREV:HREF", href);
+          contents = contents.replace(/MBINSERTPREVHREF/g, href);
         }
 
         if(file.next) {
           changed = true;
           file.next.$el = file.next.$el || cheerio.load(file.next.contents.toString());
           var title = file.next.$el('h1').first().text();
-          contents = contents.replace("MBINSERT:NEXT:LABEL", title);
+          contents = contents.replace(/MBINSERTNEXTLABEL/g, title);
           var href = path.relative(path.dirname(file.relative), file.next.relative);
-          contents = contents.replace("MBINSERT:NEXT:HREF", href);
+          contents = contents.replace(/MBINSERTNEXTHREF/g, href);
         }
 
         if(changed) {
