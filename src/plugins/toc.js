@@ -7,8 +7,6 @@ var htmlbookHelpers = require('../helpers/htmlbook');
 var streamHelpers = require('../helpers/stream');
 var _ = require('lodash');
 
-var Plugin = function(){};
-
 var levels = {
   "chapter" : 0,
   "appendix" : 0,
@@ -80,109 +78,100 @@ function getSections($, root, href) {
   return items;
 }
 
+var Plugin = function(registry) {
+  registry.before('liquid', 'toc:placeholders', this.insertPlaceholders);
+  registry.after('markdown:convert', 'toc:generate', this.generateTOC);
+};
+
 Plugin.prototype = {
 
-  hooks: {
+  // When the files are loaded, we add a liquid local that simply
+  // replace {{ toc }}  with a string placeholder. This is needed because
+  // liquid runs before markdown conversion, and the TOC is generated after
+  // markdown conversion. So in a later hook, we generate the TOC and insert
+  // the TOC instead of the placeholder.
+  insertPlaceholders: function(config, stream, extras, callback) {
+    stream = stream.pipe(through.obj(function(file, enc, cb) {
+      _.set(file, "pageLocals.toc", placeHolder);
+      _.set(file, "layoutLocals.toc", placeHolder);
+      cb(null, file);
+    }));
 
-    // When the files are loaded, we add a liquid local that simply
-    // replace {{ toc }}  with a string placeholder. This is needed because
-    // liquid runs before markdown conversion, and the TOC is generated after
-    // markdown conversion. So in a later hook, we generate the TOC and insert
-    // the TOC instead of the placeholder.
-    load: function(config, stream, extras, callback) {
-      stream = stream.pipe(through.obj(function(file, enc, cb) {
-        _.set(file, "pageLocals.toc", placeHolder);
-        _.set(file, "layoutLocals.toc", placeHolder);
-        cb(null, file);
-      }));
+    callback(null, config, stream, extras);
+  },
 
-      callback(null, config, stream, extras);
-    },
+  // When the files have been converted, we run the TOC generation.
+  // This is happening before the layouts, because it won't work if
+  // the markup is wrapped in container div's. We should rewrite the
+  // TOC generation to work with this.
+  generateTOC: function(config, stream, extras, callback) {
 
-    // When the files have been converted, we run the TOC generation.
-    // This is happening before the layouts, because it won't work if
-    // the markup is wrapped in container div's. We should rewrite the
-    // TOC generation to work with this.
-    convert: function(config, stream, extras, callback) {
+    var toc = {
+      type: 'book',
+      children: []
+    };
 
-      var toc = {
-        type: 'book',
-        children: []
-      };
+    // First run through every file and get a tree of the section
+    // navigation within that file. Save to our nac object.
+    stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-      // First run through every file and get a tree of the section
-      // navigation within that file. Save to our nac object.
-      stream = stream.pipe(through.obj(function(file, enc, cb) {
+      // create cheerio element for file if not present
+      file.$el = file.$el || cheerio.load(file.contents.toString());
 
-        // create cheerio element for file if not present
-        file.$el = file.$el || cheerio.load(file.contents.toString());
+      // make this work whether or not we have a
+      // full HTML file.
+      var root = file.$el.root();
+      var body = file.$el('body');
+      if(body.length) root = body;
 
-        // make this work whether or not we have a
-        // full HTML file.
-        var root = file.$el.root();
-        var body = file.$el('body');
-        if(body.length) root = body;
+      // add this files sections to the book children
+      var sections = getSections(file.$el, root, config.format == "pdf" ? '' : file.relative);
+      if(!_.isEmpty(sections)) {
+        toc.children = toc.children.concat(sections);
+      }
 
-        // add this files sections to the book children
-        var sections = getSections(file.$el, root, config.format == "pdf" ? '' : file.relative);
-        if(!_.isEmpty(sections)) {
-          toc.children = toc.children.concat(sections);
+      cb(null, file);
+    }));
+
+    // wait for the stream to finish, knowing all files have been
+    // parsed, and start a new stream that replaces all placeholders.
+    streamHelpers.finishWithFiles(stream, function(files) {
+
+      // create new stream from the files
+      stream = streamHelpers.streamFromArray(files)
+
+      // loop through each file and replace placeholder
+      // with toc include.
+      // check if there is a placeholder, and then fail if there is
+      // no include names toc.html
+      .pipe(through.obj(function(file, enc, cb) {
+
+        // only if this file has the placeholder
+        if(file.contents.toString().match(placeHolder)) {
+
+          var tmpl = tinyliquid.compile("{% include toc.html %}");
+          var locals = { toc: toc };
+          var includes = _.get(file, "pageLocals.page.includes") || config.liquid.includes;
+
+          helpers.renderLiquidTemplate(tmpl, locals, includes, function(err, data) {
+
+            // now replace the placeholder with the rendered liquid
+            // in the file.
+            var content = file.contents.toString();
+            file.contents = new Buffer(content.replace(placeHolder, data.toString()));
+            file.$el = undefined;
+
+            cb(err, file);
+          });
+
+        } else {
+          cb(null, file);
         }
 
-        cb(null, file);
       }));
 
-      this.toc = toc;
-
       callback(null, config, stream, extras);
-    },
-
-    // At the end, we replace the actual placeholder, so we can put
-    // the {{ toc }} tag in both a file and a layout.
-    finish: function(config, stream, extras, callback) {
-
-      var toc = this.toc;
-
-      // wait for the stream to finish, knowing all files have been
-      // parsed, and start a new stream that replaces all placeholders.
-      streamHelpers.finishWithFiles(stream, function(files) {
-
-        // create new stream from the files
-        stream = streamHelpers.streamFromArray(files)
-
-        // loop through each file and replace placeholder
-        // with toc include.
-        // check if there is a placeholder, and then fail if there is
-        // no include names toc.html
-        .pipe(through.obj(function(file, enc, cb) {
-
-          // only if this file has the placeholder
-          if(file.contents.toString().match(placeHolder)) {
-
-            var tmpl = tinyliquid.compile("{% include toc.html %}");
-            var locals = { toc: toc };
-            var includes = _.get(file, "pageLocals.page.includes") || config.liquid.includes;
-
-            helpers.renderLiquidTemplate(tmpl, locals, includes, function(err, data) {
-
-              // now replace the placeholder with the rendered liquid
-              // in the file.
-              var content = file.contents.toString();
-              file.contents = new Buffer(content.replace(placeHolder, data.toString()));
-              file.$el = undefined;
-
-              cb(err, file);
-            });
-
-          } else {
-            cb(null, file);
-          }
-
-        }));
-
-        callback(null, config, stream, extras);
-      });
-    }
+    });
   }
 }
 

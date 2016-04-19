@@ -4,7 +4,7 @@ var Hashids = require('hashids');
 var slug = require('slug');
 
 var Plugin = function(registry) {
-  registry.after('markdown:convert', this.createIds);
+  registry.after('markdown:convert', 'ids',  this.createIds);
 };
 
 var tags = ["section", "div"];

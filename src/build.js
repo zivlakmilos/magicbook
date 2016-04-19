@@ -3,14 +3,9 @@
 
 var helpers = require('./helpers/helpers');
 var PluginExecuter = require('./plugin_executer.js');
-
 var _ = require('lodash');
-var fs = require('fs');
-var vfs = require('vinyl-fs');
 var through = require('through2');
-var MarkdownIt = require('markdown-it')
 var gutil = require('gulp-util');
-var tinyliquid = require('tinyliquid');
 var path = require('path');
 
 // Variables
@@ -28,6 +23,9 @@ var defaults = {
     "markdown",
     "liquid",
     "layouts",
+    "stylesheets",
+    "javascripts",
+    "fonts",
     "html",
     "pdf",
     "frontmatter",
@@ -37,10 +35,7 @@ var defaults = {
     "links",
     "footnotes",
     "navigation",
-    "images",
-    "stylesheets",
-    "javascripts",
-    "fonts"
+    "images"
   ],
 
   "verbose" : true,
@@ -112,7 +107,7 @@ module.exports = function(jsonConfig) {
     if(config.removePlugins)  config.plugins = _.difference(config.plugins, config.removePlugins);
 
     // execute all plugin functions.
-    var args = [config, { destination: destination };
+    var args = [config, { destination: destination }];
     var finish = function(config, stream, extras) {
       if(config.verbose) console.log('Build', config.buildNumber, 'finished');
       if(config.finish) {
@@ -120,31 +115,5 @@ module.exports = function(jsonConfig) {
       }
     }
     executer.execute(config.plugins, args, finish);
-
-
-    // hook: setup
-    /*pluginHelpers.callHook('setup', plugins, [config, { md: md, destination: destination }], function(config, extras) {
-
-      // hook: load
-      pluginHelpers.callHook('load', plugins, [config, stream, extras], function(config, stream, extras) {
-
-        stream = stream
-          .pipe(removeNumbers())
-
-        pluginHelpers.callHook('convert', plugins, [config, stream, extras], function(config, stream, extras) {
-
-          stream = stream.pipe(layouts(config));
-
-          pluginHelpers.callHook('layout', plugins, [config, stream, extras], function(config, stream, extras) {
-
-            pluginHelpers.callHook('finish', plugins, [config, stream, extras], function(config, stream, extras) {
-
-
-
-            });
-          });
-        });
-      });
-    });*/
   });
 }

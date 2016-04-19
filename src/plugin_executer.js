@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var async = require('async');
 
 var Registry = function() {
   this.order = [];
@@ -33,7 +34,10 @@ Registry.prototype = {
 
 }
 
-var Executer = function() {}
+var Executer = function() {
+  this.plugins = {};
+}
+
 Executer.prototype = {
 
   execute: function(plugins, args, cb) {
@@ -48,9 +52,9 @@ Executer.prototype = {
 
     // loop through and instantiate each plugin, passing in
     // the registry object.
-    _.each(plugins, function(plugin) {
-      if(this.plugins[plugin] && plugin !== 'load') new this.plugins[plugin](registry);
-    }, this);
+    _.each(plugins, _.bind(function(plugin) {
+      if(this.plugins[plugin]) new this.plugins[plugin](registry);
+    }, this));
 
     // create an async waterfall chain from the registry order.
     var chain = _.map(registry.order, function(o) { return o.fn; });
@@ -72,11 +76,11 @@ Executer.prototype = {
   // ------------------------------------------------
 
   requirePlugins: function(plugins) {
-    _.each(plugins, function(plugin) {
+    _.each(plugins, _.bind(function(plugin) {
       if(this.plugins[plugin]) {
         this.plugins = this.requirePlugin(plugin);
       }
-    }, this);
+    }, this));
   },
 
   requirePlugin: function(file) {

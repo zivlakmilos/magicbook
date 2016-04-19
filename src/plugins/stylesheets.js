@@ -48,85 +48,85 @@ function scss(config) {
 	});
 }
 
-var Plugin = function(){}
+var Plugin = function(registry) {
+  registry.before('load', 'stylesheets:move', _.bind(this.moveStylesheets, this));
+  registry.before('liquid', 'stylesheets:insert', _.bind(this.insertStylesheets, this));
+}
 
 Plugin.prototype = {
 
-  hooks: {
+  moveStylesheets: function(config, extras, callback) {
 
-    setup: function(config, extras, callback) {
+    var that = this;
+    that.allFiles = [];
 
-      var that = this;
-      that.allFiles = [];
+    // get the stylesheets needed for this format
+    var stylesheets = _.get(config, "stylesheets.files");
 
-      // get the stylesheets needed for this format
-      var stylesheets = _.get(config, "stylesheets.files");
+    // if the array exists
+    if(stylesheets) {
 
-      // if the array exists
-      if(stylesheets) {
+      var cssFolder = config.stylesheets.destination;
+      var cssFolderAbsolute = path.join(extras.destination, cssFolder);
 
-        var cssFolder = config.stylesheets.destination;
-        var cssFolderAbsolute = path.join(extras.destination, cssFolder);
+      // gather the files
+      var cssStream = vfs.src(stylesheets)
+        .pipe(scss(config));
 
-        // gather the files
-        var cssStream = vfs.src(stylesheets)
-          .pipe(scss(config));
-
-        // bundle
-        var bundle = _.get(config, "stylesheets.bundle");
-        if(bundle) {
-          var filename = _.isString(bundle) ? bundle : "bundle.css"
-          cssStream = cssStream.pipe(concat(filename));
-        }
-
-        // compress
-        if(_.get(config, "stylesheets.compress")) {
-          cssStream = cssStream.pipe(compress());
-        }
-
-        // digest
-        if(_.get(config, "stylesheets.digest")) {
-          cssStream = cssStream.pipe(streamHelpers.digest());
-        }
-
-        // put all the filenames in the stylesheets array
-        cssStream = cssStream.pipe(through.obj(function(file, enc, cb) {
-          // save the path to the css file from within the build folder
-          that.allFiles.push(path.join(cssFolder, file.relative));
-          cb(null, file);
-        }));
-
-        // finish
-        cssStream
-          .pipe(vfs.dest(cssFolderAbsolute))
-          .on('finish', function() {
-            callback(null, config, extras);
-          });
-
-      } else {
-        callback(null, config, extras);
+      // bundle
+      var bundle = _.get(config, "stylesheets.bundle");
+      if(bundle) {
+        var filename = _.isString(bundle) ? bundle : "bundle.css"
+        cssStream = cssStream.pipe(concat(filename));
       }
-    },
 
-    load: function(config, stream, extras, callback) {
+      // compress
+      if(_.get(config, "stylesheets.compress")) {
+        cssStream = cssStream.pipe(compress());
+      }
 
-      var allFiles = this.allFiles;
+      // digest
+      if(_.get(config, "stylesheets.digest")) {
+        cssStream = cssStream.pipe(streamHelpers.digest());
+      }
 
-      // add the locals to the files liquidLocals
-      stream = stream.pipe(through.obj(function(file, enc, cb) {
-
-        var styles = "";
-        _.each(allFiles, function(js) {
-          styles += '<link rel="stylesheet" href="' + path.relative(path.dirname(file.relative), js) +'">\n';
-        });
-
-        _.set(file, "layoutLocals.stylesheets", styles);
-
+      // put all the filenames in the stylesheets array
+      cssStream = cssStream.pipe(through.obj(function(file, enc, cb) {
+        // save the path to the css file from within the build folder
+        that.allFiles.push(path.join(cssFolder, file.relative));
         cb(null, file);
       }));
 
-      callback(null, config, stream, extras);
+      // finish
+      cssStream
+        .pipe(vfs.dest(cssFolderAbsolute))
+        .on('finish', function() {
+          callback(null, config, extras);
+        });
+
+    } else {
+      callback(null, config, extras);
     }
+  },
+
+  insertStylesheets: function(config, stream, extras, callback) {
+
+    var allFiles = this.allFiles;
+
+    // add the locals to the files liquidLocals
+    stream = stream.pipe(through.obj(function(file, enc, cb) {
+
+      var styles = "";
+      _.each(allFiles, function(js) {
+        styles += '<link rel="stylesheet" href="' + path.relative(path.dirname(file.relative), js) +'">\n';
+      });
+
+      _.set(file, "layoutLocals.stylesheets", styles);
+
+      cb(null, file);
+    }));
+
+    callback(null, config, stream, extras);
   }
 }
 

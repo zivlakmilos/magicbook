@@ -2,7 +2,7 @@ var vfs = require('vinyl-fs');
 var through = require('through2');
 
 var Plugin = function(registry) {
-  registry.add('load', this, this.loadFiles);
+  registry.add('load', this.loadFiles);
 };
 
 Plugin.prototype = {

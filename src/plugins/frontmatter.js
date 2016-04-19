@@ -3,7 +3,7 @@ var yamlFront = require('yaml-front-matter');
 var _ = require('lodash');
 
 var Plugin = function(registry) {
-  registry.after('load', this.parseFrontmatter);
+  registry.after('load', 'frontmatter',  this.parseFrontmatter);
 };
 
 Plugin.prototype = {

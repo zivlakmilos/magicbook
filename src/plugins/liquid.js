@@ -4,7 +4,7 @@ var helpers = require('../helpers/helpers');
 var _ = require('lodash');
 
 var Plugin = function(registry) {
-  registry.before('markdown:convert', this.liquidPages);
+  registry.before('markdown:convert', 'liquid', this.liquidPages);
 };
 
 Plugin.prototype = {

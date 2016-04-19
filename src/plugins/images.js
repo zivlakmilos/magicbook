@@ -6,7 +6,10 @@ var through = require('through2');
 var streamHelpers = require('../helpers/stream');
 var cheerio = require('cheerio');
 
-var Plugin = function(){};
+var Plugin = function(registry) {
+  registry.before('load', 'images:move', _.bind(this.moveImages, this));
+  registry.after('markdown:convert', 'images:replace', _.bind(this.replaceImages, this));
+};
 
 // through2 pipe function that creates a hasmap of
 // old -> image names.
@@ -66,37 +69,33 @@ function replaceSrc(imageMap) {
 
 Plugin.prototype = {
 
-  hooks: {
+  moveImages: function(config, extras, callback) {
 
-    setup: function(config, extras, callback) {
+    this.imageMap = {};
 
-      this.imageMap = {};
+    // load all files in the source folder
+    var imagesStream = vfs.src(config.images.files);
 
-      // load all files in the source folder
-      var imagesStream = vfs.src(config.images.files);
+      // digest
+      if(_.get(config, "images.digest")) {
+        imagesStream = imagesStream.pipe(streamHelpers.digest());
+      }
 
-        // digest
-        if(_.get(config, "images.digest")) {
-          imagesStream = imagesStream.pipe(streamHelpers.digest());
-        }
+      // save map of old and new file names
+      imagesStream.pipe(mapImages(this.imageMap, config.images.files, config.images.destination))
 
-        // save map of old and new file names
-        imagesStream.pipe(mapImages(this.imageMap, config.images.files, config.images.destination))
+      // vinyl-fs dest automatically determines whether a file
+      // should be updated or not, based on the mtime timestamp.
+      // so we don't need to do that manually.
+      .pipe(vfs.dest(path.join(extras.destination, config.images.destination)))
+      .on('finish', function() {
+        callback(null, config, extras);
+      });
+  },
 
-        // vinyl-fs dest automatically determines whether a file
-        // should be updated or not, based on the mtime timestamp.
-        // so we don't need to do that manually.
-        .pipe(vfs.dest(path.join(extras.destination, config.images.destination)))
-        .on('finish', function() {
-          callback(null, config, extras);
-        });
-    },
-
-    // after conversion, replace all image links in files
-    convert: function(config, stream, extras, callback) {
-      stream = stream.pipe(replaceSrc(this.imageMap));
-      callback(null, config, stream, extras);
-    }
+  replaceImages: function(config, stream, extras, callback) {
+    stream = stream.pipe(replaceSrc(this.imageMap));
+    callback(null, config, stream, extras);
   }
 }
 

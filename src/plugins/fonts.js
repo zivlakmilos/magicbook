@@ -6,7 +6,7 @@ var through = require('through2');
 var streamHelpers = require('../helpers/stream');
 
 var Plugin = function(registry) {
-  registry.before('load', this.moveFiles);
+  registry.before('load', 'fonts', this.moveFiles);
 };
 
 Plugin.prototype = {

@@ -4,13 +4,13 @@ var htmlbookHelpers = require('../helpers/htmlbook');
 var gutil = require('gulp-util');
 
 var Plugin = function(registry){
-  registry.before('load', this.createConverter);
+  registry.before('load', 'markdown:instantiate', this.instantiate);
   registry.add('markdown:convert', this.convert);
 };
 
 Plugin.prototype = {
 
-  createConverter: function(config, stream, extras, cb) {
+  instantiate: function(config, stream, extras, cb) {
 
     var md = new MarkdownIt({
       html: true,
