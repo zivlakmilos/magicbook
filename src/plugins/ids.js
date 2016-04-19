@@ -3,67 +3,66 @@ var cheerio = require('cheerio');
 var Hashids = require('hashids');
 var slug = require('slug');
 
-var Plugin = function(){};
+var Plugin = function(registry) {
+  registry.after('markdown:convert', this.createIds);
+};
 
 var tags = ["section", "div"];
 var needIds = "section[data-type]:not([id]), div[data-type]:not([id])";
 
 Plugin.prototype = {
 
-  hooks: {
+  createIds: function(config, stream, extras, callback) {
 
-    convert: function(config, stream, extras, callback) {
+    // pipe each file
+    stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-      // pipe each file
-      stream = stream.pipe(through.obj(function(file, enc, cb) {
+      file.$el = file.$el || cheerio.load(file.contents.toString());
 
-        file.$el = file.$el || cheerio.load(file.contents.toString());
+      // creating hashing object that uses file.path as salt
+      var hashids = new Hashids(file.path, 5);
 
-        // creating hashing object that uses file.path as salt
-        var hashids = new Hashids(file.path, 5);
+      // loop through every element needing ID and
+      // generate an ID.
+      file.$el(needIds).each(function(i, el) {
 
-        // loop through every element needing ID and
-        // generate an ID.
-        file.$el(needIds).each(function(i, el) {
+        var jel = file.$el(this);
+        var ids = [];
 
-          var jel = file.$el(this);
-          var ids = [];
+        // if the element has an ID, return
+        if(jel.attr('id')) {
+          return;
+        }
 
-          // if the element has an ID, return
-          if(jel.attr('id')) {
-            return;
-          }
+        // the tag is a unique ID
+        ids.push(tags.indexOf(el.name));
 
-          // the tag is a unique ID
-          ids.push(tags.indexOf(el.name));
+        // the index in the search is a unique id too
+        ids.push(i);
 
-          // the index in the search is a unique id too
-          ids.push(i);
+        // hash all those ids into a hash
+        var hashId = hashids.encode(ids);
 
-          // hash all those ids into a hash
-          var hashId = hashids.encode(ids);
+        // find the first title in the section
+        var title = jel.find("h1, h2, h3, h4, h5").first();
 
-          // find the first title in the section
-          var title = jel.find("h1, h2, h3, h4, h5").first();
+        // if we have a title, make ID of title and hash
+        if(title.length) {
+          titleSlug = slug(title.text().toLowerCase());
+          jel.attr('id', titleSlug + '-' + hashId);
+        }
+        // otherwise just use hash
+        else {
+          jel.attr('id', hashId);
+        }
+      });
 
-          // if we have a title, make ID of title and hash
-          if(title.length) {
-            titleSlug = slug(title.text().toLowerCase());
-            jel.attr('id', titleSlug + '-' + hashId);
-          }
-          // otherwise just use hash
-          else {
-            jel.attr('id', hashId);
-          }
-        });
+      file.contents = new Buffer(file.$el.html());
 
-        file.contents = new Buffer(file.$el.html());
+      cb(null, file);
+    }));
 
-        cb(null, file);
-      }));
-
-      callback(null, config, stream, extras);
-    }
+    callback(null, config, stream, extras);
   }
 }
 

@@ -6,21 +6,28 @@ var Registry = function() {
 
 Registry.prototype = {
 
-  before: function(beforeLabel, label, plugin, fn) {
+  add: function(label, fn) {
+    this.order.push({
+      name: label,
+      fn: fn
+    });
+  },
+
+  before: function(beforeLabel, label, fn) {
     var beforeIndex = _.findIndex(this.order, function(o) { return o.name == beforeLabel; });
     if (beforeIndex === -1) { return console.log("Cannot register", label, ".", beforeLabel, 'not found') }
     this.order.splice(beforeIndex, 0, {
       name: label,
-      fn: _.bind(plugin, fn)
+      fn: fn
     });
-  }
+  },
 
-  after: function(afterLabel, label, plugin, fn) {
+  after: function(afterLabel, label, fn) {
     var afterIndex = _.findIndex(this.order, function(o) { return o.name == afterLabel; });
     if (afterIndex === -1) { return console.log("Cannot register", label, ".", afterLabel, 'not found') }
     this.order.splice(afterIndex + 1, 0, {
       name: label,
-      fn: _.bind(plugin, fn)
+      fn: fn
     });
   }
 
@@ -42,7 +49,7 @@ Executer.prototype = {
     // loop through and instantiate each plugin, passing in
     // the registry object.
     _.each(plugins, function(plugin) {
-      if(this.plugins[plugin]) new this.plugins[plugin](registry);
+      if(this.plugins[plugin] && plugin !== 'load') new this.plugins[plugin](registry);
     }, this);
 
     // create an async waterfall chain from the registry order.

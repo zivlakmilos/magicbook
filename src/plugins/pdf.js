@@ -5,56 +5,48 @@ var path = require('path');
 var _ = require('lodash');
 var streamHelpers = require('../helpers/stream');
 
-var Plugin = function(){};
+var Plugin = function(registry) {
+  registry.after('markdown', 'pdf:consolidate', this.consolidate);
+  registry.add('pdf:save', this.savePdf);
+};
 
 Plugin.prototype = {
 
-  hooks: {
+  consolidate: function(config, stream, extras, callback) {
 
-    convert: function(config, stream, extras, callback) {
+    // if this is the pdf format
+    if(config.format == "pdf") {
+      stream = stream.pipe(concat('consolidated.html'))
+        .pipe(streamHelpers.resetCheerio());
+    }
+    callback(null, config, stream, extras);
+  },
 
-      // if this is the pdf format
-      if(config.format == "pdf") {
+  savePdf: function(config, stream, extras, callback) {
 
-        // consolidate all files into a single one
-        stream = stream.pipe(concat('consolidated.html'))
-          .pipe(streamHelpers.resetCheerio());
-      }
-
-      callback(null, config, stream, extras);
-
-    },
-
-    finish: function(config, stream, extras, callback) {
-
-      if(config.format == "pdf") {
-
-        // save consolidated file to destination
-        stream = stream.pipe(vfs.dest(extras.destination));
-
-        // when stream is finished
-        stream.on('finish', function() {
-
-          // run prince PDF generation
-          Prince()
-            .inputs(path.join(extras.destination, "consolidated.html"))
-            .output(path.join(extras.destination, "consolidated.pdf"))
-            .execute()
-            .then(function () {
-              callback(null, config, stream, extras);
-            }, function (error) {
-              console.log("Prince XML error")
-              callback(error);
-            });
-        });
-
-      }
-      else {
-        callback(null, config, stream, extras);
-      }
-
+    // Do not run for other formats than PDF
+    if(config.format !== 'pdf') {
+      return callback(null, config, stream, extras);
     }
 
+    // save consolidated file to destination
+    stream = stream.pipe(vfs.dest(extras.destination));
+
+    // when stream is finished
+    stream.on('finish', function() {
+
+      // run prince PDF generation
+      Prince()
+        .inputs(path.join(extras.destination, "consolidated.html"))
+        .output(path.join(extras.destination, "consolidated.pdf"))
+        .execute()
+        .then(function () {
+          callback(null, config, stream, extras);
+        }, function (error) {
+          console.log("Prince XML error")
+          callback(error);
+        });
+    });
   }
 };
 

@@ -2,8 +2,6 @@
 // --------------------------------------------
 
 var helpers = require('./helpers/helpers');
-var fileHelpers = require('./helpers/file');
-var htmlbookHelpers = require('./helpers/htmlbook');
 var PluginExecuter = require('./plugin_executer.js');
 
 var _ = require('lodash');
@@ -22,10 +20,15 @@ var pluginsCache = {};
 var layoutCache = {};
 
 var defaults = {
-  "verbose" : true,
-  "files" : "content/*.md",
-  "destination" : "build/:build",
+
+  // The most important plugins are specified first, so
+  // the following plugins can register before/after them.
   "plugins" : [
+    "load",
+    "markdown",
+    "liquid",
+    "html",
+    "pdf",
     "frontmatter",
     "ids",
     "toc",
@@ -36,11 +39,12 @@ var defaults = {
     "images",
     "stylesheets",
     "javascripts",
-    "fonts",
-    "liquid",
-    "html",
-    "pdf"
+    "fonts"
   ],
+
+  "verbose" : true,
+  "files" : "content/*.md",
+  "destination" : "build/:build",
   "liquid" : {
     "includes" : "includes"
   },
@@ -60,23 +64,6 @@ var defaults = {
   }
 }
 
-function getMarkdownConverter() {
-
-  var md = new MarkdownIt({
-
-    html: true,
-
-    // make sure that we add htmlbook to code examples
-    highlight: function (str, lang) {
-      var langClass = _.isEmpty(lang) ? '' : ' data-code-language="'+lang+'"';
-      return '<pre data-type="programlisting"'+langClass+'><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-    }
-
-  });
-
-  return md;
-}
-
 // Pipes
 // --------------------------------------------
 
@@ -87,35 +74,6 @@ function removeNumbers() {
     file.path = file.path.replace(/\/[\d-_]*/g, '/');
     cb(null, file);
 	});
-}
-
-// through2 function to convert a markdown file to html
-// Returns: Vinyl filestream
-function markdown(md) {
-  return through.obj(function (file, enc, cb) {
-    if(fileHelpers.isMarkdown(file)) {
-
-      // convert md to HTML
-      var fileHTML = md.render(file.contents.toString());
-
-      // make HTMLBook sections from headings
-      var sectionHTML = htmlbookHelpers.makeHtmlBook(fileHTML);
-
-      // put that back into the file
-      file.contents = new Buffer(sectionHTML);
-      file.path = gutil.replaceExtension(file.path, '.html');
-
-    }
-    cb(null, file);
-	});
-}
-
-// Duplicates a stream. Used when the format chains diverge.
-// Returns: Duplicated file stream
-function duplicate() {
-  return through.obj(function(file, enc, cb) {
-    cb(null, file.clone());
-  });
 }
 
 // Assigns layouts to the files in the stream.
@@ -190,16 +148,12 @@ module.exports = function(jsonConfig) {
     // figure out the build folder for this format
     var destination = helpers.destination(config.destination, config.buildNumber);
 
-    // we create a converter for each format, as each format
-    // can have different markdown settings.
-    var md = getMarkdownConverter();
-
     // Figure out what plugins are needed for this build
     if(config.addPlugins)     config.plugins = config.plugins.concat(config.addPlugins);
     if(config.removePlugins)  config.plugins = _.difference(config.plugins, config.removePlugins);
 
     // execute all plugin functions.
-    var args = [config, { md: md, destination: destination };
+    var args = [config, { destination: destination };
     var finish = function(config, stream, extras) {
       if(config.verbose) console.log('Build', config.buildNumber, 'finished');
       if(config.finish) {
@@ -212,15 +166,11 @@ module.exports = function(jsonConfig) {
     // hook: setup
     /*pluginHelpers.callHook('setup', plugins, [config, { md: md, destination: destination }], function(config, extras) {
 
-      // create our stream
-      var stream = vfs.src(config.files);
-
       // hook: load
       pluginHelpers.callHook('load', plugins, [config, stream, extras], function(config, stream, extras) {
 
         stream = stream
           .pipe(removeNumbers())
-          .pipe(markdown(md));
 
         pluginHelpers.callHook('convert', plugins, [config, stream, extras], function(config, stream, extras) {
 
