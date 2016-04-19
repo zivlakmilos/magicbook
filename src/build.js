@@ -3,8 +3,8 @@
 
 var helpers = require('./helpers/helpers');
 var fileHelpers = require('./helpers/file');
-var pluginHelpers = require('./helpers/plugin');
 var htmlbookHelpers = require('./helpers/htmlbook');
+var PluginExecuter = require('./plugin_executer.js');
 
 var _ = require('lodash');
 var fs = require('fs');
@@ -171,6 +171,10 @@ module.exports = function(jsonConfig) {
     return console.log("No build settings detected. Please add a builds array to your config");
   }
 
+  // Create the plugin executer object, which handles proper loading of
+  // plugins, and waterfall execution per build.
+  var executer = new PluginExecuter();
+
   // run build for each format
   _.each(jsonConfig.builds, function(build, i) {
 
@@ -180,21 +184,8 @@ module.exports = function(jsonConfig) {
     // make a config object that consists of the build config,
     // with the main config and defaults merged on top of it.
     // We remove the "builds" property and add the build number.
-    var config = {};
-    // _.defaults(config, jsonConfig, defaults);
-    _.merge(config, defaults, jsonConfig, build);
-    config.buildNumber = i + 1;
+    var config = _.merge({ buildNumber: i + 1 }, defaults, jsonConfig, build);
     delete config.builds;
-
-    // if there are addPlugins, add it to end of plugins.
-    if(config.addPlugins) {
-      config.plugins = config.plugins.concat(config.addPlugins);
-    }
-
-    // if there are removePlugins, remove them from plugins.
-    if(config.removePlugins) {
-      config.plugins = _.difference(config.plugins, config.removePlugins);
-    }
 
     // figure out the build folder for this format
     var destination = helpers.destination(config.destination, config.buildNumber);
@@ -203,12 +194,23 @@ module.exports = function(jsonConfig) {
     // can have different markdown settings.
     var md = getMarkdownConverter();
 
-    // require and instantiate plugins for this format
-    pluginsCache = fileHelpers.requireFiles(pluginsCache, config.plugins, "plugins", config.verbose)
-    var plugins = pluginHelpers.instantiatePlugins(pluginsCache, config.plugins);
+    // Figure out what plugins are needed for this build
+    if(config.addPlugins)     config.plugins = config.plugins.concat(config.addPlugins);
+    if(config.removePlugins)  config.plugins = _.difference(config.plugins, config.removePlugins);
+
+    // execute all plugin functions.
+    var args = [config, { md: md, destination: destination };
+    var finish = function(config, stream, extras) {
+      if(config.verbose) console.log('Build', config.buildNumber, 'finished');
+      if(config.finish) {
+        config.finish(config.format, null);
+      }
+    }
+    executer.execute(config.plugins, args, finish);
+
 
     // hook: setup
-    pluginHelpers.callHook('setup', plugins, [config, { md: md, destination: destination }], function(config, extras) {
+    /*pluginHelpers.callHook('setup', plugins, [config, { md: md, destination: destination }], function(config, extras) {
 
       // create our stream
       var stream = vfs.src(config.files);
@@ -228,15 +230,12 @@ module.exports = function(jsonConfig) {
 
             pluginHelpers.callHook('finish', plugins, [config, stream, extras], function(config, stream, extras) {
 
-              if(config.verbose) console.log('Build', config.buildNumber, 'finished');
-              if(config.finish) {
-                config.finish(config.format, null);
-              }
+
 
             });
           });
         });
       });
-    });
+    });*/
   });
 }

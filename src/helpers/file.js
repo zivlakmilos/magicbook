@@ -49,61 +49,6 @@ var helpers = {
         cb();
       });
     });
-  },
-
-  // Requires and caches files in cachedFiles with the requireFile
-  // function. See below.
-  requireFiles: function(filesCache, neededFiles, localFolder, verbose) {
-
-    // loop through each of the required plugins
-    _.each(neededFiles, function(file) {
-
-      // if this file has not been required yet
-      if(!filesCache[file]) {
-
-        // require it and save to cache
-        filesCache[file] = helpers.requireFile(file, localFolder, verbose);
-      }
-    });
-
-    return filesCache;
-  },
-
-  // This function can be used to require a file or NPM packages by
-  // name. It first searches through the folder specified in localFolder,
-  // then searches the book repo for the file, and then tries to require
-  // as NPM package.
-  requireFile: function(file, localFolder, verbose) {
-
-    var loadedFile;
-
-    // try to load the file as a local file
-    try { loadedFile = require(path.join(__dirname, "..", localFolder, file)); }
-      catch (e1) {
-        console.log(e1)
-        if(e1 instanceof SyntaxError) {
-          if(verbose) console.log("Plugin file: " + file + " has syntax errors. " + e1.toString());
-        } else {
-          // try to load the file as a file in the book
-          try { loadedFile = require(path.join(process.cwd(), file)); } catch(e2) {
-            if(e2 instanceof SyntaxError) {
-              if(verbose) console.log("Plugin file: " + file + " has syntax errors. " + e2.toString());
-            } else {
-              // try to load the file as a node package
-              try { loadedFile = require(file); } catch(e3) {
-                if(e3 instanceof SyntaxError) {
-                  if(verbose) console.log("Plugin file: " + file + " has syntax errors. " + e3.toString());
-                } else {
-                  if(verbose) console.log("Required file: " + file + " cannot be found");
-                }
-              }
-            }
-          }
-        }
-
-    }
-
-    return loadedFile;
   }
 
 };
