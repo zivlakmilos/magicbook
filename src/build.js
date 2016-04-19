@@ -27,6 +27,7 @@ var defaults = {
     "load",
     "markdown",
     "liquid",
+    "layouts",
     "html",
     "pdf",
     "frontmatter",
@@ -74,48 +75,6 @@ function removeNumbers() {
     file.path = file.path.replace(/\/[\d-_]*/g, '/');
     cb(null, file);
 	});
-}
-
-// Assigns layouts to the files in the stream.
-// Prioritizes format layout over main layout.
-function layouts(config) {
-
-  return through.obj(function(file, enc, cb) {
-
-    var layout = _.get(file, "layoutLocals.page.layout") || config.layout;
-    var includes = _.get(file, "layoutLocals.page.includes") || config.liquid.includes;
-
-    if(layout) {
-
-      // create the object to pass into liquid for this file
-      var locals = {
-        content: file.contents.toString(),
-        format: config.format,
-        config: config
-      }
-
-      if(file.layoutLocals) {
-        _.assign(locals, file.layoutLocals);
-      }
-
-      // if the cache has not been loaded, load the file
-      // and create a template from it.
-      if(!layoutCache[layout]) {
-        var layoutContent = fs.readFileSync(layout);
-        layoutCache[layout] = tinyliquid.compile(layoutContent.toString());
-      }
-
-      // then render the layout
-      helpers.renderLiquidTemplate(layoutCache[layout], locals, includes, function(err, data) {
-        file.contents = new Buffer(data);
-        file.$el = undefined;
-        cb(err, file);
-      });
-
-    } else {
-      cb(null, file);
-    }
-  });
 }
 
 // Main
