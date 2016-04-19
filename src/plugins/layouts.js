@@ -1,4 +1,5 @@
 var through = require('through2');
+var _ = require('lodash');
 
 var Plugin = function(registry) {
   this.layouts = {};

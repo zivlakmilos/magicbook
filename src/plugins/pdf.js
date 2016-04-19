@@ -6,7 +6,7 @@ var _ = require('lodash');
 var streamHelpers = require('../helpers/stream');
 
 var Plugin = function(registry) {
-  registry.after('markdown', 'pdf:consolidate', this.consolidate);
+  registry.after('markdown:convert', 'pdf:consolidate', this.consolidate);
   registry.add('pdf:save', this.savePdf);
 };
 

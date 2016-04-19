@@ -2,6 +2,7 @@ var through = require('through2');
 var fileHelpers = require('../helpers/file');
 var htmlbookHelpers = require('../helpers/htmlbook');
 var gutil = require('gulp-util');
+var MarkdownIt = require('markdown-it');
 
 var Plugin = function(registry){
   registry.before('load', 'markdown:instantiate', this.instantiate);
@@ -10,7 +11,7 @@ var Plugin = function(registry){
 
 Plugin.prototype = {
 
-  instantiate: function(config, stream, extras, cb) {
+  instantiate: function(config, extras, cb) {
 
     var md = new MarkdownIt({
       html: true,
@@ -21,7 +22,7 @@ Plugin.prototype = {
     });
 
     extras.md = md;
-    cb(null, config, stream, extras);
+    cb(null, config, extras);
   },
 
   convert: function(config, stream, extras, cb) {

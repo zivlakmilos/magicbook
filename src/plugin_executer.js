@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var async = require('async');
+var path = require('path');
 
 var Registry = function() {
   this.order = [];
@@ -53,7 +54,9 @@ Executer.prototype = {
     // loop through and instantiate each plugin, passing in
     // the registry object.
     _.each(plugins, _.bind(function(plugin) {
-      if(this.plugins[plugin]) new this.plugins[plugin](registry);
+      if(this.plugins[plugin]) {
+        new this.plugins[plugin](registry);
+      }
     }, this));
 
     // create an async waterfall chain from the registry order.
@@ -77,8 +80,8 @@ Executer.prototype = {
 
   requirePlugins: function(plugins) {
     _.each(plugins, _.bind(function(plugin) {
-      if(this.plugins[plugin]) {
-        this.plugins = this.requirePlugin(plugin);
+      if(!this.plugins[plugin]) {
+        this.plugins[plugin] = this.requirePlugin(plugin);
       }
     }, this));
   },
@@ -88,7 +91,7 @@ Executer.prototype = {
     var loadedFile;
 
     // try to load the file as a local file
-    try { loadedFile = require(path.join(__dirname, "..", 'plugins', file)); }
+    try { loadedFile = require(path.join(__dirname, 'plugins', file)); }
       catch (e1) {
         if(e1 instanceof SyntaxError) {
           console.log("Plugin file: " + file + " has syntax errors. " + e1.toString());
