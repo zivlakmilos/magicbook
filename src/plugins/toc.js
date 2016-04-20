@@ -7,6 +7,12 @@ var htmlbookHelpers = require('../helpers/htmlbook');
 var streamHelpers = require('../helpers/stream');
 var _ = require('lodash');
 
+var Plugin = function(registry) {
+  registry.before('liquid', 'toc:placeholders', _.bind(this.insertPlaceholders, this));
+  registry.after('ids', 'toc:generate', _.bind(this.generateTOC, this));
+  registry.after('layouts', 'toc:insert', _.bind(this.insertTOC, this));
+};
+
 var levels = {
   "chapter" : 0,
   "appendix" : 0,
@@ -78,11 +84,6 @@ function getSections($, root, href) {
   return items;
 }
 
-var Plugin = function(registry) {
-  registry.before('liquid', 'toc:placeholders', this.insertPlaceholders);
-  registry.after('markdown:convert', 'toc:generate', this.generateTOC);
-};
-
 Plugin.prototype = {
 
   // When the files are loaded, we add a liquid local that simply
@@ -112,7 +113,7 @@ Plugin.prototype = {
     };
 
     // First run through every file and get a tree of the section
-    // navigation within that file. Save to our nac object.
+    // navigation within that file. Save to our nav object.
     stream = stream.pipe(through.obj(function(file, enc, cb) {
 
       // create cheerio element for file if not present
@@ -132,6 +133,15 @@ Plugin.prototype = {
 
       cb(null, file);
     }));
+
+    this.toc = toc;
+
+    callback(null, config, stream, extras);
+  },
+
+  insertTOC: function(config, stream, extras, callback) {
+
+    var toc = this.toc;
 
     // wait for the stream to finish, knowing all files have been
     // parsed, and start a new stream that replaces all placeholders.

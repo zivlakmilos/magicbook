@@ -1,14 +1,19 @@
 var through = require('through2');
+var fs = require('fs');
+var tinyliquid = require('tinyliquid');
+var helpers = require('../helpers/helpers');
 var _ = require('lodash');
 
 var Plugin = function(registry) {
   this.layouts = {};
-  registry.after('markdown:convert', 'layouts', _.bind(this.addLayouts));
+  registry.after('markdown:convert', 'layouts', _.bind(this.addLayouts, this));
 };
 
 Plugin.prototype = {
 
   addLayouts: function(config, stream, extras, callback) {
+
+    var that = this;
 
     stream = stream.pipe(through.obj(function(file, enc, cb) {
 
@@ -30,13 +35,13 @@ Plugin.prototype = {
 
         // if the cache has not been loaded, load the file
         // and create a template from it.
-        if(!this.layouts[layout]) {
+        if(!that.layouts[layout]) {
           var layoutContent = fs.readFileSync(layout);
-          this.layouts[layout] = tinyliquid.compile(layoutContent.toString());
+          that.layouts[layout] = tinyliquid.compile(layoutContent.toString());
         }
 
         // then render the layout
-        helpers.renderLiquidTemplate(this.layouts[layout], locals, includes, function(err, data) {
+        helpers.renderLiquidTemplate(that.layouts[layout], locals, includes, function(err, data) {
           file.contents = new Buffer(data);
           file.$el = undefined;
           cb(err, file);

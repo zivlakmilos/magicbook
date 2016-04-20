@@ -3,6 +3,7 @@ var fileHelpers = require('../helpers/file');
 var htmlbookHelpers = require('../helpers/htmlbook');
 var gutil = require('gulp-util');
 var MarkdownIt = require('markdown-it');
+var _ = require('lodash');
 
 var Plugin = function(registry){
   registry.before('load', 'markdown:instantiate', this.instantiate);
