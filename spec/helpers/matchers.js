@@ -1,5 +1,12 @@
 var fs = require('fs');
 var diff = require('diff');
+var rimraf = require('rimraf');
+
+beforeAll(function(done) {
+  rimraf("spec/support/book/tmp/*", function() {
+    done();
+  });
+});
 
 beforeEach(function () {
 

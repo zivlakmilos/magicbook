@@ -5,14 +5,13 @@ var through = require('through2');
 
 // This constructor function will be called once per format
 // for every build. It received a plugin registry object, which
-// has .add(), .after() and .before() functions that can be used
+// has .add(), .before() and .after() functions that can be used
 // to register plugin functions in the pipeline.
 
 var Plugin = function(registry){
-
-  // registry.before('convert', 'myFirstLabel', this.myFirstFunction);
-  // registry.after('layouts', 'mySecondLabel', this.mySecondFunction);
-
+  // registry.add('mylabel', this.myFunction);
+  // registry.before('markdown:convert', 'mylabel', this.myFunction);
+  // registry.after('layouts', 'mylabel', this.myFunction);
 };
 
 Plugin.prototype = {
@@ -23,8 +22,7 @@ Plugin.prototype = {
   // stream   - The transform stream with source files. Setup hook does not have this argument as files have not been loaded.
   // extras   - Object holding extra objects, like the markdown converter
   // cb       - Function that MUST be called with error/null, config, stream, extras.
-
-  myFirstFunction: function(config, stream, extras, cb) {
+  myFunction: function(config, stream, extras, cb) {
 
     // IMPORTANT NOTE:
     //
@@ -48,10 +46,6 @@ Plugin.prototype = {
     //   file.$el = undefined;
     // }))
 
-    cb(null, config, stream, extras);
-  },
-
-  mySecondFunction: function(config, stream, extras, cb) {
     cb(null, config, stream, extras);
   }
 }

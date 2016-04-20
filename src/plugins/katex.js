@@ -4,7 +4,7 @@ var _ = require('lodash');
 var markdownitKatex = require('markdown-it-katex');
 
 var Plugin = function(registry) {
-  registry.before('javascripts:move', 'katex', this.setupKatex)
+  registry.before('load', 'katex', this.setupKatex)
 }
 
 Plugin.prototype = {

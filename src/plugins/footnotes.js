@@ -6,7 +6,7 @@ var helpers = require('../helpers/helpers');
 var markdownitFootnotes = require('./footnotes/markdown-plugin');
 
 var Plugin = function(registry) {
-  registry.before('markdown:convert', 'footnotes:placeholders', this.insertPlaceholders);
+  registry.before('liquid', 'footnotes:placeholders', this.insertPlaceholders);
   registry.after('layouts', 'footnotes:insert', this.insertFootnotes);
 };
 

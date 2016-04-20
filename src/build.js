@@ -23,19 +23,20 @@ var defaults = {
     "markdown",
     "liquid",
     "layouts",
+    "katex",
     "stylesheets",
     "javascripts",
     "fonts",
+    "images",
     "html",
     "pdf",
     "frontmatter",
     "ids",
     "toc",
-    "katex",
     "links",
     "footnotes",
     "navigation",
-    "images"
+    "filenames"
   ],
 
   "verbose" : true,
@@ -58,18 +59,6 @@ var defaults = {
     "files" : "fonts/**/*.*",
     "destination" : "assets"
   }
-}
-
-// Pipes
-// --------------------------------------------
-
-// through2 function to remove leading number, - and _
-// in filenames, so people can order their files.
-function removeNumbers() {
-  return through.obj(function (file, enc, cb) {
-    file.path = file.path.replace(/\/[\d-_]*/g, '/');
-    cb(null, file);
-	});
 }
 
 // Main
