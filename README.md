@@ -209,13 +209,29 @@ Almost all settings in `magicbook` can be specified as either a global setting o
 
 Using the `builds` array, you can have several builds that uses the same format. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
 
+### Build destination
+
+`destination` specifies where to put the builds. Because you can have many builds, the default destination is `build/:build`, which will create a build folder within `build` for each build (`build/build1`, `build/build2`, etc).
+
+You can change this setting in your configuration file.
+
+```json
+{
+  "destination" : "my/custom/folder/:build"
+}
+```
+
+*This setting is also available as a build setting.*
+
 `magicbook` has the following built-in formats.
 
-### Format: HTML
+### Build Format
+
+#### HTML
 
 The `html` format will save all source files as separate `.html` files as a static website.
 
-### Format: PDF
+#### PDF
 
 The `pdf` format will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
 
@@ -231,23 +247,9 @@ You can save the Prince XML output to a log file.
 
 *This setting is also available as a build setting*
 
-### Format: EPUB (TODO)
+#### EPUB (TODO)
 
-### Format: MOBI (TODO)
-
-### Build destination folder
-
-`destination` specifies where to put the builds. Because you can have many builds, the default destination is `build/:build`, which will create a build folder within `build` for each build (`build/build1`, `build/build2`, etc).
-
-You can change this setting in your configuration file.
-
-```json
-{
-  "destination" : "my/custom/folder/:build"
-}
-```
-
-*This setting is also available as a build setting.*
+#### MOBI (TODO)
 
 ## Links
 
