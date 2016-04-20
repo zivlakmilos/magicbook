@@ -1,5 +1,6 @@
 ## Roadmap
 
+- Move codesplit out from base code
 - Ability to inline base64 SVG images
 - Support pretty output: Put files in filename/index.html
 - Footnotes

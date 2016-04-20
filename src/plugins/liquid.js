@@ -13,7 +13,8 @@ Plugin.prototype = {
 
     stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-      var template = tinyliquid.compile(file.contents.toString());
+      var customTags = _.get(config, 'liquid.customTags') || {};
+      var template = tinyliquid.compile(file.contents.toString(), { customTags: customTags });
 
       // main object
       var locals = {
