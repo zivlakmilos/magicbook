@@ -756,7 +756,9 @@ You can also create plugins as NPM packages, simply using the name of the packag
 }
 ```
 
-Each plugin can hook into the build pipeline by registering in the plugin registry via the `add()`, `before()` and `after()` functions. Consult the `src/plugins/blank.js` file to see a vanilla plugin, or browse through the native plugin to see how they are implemented. To print the order of all plugin functions, run `magicbook build --verbose`
+Each plugin can hook into the build pipeline by registering in the plugin registry via the `add()`, `before()` and `after()` functions. Consult the `src/plugins/blank.js` file to see a vanilla plugin, or browse through the native plugin to see how they are implemented. To print the order of all plugin functions, run `magicbook build --verbose`.
+
+If you create a custom plugin, please add the `magicbook-plugin` keyword, so it shows up on the [plugin list](https://www.npmjs.com/browse/keyword/magicbook-plugin).
 
 ### Removing plugins
 
