@@ -1,0 +1,3 @@
+# Duplicate heading
+
+Duplicate content

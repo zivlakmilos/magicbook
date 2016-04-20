@@ -20,13 +20,16 @@ Plugin.prototype = {
       file.$el = file.$el || cheerio.load(file.contents.toString());
 
       // creating hashing object that uses file.path as salt
-      var hashids = new Hashids(file.path, 5);
+      var salt = file.relative;
+      var hashids = new Hashids(salt, 7);
 
       // loop through every element needing ID and
       // generate an ID.
       file.$el(needIds).each(function(i, el) {
 
         var jel = file.$el(this);
+
+        // we start with the name of the file
         var ids = [];
 
         // if the element has an ID, return
