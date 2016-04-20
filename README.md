@@ -717,23 +717,6 @@ This only works for the following configuration variables:
 - `layout`
 - `includes`
 
-
-## Math
-
-`magicbook` allows you to write math equations via latex math expressions and automatically render these with the Katex math library. We chose to use Katex over Mathjax as it's faster, smaller, and supports bundling alongside other libraries. Mathjax is problematic when it comes to these things.
-
-Here's an example with an inline and block math equations in your markdown.
-
-```md
-This is an inline equation: $$5 + 5$$. The following is a block equation:
-
-$$
-5 + 5
-$$
-```
-
-The required JavaScript libraries will automatically be added to the build assets during the build process (TODO).
-
 ## Plugins
 
 All functionality in `magicbook` is written via plugins. This makes it both possible to disable almost any functionality that you don't want, as well as easily adding new functionality in a custom plugin.
@@ -766,7 +749,7 @@ If you want to remove native plugins, you can use the `disablePlugins` property.
 
 ```json
 {
-  "disablePlugins" : ["katex"]
+  "disablePlugins" : ["markdown"]
 }
 ```
 

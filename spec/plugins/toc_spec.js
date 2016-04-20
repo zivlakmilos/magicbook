@@ -9,8 +9,8 @@ function expectTOC($, addFile) {
   var level2 = $('nav > ol > li > ol > li');
   expect(level1.find('> a').eq(0).text()).toEqual("First Heading")
   expect(level1.find('> a').eq(0).attr('href')).toEqual(file1 + "#first-heading-yeYID")
-    expect(level2.find('> a').eq(0).text()).toEqual("Math")
-    expect(level2.find('> a').eq(0).attr('href')).toEqual(file1 + "#math-JOQI6")
+    expect(level2.find('> a').eq(0).text()).toEqual("Sub Heading")
+    expect(level2.find('> a').eq(0).attr('href')).toEqual(file1 + "#sub-heading-JOQI6")
     expect(level2.find('> a').eq(1).text()).toEqual("Links")
     expect(level2.find('> a').eq(1).attr('href')).toEqual(file1 + "#links-vlzIA")
   expect(level1.find('> a').eq(1).text()).toEqual("Second Heading")

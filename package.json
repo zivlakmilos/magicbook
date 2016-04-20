@@ -22,7 +22,6 @@
     "js-beautify": "^1.6.2",
     "lodash": "^4.6.1",
     "markdown-it": "^6.0.0",
-    "markdown-it-katex": "^1.1.0",
     "mkdirp": "^0.5.1",
     "modify-filename": "^1.1.0",
     "node-sass": "^3.4.2",

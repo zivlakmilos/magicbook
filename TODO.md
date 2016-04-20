@@ -1,9 +1,5 @@
 ## Roadmap
 
-
-- Move codesplit out from base code ADD NPM TAG
-- Move katex out from base code ADD NPM TAG
-- Add link to NPM TAG for plugin
 - Ability to inline base64 SVG images
 - Support pretty output: Put files in filename/index.html
 - Footnotes
