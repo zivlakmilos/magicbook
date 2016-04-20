@@ -760,11 +760,11 @@ The load order of plugins is native plugins first, then plugins in the book fold
 
 ### Removing plugins
 
-If you want to remove native plugins, you can use the `removePlugins` property. By using this property, you can disable almost all functionality in `magicbook`. Plugins are included based on their filenames, so you can easily figure out plugin names by looking at the [plugins source folder](https://github.com/magicbookproject/magicbook/tree/master/src/plugins).
+If you want to remove native plugins, you can use the `disablePlugins` property. By using this property, you can disable almost all functionality in `magicbook`. Plugins are included based on their filenames, so you can easily figure out plugin names by looking at the [plugins source folder](https://github.com/magicbookproject/magicbook/tree/master/src/plugins).
 
 ```json
 {
-  "removePlugins" : ["katex"]
+  "disablePlugins" : ["katex"]
 }
 ```
 

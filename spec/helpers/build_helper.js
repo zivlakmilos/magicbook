@@ -13,7 +13,7 @@ global.triggerBuild = function(config) {
     images: {
       source: 'spec/support/book/images'
     },
-    removePlugins: ["katex"],
+    disablePlugins: ["katex"],
     files: ["spec/support/book/content/first-chapter.md", "spec/support/book/content/second-chapter.html"],
     destination: "spec/support/book/tmp/"+uid+"/:build"
   });

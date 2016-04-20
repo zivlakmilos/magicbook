@@ -1,11 +1,9 @@
-describe("All plugins", function() {
-
-  // Using the katex plugin here, as it's easy to test
+describe("Plugin disabling", function() {
 
   it('should enable native plugins by default', function(done) {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
-      removePlugins: [],
+      disablePlugins: [],
       finish: function() {
         expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("<math>")
         expect(buildPath(uid, "build1/first-chapter.html")).not.toHaveContent("$$")
@@ -14,10 +12,10 @@ describe("All plugins", function() {
     });
   });
 
-  it("should remove plugins via removePlugins", function(done) {
+  it("should disable plugins via disablePlugins", function(done) {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
-      removePlugins: ['katex'],
+      disablePlugins: ['katex'],
       finish: function() {
         expect(buildPath(uid, "build1/first-chapter.html")).not.toHaveContent("<math>")
         expect(buildPath(uid, "build1/first-chapter.html")).toHaveContent("$$")
@@ -25,7 +23,5 @@ describe("All plugins", function() {
       }
     });
   });
-
-  it('should add plugins via addPlugins')
 
 });

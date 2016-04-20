@@ -41,7 +41,7 @@ var Executer = function() {
 
 Executer.prototype = {
 
-  execute: function(plugins, args, cb) {
+  execute: function(plugins, disablePlugins, args, cb) {
 
     // require all plugins. Plugin functions are cached
     // across builds.
@@ -59,8 +59,14 @@ Executer.prototype = {
       }
     }, this));
 
+    // remove disabled plugins by removing all labels that start
+    // with the plugin name.
+    var enabled = _.filter(registry.order, function(o) {
+      return _.indexOf(disablePlugins, o.name.split(':')[0]) == -1;
+    });
+
     // create an async waterfall chain from the registry order.
-    var chain = _.map(registry.order, function(o) { return o.fn; });
+    var chain = _.map(enabled, function(o) { return o.fn; });
 
     // add a function to kick off the chain, passing the args
     chain.unshift(function(callback) {

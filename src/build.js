@@ -91,9 +91,8 @@ module.exports = function(jsonConfig) {
     // figure out the build folder for this format
     var destination = helpers.destination(config.destination, config.buildNumber);
 
-    // Figure out what plugins are needed for this build
+    // Add extra plugins
     if(config.addPlugins)     config.plugins = config.plugins.concat(config.addPlugins);
-    if(config.removePlugins)  config.plugins = _.difference(config.plugins, config.removePlugins);
 
     // execute all plugin functions.
     var args = [config, { destination: destination }];
@@ -103,6 +102,6 @@ module.exports = function(jsonConfig) {
         config.finish(config.format, null);
       }
     }
-    executer.execute(config.plugins, args, finish);
+    executer.execute(config.plugins, config.disablePlugins, args, finish);
   });
 }
