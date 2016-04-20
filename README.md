@@ -223,9 +223,9 @@ You can change this setting in your configuration file.
 
 *This setting is also available as a build setting.*
 
-`magicbook` has the following built-in formats.
-
 ### Build Format
+
+`magicbook` has the following built-in formats.
 
 #### HTML
 
