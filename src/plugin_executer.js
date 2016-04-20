@@ -116,8 +116,9 @@ Executer.prototype = {
             if(e2 instanceof SyntaxError) {
               console.log("Plugin file: " + file + " has syntax errors. " + e2.toString());
             } else {
-              // try to load the file as a node package
-              try { loadedFile = require(file); } catch(e3) {
+              // try to load the file as a node module installed in book folder
+              try { loadedFile = require(path.join(process.cwd(), 'node_modules', file)); } catch(e3) {
+                console.log(e3)
                 if(e3 instanceof SyntaxError) {
                   console.log("Plugin file: " + file + " has syntax errors. " + e3.toString());
                 } else {
