@@ -180,13 +180,6 @@ You must add a `builds` array to your configuration that as a minimum defines th
 }
 ```
 
-`magicbook` has the following built-in formats:
-
-- `html` will save all source files as separate `.html` files as a static website.
-- `pdf` will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
-- `epub` TODO
-- `mobi` TODO
-
 The `builds` array is a very powerful concept, as it further allows you to specify specific settings for each build. For example, here's a book that uses a different introduction for the HTML and PDF builds.
 
 ```json
@@ -215,6 +208,32 @@ The `builds` array is a very powerful concept, as it further allows you to speci
 Almost all settings in `magicbook` can be specified as either a global setting or a build setting. Below, each setting will state *This setting is also available as a build setting* if this is true.
 
 Using the `builds` array, you can have several builds that uses the same format. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
+
+`magicbook` has the following built-in formats.
+
+### Format: HTML
+
+The `html` format will save all source files as separate `.html` files as a static website.
+
+### Format: PDF
+
+The `pdf` format will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
+
+You can save the Prince XML output to a log file.
+
+```json
+{
+  "pdf" : {
+    "log" : "myfile.txt"
+  }
+}
+```
+
+*This setting is also available as a build setting*
+
+### Format: EPUB (TODO)
+
+### Format: MOBI (TODO)
 
 ### Build destination folder
 
