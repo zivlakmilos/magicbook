@@ -35,8 +35,9 @@ Registry.prototype = {
 
 }
 
-var Executer = function() {
+var Executer = function(verbose) {
   this.plugins = {};
+  this.verbose = verbose;
 }
 
 Executer.prototype = {
@@ -64,6 +65,14 @@ Executer.prototype = {
     var enabled = _.filter(registry.order, function(o) {
       return _.indexOf(disablePlugins, o.name.split(':')[0]) == -1;
     });
+
+    // log the order of all plugins.
+    if(this.verbose) {
+      console.log('Plugin order:')
+      _.each(enabled, function(o, i) {
+        console.log((i+1) + '. ' + o.name);
+      })
+    }
 
     // create an async waterfall chain from the registry order.
     var chain = _.map(enabled, function(o) { return o.fn; });

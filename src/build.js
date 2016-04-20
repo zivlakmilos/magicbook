@@ -74,7 +74,7 @@ module.exports = function(jsonConfig) {
 
   // Create the plugin executer object, which handles proper loading of
   // plugins, and waterfall execution per build.
-  var executer = new PluginExecuter();
+  var executer = new PluginExecuter(jsonConfig.verbose);
 
   // run build for each format
   _.each(jsonConfig.builds, function(build, i) {
@@ -97,7 +97,7 @@ module.exports = function(jsonConfig) {
     // execute all plugin functions.
     var args = [config, { destination: destination }];
     var finish = function(config, stream, extras) {
-      if(config.verbose) console.log('Build', config.buildNumber, 'finished');
+      console.log('Build', config.buildNumber, 'finished');
       if(config.finish) {
         config.finish(config.format, null);
       }

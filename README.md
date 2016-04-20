@@ -736,7 +736,7 @@ The required JavaScript libraries will automatically be added to the build asset
 
 ## Plugins
 
-Almost all functionality in `magicbook` is written via plugins. This makes it both possible to disable almost any functionality that you don't want, as well as easily adding new functionality in a custom plugin.
+All functionality in `magicbook` is written via plugins. This makes it both possible to disable almost any functionality that you don't want, as well as easily adding new functionality in a custom plugin.
 
 ### Adding plugins
 
@@ -756,11 +756,11 @@ You can also create plugins as NPM packages, simply using the name of the packag
 }
 ```
 
-The load order of plugins is native plugins first, then plugins in the book folder, then NPM packages. `magicbook` will output a warning if the plugin is not found. Consult the `src/plugins/blank.js` file to see the structure of a plugin. Using the `addPlugins` will add your custom plugins at the end of the plugin pipeline, after the built-in plugins. This setting is also available inside the `builds` array, so each build can have different plugins.
+Each plugin can hook into the build pipeline by registering in the plugin registry via the `add()`, `before()` and `after()` functions. Consult the `src/plugins/blank.js` file to see a vanilla plugin, or browse through the native plugin to see how they are implemented. To print the order of all plugin functions, run `magicbook build --verbose`
 
 ### Removing plugins
 
-If you want to remove native plugins, you can use the `disablePlugins` property. By using this property, you can disable almost all functionality in `magicbook`. Plugins are included based on their filenames, so you can easily figure out plugin names by looking at the [plugins source folder](https://github.com/magicbookproject/magicbook/tree/master/src/plugins).
+If you want to remove native plugins, you can use the `disablePlugins` property. By using this property, you can disable almost all functionality in `magicbook`. To figure out what plugins you can disable, run `magicbook build --verbose`, which will output a list of all plugins. You should use the names before the `:`.
 
 ```json
 {
@@ -777,6 +777,8 @@ If you want complete control over all plugins and their order, you can use the `
   "plugins" : []
 }
 ```
+
+Using the `plugins` array is not recommended unless you know what you're doing.
 
 ## Command line
 
@@ -798,6 +800,12 @@ To automatically build your book whenever a file changes, use the `--watch` flag
 
 ```bash
 magicbook build --watch
+```
+
+To see extra debug info, use the `--verbose` flag.
+
+```bash
+magicbook build --verbose
 ```
 
 
