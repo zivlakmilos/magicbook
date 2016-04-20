@@ -23,4 +23,18 @@ describe("PDF", function() {
     });
   });
 
+  it('should log output to file', function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "pdf" }],
+      pdf: {
+        log: "mylog.txt"
+      },
+      layout: 'spec/support/book/layouts/main.html',
+      finish: function() {
+        expect(buildPath(uid, "build1/mylog.txt")).toExist();
+        done();
+      }
+    });
+  });
+
 });

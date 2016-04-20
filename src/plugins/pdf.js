@@ -36,8 +36,13 @@ Plugin.prototype = {
     stream.on('finish', function() {
 
       // run prince PDF generation
-      Prince()
-        .inputs(path.join(extras.destination, "consolidated.html"))
+      var pdf = Prince();
+
+      if(_.get(config, 'pdf.log')) {
+        pdf = pdf.option('log', path.join(extras.destination, config.pdf.log));
+      }
+
+      pdf.inputs(path.join(extras.destination, "consolidated.html"))
         .output(path.join(extras.destination, "consolidated.pdf"))
         .execute()
         .then(function () {
