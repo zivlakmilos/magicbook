@@ -23,7 +23,6 @@ var defaults = {
     "markdown",
     "liquid",
     "layouts",
-    "katex",
     "stylesheets",
     "javascripts",
     "fonts",
