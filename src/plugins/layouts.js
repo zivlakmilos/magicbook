@@ -8,7 +8,7 @@ var Plugin = function(registry) {
 
 Plugin.prototype = {
 
-  addLayouts: function(config, stream, extras, cb) {
+  addLayouts: function(config, stream, extras, callback) {
 
     stream = stream.pipe(through.obj(function(file, enc, cb) {
 
@@ -46,6 +46,8 @@ Plugin.prototype = {
         cb(null, file);
       }
     }));
+
+    callback(null, config, stream, extras);
   }
 }
 

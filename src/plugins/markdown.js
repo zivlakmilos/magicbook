@@ -11,7 +11,7 @@ var Plugin = function(registry){
 
 Plugin.prototype = {
 
-  instantiate: function(config, extras, cb) {
+  instantiate: function(config, extras, callback) {
 
     var md = new MarkdownIt({
       html: true,
@@ -22,10 +22,10 @@ Plugin.prototype = {
     });
 
     extras.md = md;
-    cb(null, config, extras);
+    callback(null, config, extras);
   },
 
-  convert: function(config, stream, extras, cb) {
+  convert: function(config, stream, extras, callback) {
 
     stream = stream.pipe(through.obj(function (file, enc, cb) {
 
@@ -44,6 +44,8 @@ Plugin.prototype = {
       }
       cb(null, file);
   	}));
+
+    callback(null, config, stream, extras);
   }
 }
 
