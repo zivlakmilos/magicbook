@@ -7,6 +7,7 @@ var Plugin = function(registry) {
 Plugin.prototype = {
 
   createHtml: function(config, stream, extras, callback) {
+
     if(config.format == "html") {
       stream = stream.pipe(vfs.dest(extras.destination));
       stream.on('finish', function() {

@@ -1,6 +1,5 @@
 var _ = require('lodash');
 var cheerio = require('cheerio');
-var beautify = require('js-beautify').html;
 
 var headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 var newHeadings = ['h1', 'h1', 'h2', 'h3', 'h4', 'h5'];
@@ -83,14 +82,7 @@ var helpers = {
     $.root()[0].childNodes = newChildren;
 
     // convert into string
-    var str = $.html();
-
-    // return a pretty version
-    return beautify(str, {
-      "indent-char" : " ",
-      "indent_size": 2,
-      "wrap-line-length" : 0
-    });
+    return $.html();
   }
 };
 

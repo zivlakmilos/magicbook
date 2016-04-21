@@ -235,12 +235,13 @@ The `html` format will save all source files as separate `.html` files as a stat
 
 The `pdf` format will combine all source files, bundle them into a single `.html` file, and generate a PDF in the format destination folder. Currently this process uses Prince XML for PDF generation, as it's one of the few applications that can do print-ready PDF files from HTML. You will need a Prince XML license to use it without a watermark.
 
-You can save the Prince XML output to a log file.
+You can define settings for Prince XML.
 
 ```json
 {
-  "pdf" : {
-    "log" : "myfile.txt"
+  "prince" : {
+    "log" : "myfile.txt",
+    "timeout" : 300000
   }
 }
 ```

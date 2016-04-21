@@ -65,7 +65,7 @@ if(cmd == "build") {
       });
     }
 
-    var watch = chokidar.watch(['**/*.md', '**/*.html', '**/*.scss', '**/*.css', '**/*.json'], { ignored: ignore})
+    var watch = chokidar.watch(['**/*.md', '**/*.html', '**/*.scss', '**/*.css', '**/*.js', '**/*.json'], { ignored: ignore})
       .on('ready', function() {
 
         console.log('Listening for file changes')

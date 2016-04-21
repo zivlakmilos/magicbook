@@ -26,7 +26,7 @@ describe("PDF", function() {
   it('should log output to file', function(done) {
     var uid = triggerBuild({
       builds: [{ format: "pdf" }],
-      pdf: {
+      prince: {
         log: "mylog.txt"
       },
       layout: 'spec/support/book/layouts/main.html',

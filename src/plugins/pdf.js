@@ -38,8 +38,12 @@ Plugin.prototype = {
       // run prince PDF generation
       var pdf = Prince();
 
-      if(_.get(config, 'pdf.log')) {
-        pdf = pdf.option('log', path.join(extras.destination, config.pdf.log));
+      if(_.get(config, 'prince.log')) {
+        pdf = pdf.option('log', path.join(extras.destination, config.prince.log));
+      }
+
+      if(_.get(config, 'prince.timeout')) {
+        pdf = pdf.timeout(config.prince.timeout);
       }
 
       pdf.inputs(path.join(extras.destination, "consolidated.html"))
