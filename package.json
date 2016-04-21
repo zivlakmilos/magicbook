@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/magicbookproject/magicbook.git",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "name": "magicbook",
   "description": "The magic book project is an open source framework for creating digital and print books",
   "author": "magicbookproject",
@@ -28,6 +28,7 @@
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
     "slug": "^0.9.1",
+    "stream-exhaust": "^1.0.1",
     "through2": "^2.0.1",
     "tinyliquid": "^0.2.31",
     "vinyl-fs": "^2.4.2",

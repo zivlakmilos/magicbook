@@ -83,8 +83,10 @@ Executer.prototype = {
       callback.apply(this, args);
     });
 
-    // add the cb as the last function.
-    chain.push(cb);
+    // add a final function
+    chain.push(function(err, config, stream, extras) {
+      cb(config, stream, extras);
+    });
 
     // run the all functions, one after the other.
     async.waterfall(chain);

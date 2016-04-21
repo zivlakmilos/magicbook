@@ -3,6 +3,7 @@ var through = require('through2');
 var revHash = require('rev-hash');
 var revPath = require('rev-path');
 var modifyFilename = require('modify-filename');
+var exhaust = require('stream-exhaust');
 
 var helpers = {
 
@@ -38,13 +39,13 @@ var helpers = {
     var files = [];
 
     // push each file into the array
-    stream.pipe(through.obj(function(file, enc, cb) {
+    var stream = stream.pipe(through.obj(function(file, enc, cb) {
       files.push(file);
       cb(null, file);
     }))
 
-    // when this stream is done, call cb with files
-    .on('finish', function() {
+    // then sink the stream
+    exhaust(stream).on('finish', function() {
       cb(files);
     });
 

@@ -91,12 +91,12 @@ module.exports = function(jsonConfig) {
     var destination = helpers.destination(config.destination, config.buildNumber);
 
     // Add extra plugins
-    if(config.addPlugins)     config.plugins = config.plugins.concat(config.addPlugins);
+    if(config.addPlugins) config.plugins = config.plugins.concat(config.addPlugins);
 
     // execute all plugin functions.
     var args = [config, { destination: destination }];
     var finish = function(config, stream, extras) {
-      console.log('Build', config.buildNumber, 'finished');
+      console.log('Build', i + 1, 'finished');
       if(config.finish) {
         config.finish(config.format, null);
       }
