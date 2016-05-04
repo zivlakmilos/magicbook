@@ -8,14 +8,15 @@ This project is for you, if:
 
 - You want to write your book in plain text (Markdown or HTML)
 - You want to export to many different formats (static website, pdf, epub, mobi)
-- You want your source to be completely free of format-specific hacks
+- You want your source to be free of format-specific hacks
 - You want to use CSS to design the look of your book
 - You want to use JavaScript to add interactivity to digital formats
-- You want the ability to define custom elements that behave differently in every format
 - You want to use a command-line tool for all of this
 - You want that command-line tool be be written in Node-only. No more XSLT.
 
 Although a small number of open source publishing frameworks already exists, it's hard to find any that are flexible enough to create modern, interactive books for the web while also doing print-ready PDF export.
+
+Much of the functionality of `magicbook` exists in the form of plugins, so if you can't find specific functionality in the core, perhaps it exists in the [plugin list](https://www.npmjs.com/browse/keyword/magicbook-plugin).
 
 ## Getting Started
 
