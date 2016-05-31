@@ -32,10 +32,6 @@ Plugin.prototype = {
 
       file.$el = file.$el || cheerio.load(file.contents.toString());
 
-      if(file.path.match(/basic/)) {
-        console.log(file.$el.html());
-      }
-
       var footnotes = [];
 
       // find all footnotes in document
