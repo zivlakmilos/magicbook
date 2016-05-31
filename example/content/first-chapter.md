@@ -28,4 +28,4 @@ You can also write footnotes using the Markdown syntax^[They are great], or the 
 
 Then you use the following `footnotes` liquid tag to insert the footnote references on the page. This is often done at the bottom of the page.
 
-{{ footnotes}}
+{{ footnotes }}

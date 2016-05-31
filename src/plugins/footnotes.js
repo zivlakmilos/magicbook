@@ -19,8 +19,8 @@ Plugin.prototype = {
 
     // insert placeholder in {{ footnotes }}
     stream = stream.pipe(through.obj(function(file, enc, cb) {
-      _.set(file, "pageLocals.footnotes", '<div data-placeholder-footnotes />');
-      _.set(file, "layoutLocals.footnotes", '<div data-placeholder-footnotes />');
+      _.set(file, "pageLocals.footnotes", '<div data-placeholder-footnotes></div>');
+      _.set(file, "layoutLocals.footnotes", '<div data-placeholder-footnotes></div>');
       cb(null, file);
     }));
 
@@ -31,6 +31,10 @@ Plugin.prototype = {
     stream = stream.pipe(through.obj(function(file, enc, cb) {
 
       file.$el = file.$el || cheerio.load(file.contents.toString());
+
+      if(file.path.match(/basic/)) {
+        console.log(file.$el.html());
+      }
 
       var footnotes = [];
 
