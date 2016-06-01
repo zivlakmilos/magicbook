@@ -12,9 +12,10 @@ Plugin.prototype = {
 
     stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-      var pagePermalink = _.get(file, 'pageLocals.page.permalink');
-      if(pagePermalink || config.permalink) {
-        file.path = path.join(file.base, pagePermalink || config.permalink);
+      var permalink = _.get(file, 'pageLocals.page.permalink') || config.permalink;
+      if(permalink) {
+        permalink = permalink.replace(':title', file.stem);
+        file.path = path.join(file.base, permalink);
       }
 
       cb(null, file);
