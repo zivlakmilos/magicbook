@@ -9,24 +9,27 @@ var Plugin = function(registry) {
 Plugin.prototype = {
   loadFiles: function(config, extras, cb) {
 
-    function getFiles(f) {
-      var files = [];
-      if(f.files) files.push(f.files);
-      if(f.children) files.push(_.map(f.children, function(child) { return getFiles(child) }));
-      return files;
+    function getTree(f) {
+      var arr = [];
+      if(f.files) arr.push(f.files);
+      if(f.children) arr.push(_.map(f.children, function(child) { return getTree(child) }));
+      return arr;
     }
 
-    var files = _.map(config.files, function(f) {
+    var files = config.files;
 
-      // if this is a glob
-      if(_.isString(f)) return f;
+    if(_.isArray(files)) {
 
-      // if this is a part
-      else if(_.isObject(f)) return getFiles(f);
+      files = _.map(config.files, function(f) {
+        // if this is a glob
+        if(_.isString(f)) return f;
 
-    });
+        // if this is a part
+        else if(_.isObject(f)) return getTree(f);
+      });
 
-    files = _.flattenDeep(files);
+      files = _.flattenDeep(files);
+    }
 
     var stream = vfs.src(files);
     cb(null, config, stream, extras);
