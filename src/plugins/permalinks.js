@@ -1,5 +1,6 @@
 var through = require('through2');
 var path = require('path');
+var _ = require('lodash');
 
 var Plugin = function(registry) {
   registry.before('navigation:insert', 'permalinks', this.permalinks);
@@ -11,8 +12,9 @@ Plugin.prototype = {
 
     stream = stream.pipe(through.obj(function(file, enc, cb) {
 
-      if(config.permalink) {
-        file.path = path.join(file.base, config.permalink);
+      var pagePermalink = _.get(file, 'pageLocals.page.permalink');
+      if(pagePermalink || config.permalink) {
+        file.path = path.join(file.base, pagePermalink || config.permalink);
       }
 
       cb(null, file);

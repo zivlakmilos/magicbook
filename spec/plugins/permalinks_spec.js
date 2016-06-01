@@ -15,16 +15,15 @@ describe("Permalinks", function() {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
       permalink : "permafolder/permafile.html",
-      files: "spec/support/book/content/**/subfolder-file.md",
+      files: "spec/support/book/content/permalinks.md",
       finish: function() {
-        expect(buildPath(uid, "build1/subfolder/subfolder-file.html")).not.toExist();
-        expect(buildPath(uid, "build1/permafolder/permafile.html")).toExist();
+        expect(buildPath(uid, "build1/permafolder/permafile.html")).not.toExist();
+        expect(buildPath(uid, "build1/frontmatterpermafolder/frontmatterpermafile.html")).toExist();
         done();
       }
     });
   });
 
-  // it('should use permalink from settings');
   // it('should prioritize permalink from frontmatter');
   // it('should use :title')
   // it('should use :parts')
