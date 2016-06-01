@@ -96,11 +96,10 @@ module.exports = function(jsonConfig) {
 
     // execute all plugin functions.
     var args = [config, { destination: destination }];
-    var finish = function(config, stream, extras) {
+    executer.execute(config.plugins, config.disablePlugins, args, function(config, stream, extras) {
       if(config.finish) {
         config.finish(config.format, null);
       }
-    }
-    executer.execute(config.plugins, config.disablePlugins, args, finish);
+    });
   });
 }
