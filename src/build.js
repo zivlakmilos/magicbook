@@ -35,7 +35,8 @@ var defaults = {
     "links",
     "footnotes",
     "navigation",
-    "filenames"
+    "filenames",
+    "permalinks"
   ],
 
   "verbose" : true,
