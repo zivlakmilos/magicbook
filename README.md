@@ -118,7 +118,7 @@ Using an array, you can also specify each of the files you want to build.
 }
 ```
 
-Globs are an important concept to learn, as your files array dictates whether or not files in subfolders are transferred to the build folder. This, combined with the fact that the build process will **remove leading numbers, dashes and underscores from folders and filenames**, can help you create just the folder structure you want for your website.
+If you are not using the `permalink` setting, your glob structure will determine the output path in the build folder. If your glob uses wildcards, the folders will be preserved in the build folder. Also note that the build process will **remove leading numbers, dashes and underscores from folders and filenames**.
 
 As an example, consider the following folder structure.
 
@@ -139,7 +139,7 @@ This files array:
 }
 ```
 
-... will create a `html` build that looks like this:
+... will by default create a `html` build that looks like this:
 
 ```
 build1/
@@ -148,7 +148,7 @@ build1/
     second-file.html
 ```
 
-Because the files glob does not set any ordering, you can use numbers in files and folders to decide the order of the files. Because of the wildcard glob `**`, the subfolder is transfered to the build. However, this files array:
+Because the files glob does not set any ordering, you can use numbers in files and folders to decide the order of the files. Because of the wildcard glob `**`, the subfolder is transferred to the build. However, this files array:
 
 ```json
 {
@@ -166,6 +166,8 @@ build1/
   first-file.html
   second-file.html
 ```
+
+If you want to have more control over folders and filenames, use the `permalink` setting.
 
 *This setting is also available in the configuration for each build*, which you can read more about below.
 
@@ -252,6 +254,18 @@ You can define settings for Prince XML.
 #### EPUB (TODO)
 
 #### MOBI (TODO)
+
+## Permalinks
+
+You can use the `permalink` setting to override the default glob-controlled build paths. The `:title` variable is available so you can create one general permalink structure for all your files inside the build folder.
+
+```json
+{
+  "permalink" : "chapters/:title/index.html"
+}
+```
+
+*This setting is also available both as a build setting and as a frontmatter variable*
 
 ## Links
 
