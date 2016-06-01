@@ -83,13 +83,10 @@ Executer.prototype = {
       callback.apply(this, args);
     });
 
-    // add a final function
-    chain.push(function(config, stream, extras) {
+    // run the all functions, one after the other.
+    async.waterfall(chain, function(err, config, stream, extras) {
       cb(config, stream, extras);
     });
-
-    // run the all functions, one after the other.
-    async.waterfall(chain);
   },
 
   // File loading
