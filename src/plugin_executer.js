@@ -84,7 +84,7 @@ Executer.prototype = {
     });
 
     // add a final function
-    chain.push(function(err, config, stream, extras) {
+    chain.push(function(config, stream, extras) {
       cb(config, stream, extras);
     });
 

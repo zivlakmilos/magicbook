@@ -96,7 +96,6 @@ module.exports = function(jsonConfig) {
     // execute all plugin functions.
     var args = [config, { destination: destination }];
     var finish = function(config, stream, extras) {
-      console.log('Build', i + 1, 'finished');
       if(config.finish) {
         config.finish(config.format, null);
       }
