@@ -1,5 +1,6 @@
 var vfs = require('vinyl-fs');
 var through = require('through2');
+var merge = require('merge-stream');
 var _ = require('lodash');
 
 var Plugin = function(registry) {
@@ -7,6 +8,7 @@ var Plugin = function(registry) {
 };
 
 Plugin.prototype = {
+
   loadFiles: function(config, extras, cb) {
 
     function getTree(f) {
@@ -16,23 +18,30 @@ Plugin.prototype = {
       return arr;
     }
 
-    var files = config.files;
+    var stream;
 
+    // if files is an array
     if(_.isArray(files)) {
 
-      files = _.map(config.files, function(f) {
+      streams = _.map(config.files, function(f) {
+
         // if this is a glob
         if(_.isString(f)) return f;
 
         // if this is a part
         else if(_.isObject(f)) return getTree(f);
+
       });
 
-      files = _.flattenDeep(files);
+      streams = _.flattenDeep(streams);
+
+      cb(null, config, stream, extras);
     }
 
-    var stream = vfs.src(files);
-    cb(null, config, stream, extras);
+    // if files is just a string
+    else {
+      cb(null, config, vfs.src(config.files), extras)
+    }
   }
 }
 
