@@ -7,40 +7,45 @@ var Plugin = function(registry) {
   registry.add('load', this.loadFiles);
 };
 
+function isStringArray(arr) {
+  return _.isArray(arr) && _.every(arr, function(f) { return _.isString(f)});
+}
+
+function filesToStreams(fileArray, streamArray) {
+
+  _.each(fileArray, function(f) {
+
+    // if this is a glob
+    if(_.isString(f)) streamArray.push(vfs.src(f));
+
+    // if this is a part
+    else if(_.isObject(f) && f.files) {
+      if(_.isString(f.files)) {
+        streamArray.push(vfs.src(f.files));
+      }
+      else if(_.isArray(f.files)) {
+        filesToStreams(f.files, streamArray);
+      }
+    }
+
+  });
+
+  return streamArray;
+}
+
 Plugin.prototype = {
 
   loadFiles: function(config, extras, cb) {
 
-    function getTree(f) {
-      var arr = [];
-      if(f.files) arr.push(f.files);
-      if(f.children) arr.push(_.map(f.children, function(child) { return getTree(child) }));
-      return arr;
+    // If this is a simple string glob or an array of globs
+    if(_.isString(config.files) || isStringArray(config.files)) {
+      return cb(null, config, vfs.src(config.files), extras);
     }
 
-    var stream;
-
-    // if files is an array
-    if(_.isArray(files)) {
-
-      streams = _.map(config.files, function(f) {
-
-        // if this is a glob
-        if(_.isString(f)) return f;
-
-        // if this is a part
-        else if(_.isObject(f)) return getTree(f);
-
-      });
-
-      streams = _.flattenDeep(streams);
-
-      cb(null, config, stream, extras);
-    }
-
-    // if files is just a string
+    // If this is an array with parts in it
     else {
-      cb(null, config, vfs.src(config.files), extras)
+      streams = filesToStreams(config.files, []);
+      cb(null, config, merge(streams), extras);
     }
   }
 }

@@ -7,15 +7,13 @@ describe("Parts", function() {
       label: "Part 1",
       files: [
         "spec/support/book/content/second-chapter.html",
-        "spec/support/book/content/third-chapter.md"
-      ],
-      children: [
         {
           label: "Sub Part",
           files: [
             "spec/support/book/content/subfolder/subfolder-file.md"
           ]
-        }
+        },
+        "spec/support/book/content/third-chapter.md"
       ]
     },
     {
@@ -35,8 +33,8 @@ describe("Parts", function() {
         expect(buildPath(uid, "build1/toc.html")).toExist();
         expect(buildPath(uid, "build1/first-chapter.html")).toExist();
         expect(buildPath(uid, "build1/second-chapter.html")).toExist();
-        expect(buildPath(uid, "build1/third-chapter.html")).toExist();
         expect(buildPath(uid, "build1/subfolder-file.html")).toExist();
+        expect(buildPath(uid, "build1/third-chapter.html")).toExist();
         expect(buildPath(uid, "build1/sections.html")).toExist();
         done();
       }
