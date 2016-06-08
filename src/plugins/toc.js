@@ -108,10 +108,7 @@ Plugin.prototype = {
   // TOC generation to work with this.
   generateTOC: function(config, stream, extras, callback) {
 
-    var toc = {
-      type: 'book',
-      children: []
-    };
+    var tocSections = this.tocSections = [];
 
     // First run through every file and get a tree of the section
     // navigation within that file. Save to our nav object.
@@ -126,27 +123,37 @@ Plugin.prototype = {
       var body = file.$el('body');
       if(body.length) root = body;
 
-      // add this files sections to the book children
-      var sections = getSections(file.$el, root, config.format == "pdf" ? '' : file.relative);
-      if(!_.isEmpty(sections)) {
-        toc.children = toc.children.concat(sections);
-      }
+      // add sections to plugin array for use later in the pipeline
+      tocSections.push({
+        file: file,
+        sections: getSections(file.$el, root, config.format == "pdf" ? '' : file.relative)
+      });
 
       cb(null, file);
     }));
-
-    this.toc = toc;
 
     callback(null, config, stream, extras);
   },
 
   insertTOC: function(config, stream, extras, callback) {
 
-    var toc = this.toc;
+    var tocSections = this.tocSections;
 
     // wait for the stream to finish, knowing all files have been
     // parsed, and start a new stream that replaces all placeholders.
     streamHelpers.finishWithFiles(stream, function(files) {
+
+      var toc = {
+        type: 'book',
+        children: []
+      };
+
+      // loop through all sections and assemble parts.
+      _.each(tocSections, function(s) {
+        if(!_.isEmpty(s.sections)) {
+          toc.children = toc.children.concat(s.sections);
+        }
+      });
 
       // create new stream from the files
       stream = streamHelpers.streamFromArray(files)
