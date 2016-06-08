@@ -108,7 +108,7 @@ Plugin.prototype = {
   // TOC generation to work with this.
   generateTOC: function(config, stream, extras, callback) {
 
-    var tocSections = this.tocSections = [];
+    var tocFiles = this.tocFiles = [];
 
     // First run through every file and get a tree of the section
     // navigation within that file. Save to our nav object.
@@ -124,7 +124,7 @@ Plugin.prototype = {
       if(body.length) root = body;
 
       // add sections to plugin array for use later in the pipeline
-      tocSections.push({
+      tocFiles.push({
         file: file,
         sections: getSections(file.$el, root, config.format == "pdf" ? '' : file.relative)
       });
@@ -137,22 +137,67 @@ Plugin.prototype = {
 
   insertTOC: function(config, stream, extras, callback) {
 
-    var tocSections = this.tocSections;
+    var tocFiles = this.tocFiles;
 
     // wait for the stream to finish, knowing all files have been
     // parsed, and start a new stream that replaces all placeholders.
     streamHelpers.finishWithFiles(stream, function(files) {
 
+      var curPart;
       var toc = {
         type: 'book',
         children: []
       };
 
-      // loop through all sections and assemble parts.
-      _.each(tocSections, function(s) {
-        if(!_.isEmpty(s.sections)) {
-          toc.children = toc.children.concat(s.sections);
+      // searches for a part in the toc children.
+      function findPart(part, parent) {
+        for(var i = 0; i < parent.children.length; i++) {
+          var child = parent.children[i];
+          if(!_.isString(child)) {
+            if(child.label === part.label) {
+              return child;
+            } else {
+              var found = findPart(part, child);
+              if(found) return found;
+            }
+          }
         }
+        return false;
+      }
+
+      function findOrCreatePart(file) {
+
+        // if this part already exists
+        var found = findPart(file.part, toc);
+        if(found) return found;
+
+        // if this part does not exist
+        // if parent, find parent that MUST exist because
+        // things are in order
+        found = { label: file.part.label, children: [] }
+        if(file.parentPart) {
+          findPart(file.parentPart, toc).children.push(found);
+        } else {
+          toc.children.push(found);
+        }
+
+        return found;
+      }
+
+      // loop through all sections and assemble parts.
+      _.each(tocFiles, function(f) {
+
+        // if no part, just add to toc children
+        if(!f.file.part) {
+          toc.children = toc.children.concat(f.sections);
+        }
+
+        // if part, find or create part
+        else {
+          var part = findOrCreatePart(f.file);
+          part.children = part.children.concat(f.sections);
+        }
+
       });
 
       // create new stream from the files

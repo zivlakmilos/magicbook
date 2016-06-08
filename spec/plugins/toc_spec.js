@@ -98,4 +98,26 @@ describe("TOC plugin", function() {
     });
   });
 
+  describe("Parts", function() {
+
+    it("should populate TOC with parts", function(done) {
+      var uid = triggerBuild({
+        files: partTree,
+        liquid: {
+          includes: "spec/support/book/includes",
+        },
+        builds: [{ format: "html" }],
+        finish: function() {
+          var $ = cheerio.load(buildContent(uid, "build1/toc.html").toString());
+          expect($('nav > ol > li').eq(0).find('> a').text()).toEqual("First Heading")
+          expect($('nav > ol > li').eq(1).find('> span').text()).toEqual("Part 1")
+          expect($('nav > ol > li').eq(1).find('> ol > li > a').eq(0).text()).toEqual("Second Heading")
+          expect($('nav > ol > li').eq(1).find('> ol > li > span').eq(0).text()).toEqual("Sub Part")
+          done();
+        }
+      });
+    });
+
+  });
+
 });

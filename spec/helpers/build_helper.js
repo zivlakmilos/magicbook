@@ -34,3 +34,25 @@ global.buildContent = function(uid, file) {
   var path = global.buildPath(uid, file);
   return global.fileContent(path);
 }
+
+global.partTree = [
+  "spec/support/book/content/toc.html",
+  "spec/support/book/content/first-chapter.md",
+  {
+    label: "Part 1",
+    files: [
+      "spec/support/book/content/second-chapter.html",
+      {
+        label: "Sub Part",
+        files: [
+          "spec/support/book/content/subfolder/subfolder-file.md"
+        ]
+      },
+      "spec/support/book/content/third-chapter.md"
+    ]
+  },
+  {
+    label: "Part 2",
+    files: "spec/support/book/content/sections.md"
+  }
+];
