@@ -44,16 +44,17 @@ describe("Permalinks", function() {
       files: [
         {
           label: "Part 1",
-          children: [
+          files: [
             "spec/support/book/content/first-chapter.md",
             {
               label: "Part 2",
-              children: "spec/support/book/content/**/subfolder-file.md"
+              files: [ "spec/support/book/content/**/subfolder-file.md" ]
             }
           ]
         }
       ],
       finish: function() {
+        expect(buildPath(uid, "build1/part-1/first-chapter.html")).toExist();
         expect(buildPath(uid, "build1/part-1/part-2/subfolder-file.html")).toExist();
         done();
       }

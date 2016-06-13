@@ -178,17 +178,12 @@ Plugin.prototype = {
           }
 
         });
-        // loop through each vinyls in the part,
-        // find that file in tocFiles, and add to toc;
-        // if child part found, create child in toc, and
-        // run partToTOC again.
       }
 
       // If we are working with parts, recursively loop
       // through the part tree and add to toc.
       if(extras.partTree) {
         partToTOC(extras.partTree, toc);
-        console.log(toc);
       }
       // If we have a flat file array, just add all
       // file sections in order.

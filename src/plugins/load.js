@@ -20,7 +20,7 @@ function treeToStreams(parent, streams) {
     parent.vinyls = [];
     var stream = vfs.src(parent.files)
       .pipe(through.obj(function(file, enc, cb) {
-        file.parent = parent;
+        file.parent = parent.parent;
         parent.vinyls.push(file);
         cb(null, file);
       }));
@@ -64,7 +64,10 @@ function treeToStreams(parent, streams) {
 //   {
 //     label: "Part",
 //     files: [
-//       "thirdfile.md",
+//       {
+//         parent: {...},
+//         files: ["thirdfile.md"]
+//       },
 //       {
 //         parent: {...}
 //         label: "Sub Part",
@@ -83,14 +86,13 @@ function filesToTree(part) {
       // If there is no objects in the array, or the latest object
       // is a part, create a non-part object to hold the files.
       if(fileObjects.length == 0 || _.last(fileObjects).label) {
-        fileObjects.push({ files: [] });
+        fileObjects.push({ files: [], parent:part });
       }
       _.last(fileObjects).files.push(file);
     }
     else if(file.label && file.files) {
-      file = filesToTree(file, part);
-      file.parent = part;
-      fileObjects.push(file);
+      var child = filesToTree({ label: file.label, files: file.files, parent:part});
+      fileObjects.push(child);
     }
 
   });
@@ -124,6 +126,8 @@ Plugin.prototype = {
         queue.queue(stream);
       });
       queue.done();
+
+      // console.log(util.inspect(extras.partTree, false, null));
       cb(null, config, queue, extras);
 
     // If this array does not have parts in it
