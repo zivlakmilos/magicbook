@@ -1,3 +1,5 @@
+var cheerio = require('cheerio');
+
 describe("JavaScripts plugin", function() {
 
   it("should move JS and module JS to assets folder", function(done) {
@@ -148,6 +150,24 @@ describe("JavaScripts plugin", function() {
       },
       finish: function() {
         expect(buildPath(uid, "build1/subfolder/subfolder-file.html")).toHaveContent("<script src=\"../assets/subfolder/subfolderscripts.js\"></script>");
+        done();
+      }
+    });
+  });
+
+  it('should handle files changed with permalink', function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      permalink: 'onefolder/anotherfolder/:title.html',
+      layout: "spec/support/book/layouts/assets.html",
+      javascripts: {
+        files: [ "spec/support/book/javascripts/scripts.js" ]
+      },
+      finish: function() {
+        expect(buildPath(uid, "build1/assets/scripts.js")).toExist();
+        var content = buildContent(uid, "build1/onefolder/anotherfolder/first-chapter.html");
+        var $ = cheerio.load(content);
+        expect($('script').attr('src')).toEqual('../../assets/scripts.js');
         done();
       }
     });
