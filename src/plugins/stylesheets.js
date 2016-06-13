@@ -118,7 +118,8 @@ Plugin.prototype = {
 
       var styles = "";
       _.each(allFiles, function(js) {
-        styles += '<link rel="stylesheet" href="' + path.relative(path.dirname(file.relative), js) +'">\n';
+        var href = path.relative(path.dirname(file.relative), js);
+        styles += '<link rel="stylesheet" href="' + href +'">\n';
       });
 
       _.set(file, "layoutLocals.stylesheets", styles);

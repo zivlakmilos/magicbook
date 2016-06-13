@@ -4,7 +4,7 @@ var slug = require('slug');
 var _ = require('lodash');
 
 var Plugin = function(registry) {
-  registry.before('navigation:insert', 'permalinks', this.permalinks);
+  registry.before('stylesheets:insert', 'permalinks', this.permalinks);
 };
 
 function parentsToSlug(child) {
