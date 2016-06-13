@@ -70,6 +70,6 @@ describe("Navigation plugin", function() {
         done();
       }
     });
-  })
+  });
 
 });

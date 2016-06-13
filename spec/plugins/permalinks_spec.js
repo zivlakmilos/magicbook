@@ -37,20 +37,27 @@ describe("Permalinks", function() {
     });
   });
 
-  it('should use :title variable', function(done) {
+  it('should use :parts and :title variable', function(done) {
     var uid = triggerBuild({
       builds: [{ format: "html" }],
-      permalink : "permafolder/:title.html",
-      files: "spec/support/book/content/**/subfolder-file.md",
+      permalink : ":parts/:title.html",
+      files: [
+        {
+          label: "Part 1",
+          children: [
+            "spec/support/book/content/first-chapter.md",
+            {
+              label: "Part 2",
+              children: "spec/support/book/content/**/subfolder-file.md"
+            }
+          ]
+        }
+      ],
       finish: function() {
-        expect(buildPath(uid, "build1/permafolder/subfolder-file.html")).toExist();
+        expect(buildPath(uid, "build1/part-1/part-2/subfolder-file.html")).toExist();
         done();
       }
     });
   });
 
-  // it('should use :parts')
 });
-
-// navigation plugin?
-// should use permalink address for links

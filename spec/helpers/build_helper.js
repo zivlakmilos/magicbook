@@ -53,6 +53,8 @@ global.partTree = [
   },
   {
     label: "Part 2",
-    files: "spec/support/book/content/sections.md"
+    files: [
+      "spec/support/book/content/sections.md"  
+    ]
   }
 ];

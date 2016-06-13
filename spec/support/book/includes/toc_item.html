@@ -5,7 +5,6 @@
   {% else %}
     <span data-toc="{{ item.type }}">{{ item.label }}</span>
   {% endif %}
-
   {% if item.children.length > 0 %}
   <ol>
     {% include toc_item.html children=item.children %}
