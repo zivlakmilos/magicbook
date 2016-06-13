@@ -12,50 +12,15 @@ function isStringArray(arr) {
   return _.isArray(arr) && _.every(arr, function(f) { return _.isString(f)});
 }
 
-// Assigns a part name to a file. This is used later to figure out
-// what part the file belongs to. Will break if two parts are named
-// the same.
-// function assignPart(stream, part, parentPart) {
-//
-//   if(!part) return stream;
-//
-//   return stream.pipe(through.obj(function(file, enc, cb) {
-//     file.part = part;
-//     file.parentPart = parentPart;
-//     cb(null, file);
-//   }));
-//
-// }
-//
-// function parseFileArray(files, streams, part, parentPart) {
-//
-//   var newFiles = [];
-//
-//   // if files is a string, convert it into an object
-//   if(_.isString(files) {
-//     newFiles.push({})
-//     streams.push(assignPart(vfs.src(files), part, parentPart))
-//   }
-//   else {
-//     _.each(files, function(file) {
-//
-//       // if this is a glob
-//       if(_.isString(file)) streams.push(assignPart(vfs.src(file), part, parentPart));
-//
-//       // if this is a part
-//       else if(_.isObject(file) && file.files) {
-//         parseFileArray(file.files, streams, file, part);
-//       }
-//     });
-//   }
-//
-//   return newFiles;
-// }
-
 function treeToStreams(parent, streams) {
-
+  
   if(isStringArray(parent.files)) {
-    streams.push(vfs.src(parent.files))
+    var stream = vfs.src(parent.files)
+      .pipe(through.obj(function(file, enc, cb) {
+        file.part = parent;
+        cb(null, file);
+      }));
+    streams.push(stream);
   }
   else {
     _.each(parent.files, function(file) {
