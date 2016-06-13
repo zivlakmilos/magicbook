@@ -95,7 +95,7 @@ You can set the files property to be a single glob.
 }
 ```
 
-You can set the files array to be an array of globs.
+You can set the files property to be an array of globs.
 
 ```json
 {
@@ -118,9 +118,9 @@ Using an array, you can also specify each of the files you want to build.
 }
 ```
 
-If you are not using the `permalink` setting, your glob structure will determine the output path in the build folder. If your glob uses wildcards, the folders will be preserved in the build folder. Also note that the build process will **remove leading numbers, dashes and underscores from folders and filenames**.
+If you are **not** using the `permalink` setting, your glob structure will determine the output path in the build folder. If your glob uses wildcards `*`, the folders will be preserved in the build folder.
 
-As an example, consider the following folder structure.
+If you are using this approach, you can use numbers in folders and filenames to order your files, as the build process will **remove leading numbers, dashes and underscores from folders and filenames**. Take the following files:
 
 ```
 contents/
@@ -129,7 +129,7 @@ contents/
     02-second-file.md
 ```
 
-This files array:
+... and this configuration file:
 
 ```json
 {
@@ -148,28 +148,56 @@ build1/
     second-file.html
 ```
 
-Because the files glob does not set any ordering, you can use numbers in files and folders to decide the order of the files. Because of the wildcard glob `**`, the subfolder is transferred to the build. However, this files array:
+If you want to have more control over folders and filenames, use the `permalink` setting.
+
+### Parts
+
+You can use a special object syntax to group your files into parts and sub-parts. The following example demonstrates a book with an introduction and two parts with several chapters in each. These parts will automatically be added to the table of contents.
 
 ```json
 {
   "files" : [
-    "contents/01-first-chapter/01-first-file.md",
-    "contents/01-first-chapter/02-second-file.md"
+    "introduction.md",
+    {
+      "label" : "Part 1",
+      "files" : [
+        "first-chapter.md",
+        "second-chapter.md"
+      ]
+    },
+    {
+      "label" : "Part 2",
+      "files" : [
+        "third-chapter.md",
+        "fourth-chapter.md"
+      ]
+    }
   ]
 }
 ```
 
-... will create a `html` build that looks like this, without a subfolder:
+You can also have sub-parts, which is demonstrated in the following:
 
+```json
+{
+  "files" : [
+    {
+      "label" : "Part",
+      "files" : [
+        "first-chapter.md",
+        {
+          "label" : "Sub Part",
+          "files" : [
+            "second-chapter.md"
+          ]
+        }
+      ]
+    }
+  ]
+}
 ```
-build1/
-  first-file.html
-  second-file.html
-```
 
-If you want to have more control over folders and filenames, use the `permalink` setting.
-
-*This setting is also available in the configuration for each build*, which you can read more about below.
+The part labels are used when generating permalinks with the `permalink` setting.
 
 ## Builds
 
@@ -183,7 +211,7 @@ You must add a `builds` array to your configuration that as a minimum defines th
 }
 ```
 
-The `builds` array is a very powerful concept, as it further allows you to specify specific settings for each build. For example, here's a book that uses a different introduction for the HTML and PDF builds.
+The `builds` array is a very powerful concept, as it allows you to specify settings for each build. For example, here's a book that uses a different introduction for the HTML and PDF builds. **All settings in `magicbook` can be specified as either a global setting or a build setting**.
 
 ```json
 {
@@ -208,8 +236,6 @@ The `builds` array is a very powerful concept, as it further allows you to speci
 }
 ```
 
-Almost all settings in `magicbook` can be specified as either a global setting or a build setting. Below, each setting will state *This setting is also available as a build setting* if this is true.
-
 Using the `builds` array, you can have several builds that uses the same format. This is useful if you want to e.g. generate a PDF with hyperlinks, and another PDF for print that doesn't have hyperlinks.
 
 ### Build destination
@@ -223,8 +249,6 @@ You can change this setting in your configuration file.
   "destination" : "my/custom/folder/:build"
 }
 ```
-
-*This setting is also available as a build setting.*
 
 ### Build Format
 
@@ -249,15 +273,13 @@ You can define settings for Prince XML.
 }
 ```
 
-*This setting is also available as a build setting*
-
 #### EPUB (TODO)
 
 #### MOBI (TODO)
 
 ## Permalinks
 
-You can use the `permalink` setting to override the default glob-controlled build paths. The `:title` variable is available so you can create one general permalink structure for all your files inside the build folder.
+You can use the `permalink` setting to override the default glob-controlled build paths. Any occurrence of the string `:title` will be replaced with the original filename, so the following configuration can be used to make "pretty" permalinks.
 
 ```json
 {
@@ -265,7 +287,7 @@ You can use the `permalink` setting to override the default glob-controlled buil
 }
 ```
 
-*This setting is also available both as a build setting and as a frontmatter variable*
+Any occurrence of the string `:parts` will be replaced by the parts that the file belongs to, so if a file belongs to a sub-part, `:parts/:title.html` will result in a build file located in `part/sub-part/filename.html`.
 
 ## Links
 
