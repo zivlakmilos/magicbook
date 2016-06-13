@@ -149,56 +149,54 @@ Plugin.prototype = {
         children: []
       };
 
-      // searches for a part in the toc children.
-      function findPart(part, parent) {
-        for(var i = 0; i < parent.children.length; i++) {
-          var child = parent.children[i];
-          if(!_.isString(child)) {
-            if(child.label === part.label) {
-              return child;
-            } else {
-              var found = findPart(part, child);
-              if(found) return found;
-            }
+      function partToTOC(part, toc) {
+        _.each(part.files, function(file) {
+
+          // if this has no label, they are direct children.
+          // I should probably use a .part flag instead.
+          if(!file.label) {
+
+            // loop through each vinyl file and find the corresponding
+            // tocFile. Then assign sections to current toc parent.
+            _.each(file.vinyls, function(vinyl) {
+              var tocFile = _.find(tocFiles, function(f) {
+                return f.file.history[0] == vinyl.history[0];
+              });
+              if(tocFile && !_.isEmpty(tocFile.sections)) {
+                toc.children = toc.children.concat(tocFile.sections);
+              }
+            });
           }
-        }
-        return false;
+
+          // This is a part and we need to handle it by calling
+          // partToTOC. This removes the ability to add extra config
+          // to part config. Rethink.
+          else {
+            var child = { type: 'part', label: file.label, children: []}
+            partToTOC(file, child);
+            toc.children.push(child);
+          }
+
+        });
+        // loop through each vinyls in the part,
+        // find that file in tocFiles, and add to toc;
+        // if child part found, create child in toc, and
+        // run partToTOC again.
       }
 
-      function findOrCreatePart(file) {
-
-        // if this part already exists
-        var found = findPart(file.part, toc);
-        if(found) return found;
-
-        // if this part does not exist
-        // if parent, find parent that MUST exist because
-        // things are in order
-        found = { label: file.part.label, children: [] }
-        if(file.parentPart) {
-          findPart(file.parentPart, toc).children.push(found);
-        } else {
-          toc.children.push(found);
-        }
-
-        return found;
+      // If we are working with parts, recursively loop
+      // through the part tree and add to toc.
+      if(extras.partTree) {
+        partToTOC(extras.partTree, toc);
+        console.log(toc);
       }
-
-      // loop through all sections and assemble parts.
-      _.each(tocFiles, function(f) {
-
-        // if no part, just add to toc children
-        if(!f.file.part) {
+      // If we have a flat file array, just add all
+      // file sections in order.
+      else {
+        _.each(tocFiles, function(f) {
           toc.children = toc.children.concat(f.sections);
-        }
-
-        // if part, find or create part
-        else {
-          var part = findOrCreatePart(f.file);
-          part.children = part.children.concat(f.sections);
-        }
-
-      });
+        });
+      }
 
       // create new stream from the files
       stream = streamHelpers.streamFromArray(files)

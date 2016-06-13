@@ -72,4 +72,6 @@ describe("Navigation plugin", function() {
     });
   });
 
+  it("should navigate between parts");
+
 });

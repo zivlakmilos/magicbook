@@ -13,11 +13,15 @@ function isStringArray(arr) {
 }
 
 function treeToStreams(parent, streams) {
-  
+
+  if(_.isEmpty(parent.files)) return streams;
+
   if(isStringArray(parent.files)) {
+    parent.vinyls = [];
     var stream = vfs.src(parent.files)
       .pipe(through.obj(function(file, enc, cb) {
-        file.part = parent;
+        file.parent = parent;
+        parent.vinyls.push(file);
         cb(null, file);
       }));
     streams.push(stream);
@@ -31,11 +35,11 @@ function treeToStreams(parent, streams) {
   return streams;
 }
 
-// Turn a part array into a full tree consisting of objects, so we later
+// Turn a part into a full tree consisting of objects, so we later
 // can store stream vinyl objects in the objects belonging to the blobs
 // they were loaded from.
 // Turns this:
-// [
+// { files: [
 //   "firstfile.md",
 //   "secondfile.md",
 //   {
@@ -48,9 +52,9 @@ function treeToStreams(parent, streams) {
 //       }
 //     ]
 //   }
-// ]
+// ]}
 // Into this:
-// [
+// { files: [
 //   {
 //     files: [
 //       "firstfile.md",
@@ -68,7 +72,7 @@ function treeToStreams(parent, streams) {
 //       }
 //     ]
 //  }
-// ]
+// ]}
 function filesToTree(part) {
 
   var fileObjects = [];
