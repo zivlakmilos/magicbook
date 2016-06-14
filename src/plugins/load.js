@@ -20,9 +20,23 @@ function treeToStreams(parent, streams) {
     parent.vinyls = [];
     var stream = vfs.src(parent.files)
       .pipe(through.obj(function(file, enc, cb) {
+
+        // set the parent on the vinyl file so we
+        // can get it in the TOC
         file.parent = parent.parent;
+
+        // Set the vars from the parent so they are
+        // accessible in liquid.
+        if(parent.parent.vars) {
+          _.set(file, "pageLocals.part", parent.parent.vars);
+          _.set(file, "layoutLocals.part", parent.parent.vars);
+        }
+
+        // save the file in vinyls array for TOC.
         parent.vinyls.push(file);
+
         cb(null, file);
+
       }));
     streams.push(stream);
   }
@@ -50,7 +64,8 @@ function treeToStreams(parent, streams) {
 //         label: "Sub Part",
 //         files: ["fourthfile.md"]
 //       }
-//     ]
+//     ],
+//     myVariable: "Something"
 //   }
 // ]}
 // Into this:
@@ -73,7 +88,10 @@ function treeToStreams(parent, streams) {
 //         label: "Sub Part",
 //         files: ["fourthfile.md"]
 //       }
-//     ]
+//     ],
+//     vars : {
+//       myVariable: "Something"
+//     }
 //  }
 // ]}
 function filesToTree(part) {
@@ -83,15 +101,19 @@ function filesToTree(part) {
   _.each(part.files, function(file) {
 
     if(_.isString(file)) {
+
       // If there is no objects in the array, or the latest object
       // is a part, create a non-part object to hold the files.
       if(fileObjects.length == 0 || _.last(fileObjects).label) {
-        fileObjects.push({ files: [], parent:part });
+        var vars = _.omit(part, ['label', 'files', 'parent', 'vars']);
+        fileObjects.push({ files: [], parent:part, vars: vars });
       }
+
       _.last(fileObjects).files.push(file);
     }
     else if(file.label && file.files) {
-      var child = filesToTree({ label: file.label, files: file.files, parent:part});
+      var vars = _.omit(file, ['label', 'files', 'parent', 'vars']);
+      var child = filesToTree({ label: file.label, files: file.files, parent:part, vars: vars});
       fileObjects.push(child);
     }
 

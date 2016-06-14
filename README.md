@@ -152,7 +152,7 @@ If you want to have more control over folders and filenames, use the `permalink`
 
 ### Parts
 
-You can use a special object syntax to group your files into parts and sub-parts. The following example demonstrates a book with an introduction and two parts with several chapters in each. These parts will automatically be added to the table of contents.
+You can use a special object syntax to group your files into parts and sub-parts. The following example demonstrates a book with an introduction and two parts with several chapters in each. These parts will automatically be added to the table of contents, and the labels will be used in the slug when using the `permalinks` setting with the `:parts` variable.
 
 ```json
 {
@@ -197,7 +197,25 @@ You can also have sub-parts, which is demonstrated in the following:
 }
 ```
 
-The part labels are used when generating permalinks with the `permalink` setting.
+If you add extra properties to a part, it will be accessible as a liquid variable in the files. The following demonstrates a very simple use case, where "Hello" is inserted into a file.
+
+```json
+{
+  "files" : [
+    {
+      "label" : "Part",
+      "files" : [ ... ],
+      "myVariable" : "Hello"
+    }
+  ]
+}
+```
+
+```html
+This is my file.
+
+{{ part.myVariable }}
+```
 
 ## Builds
 
