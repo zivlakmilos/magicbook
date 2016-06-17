@@ -5,7 +5,9 @@ var tinyliquid = require('tinyliquid');
 var helpers = require('../helpers/helpers');
 var htmlbookHelpers = require('../helpers/htmlbook');
 var streamHelpers = require('../helpers/stream');
+var path = require('path');
 var _ = require('lodash');
+var util = require('util');
 
 var Plugin = function(registry) {
   registry.before('liquid', 'toc:placeholders', _.bind(this.insertPlaceholders, this));
@@ -40,7 +42,7 @@ var maxLevel = 3;
 // takes an element and finds all direct section in its children.
 // recursively calls itself on all section children to get a tree
 // of sections.
-function getSections($, root, href) {
+function getSections($, root, relative) {
 
   var items = [];
 
@@ -72,10 +74,10 @@ function getSections($, root, href) {
     }
 
     // find href of section
-    item.href = href + "#" + item.id;
+    item.relative = relative;
 
     if(level <= maxLevel) {
-      item.children = getSections($, jel, href);
+      item.children = getSections($, jel, relative);
     }
 
     items.push(item);
@@ -126,7 +128,7 @@ Plugin.prototype = {
       // add sections to plugin array for use later in the pipeline
       tocFiles.push({
         file: file,
-        sections: getSections(file.$el, root, config.format == "pdf" ? '' : file.relative)
+        sections: getSections(file.$el, root, file.relative)
       });
 
       cb(null, file);
@@ -193,20 +195,41 @@ Plugin.prototype = {
         });
       }
 
-      // create new stream from the files
-      stream = streamHelpers.streamFromArray(files)
+      // a function to turn a toc tree into relative
+      // URL's for a specific file.
+      function relativeTOC(file, parent) {
+        _.each(parent.children, function(child) {
+          if(child.relative) {
+            var href = "";
+            if(config.format != "pdf") {
+              var relativeFolder = path.relative(path.dirname(file.relative), path.dirname(child.relative));
+              href = path.join(relativeFolder, path.basename(child.relative))
+            }
+            if(child.id) {
+              href += "#" + child.id;
+            }
+            child.href = href;
+          }
+          if(child.children) {
+            child = relativeTOC(file, child);
+          }
+        });
+        return parent;
+      }
 
+      // create new stream from the files and
       // loop through each file and replace placeholder
       // with toc include.
       // check if there is a placeholder, and then fail if there is
       // no include names toc.html
-      .pipe(through.obj(function(file, enc, cb) {
+      stream = streamHelpers.streamFromArray(files)
+        .pipe(through.obj(function(file, enc, cb) {
 
         // only if this file has the placeholder
         if(file.contents.toString().match(placeHolder)) {
 
           var tmpl = tinyliquid.compile("{% include toc.html %}");
-          var locals = { toc: toc };
+          var locals = { toc: relativeTOC(file, toc) };
           var includes = _.get(file, "pageLocals.page.includes") || config.liquid.includes;
 
           helpers.renderLiquidTemplate(tmpl, locals, includes, function(err, data) {

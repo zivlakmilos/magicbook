@@ -98,6 +98,26 @@ describe("TOC plugin", function() {
     });
   });
 
+  it('should make toc links relative to toc permalink', function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      permalink: ':title/index.html',
+      files: [
+        "spec/support/book/content/toc.html",
+        "spec/support/book/content/first-chapter.md"
+      ],
+      liquid: {
+        includes: "spec/support/book/includes",
+      },
+      finish: function() {
+        var content = buildContent(uid, "build1/toc/index.html").toString();
+        var $ = cheerio.load(content);
+        expect($('a').attr('href')).toEqual('../first-chapter/index.html#first-heading-94J3TWY')
+        done();
+      }
+    });
+  });
+
   describe("Parts", function() {
 
     it("should populate TOC with parts", function(done) {

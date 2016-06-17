@@ -399,8 +399,6 @@ You can change where `magicbook` looks for images by supplying an array of globs
 }
 ```
 
-*This setting is also available as a build setting.*
-
 ### Destination folder
 
 It is also possible to control where the images are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
@@ -413,8 +411,6 @@ It is also possible to control where the images are stored in the build. You can
 }
 ```
 
-*This setting is also available as a build setting.*
-
 ### Digest
 
 The `digest` option will add a md5 checksum of the image content to the filename, to allow you to set long caching headers for a production website.
@@ -426,8 +422,6 @@ The `digest` option will add a md5 checksum of the image content to the filename
   }
 }
 ```
-
-*This setting is also available as a build setting.*
 
 ## Stylesheets
 
@@ -459,8 +453,6 @@ You can insert the compiled CSS in the layout using the `{{ stylesheets }}` liqu
 
 By using different files for each format, you can have a book that looks very different across formats. To share styles between the formats, you can use SCSS `@import`.
 
-*This setting is also available as a build setting.*
-
 ### Destination
 
 It is also possible to control where these stylesheets are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
@@ -472,8 +464,6 @@ It is also possible to control where these stylesheets are stored in the build. 
   }
 }
 ```
-
-*This setting is also available as a build setting.*
 
 ### Compress
 
@@ -487,8 +477,6 @@ The `compress` property will remove whitespace from the CSS file, resulting in m
 }
 ```
 
-*This setting is also available as a build setting.*
-
 ### Bundle
 
 The `bundle` option will combine all the files in the `stylesheets` array into a single CSS file in the output. This, combined with the `compress` option, is recommended to improve the loading speed of a production website. You can set it to `true` or the desired name of the bundle.
@@ -501,8 +489,6 @@ The `bundle` option will combine all the files in the `stylesheets` array into a
 }
 ```
 
-*This setting is also available as a build setting.*
-
 ### Digest
 
 The `digest` option will add the md5 checksum of the file content to the filename, to allow you to set long caching headers for a production website.
@@ -514,8 +500,6 @@ The `digest` option will add the md5 checksum of the file content to the filenam
   }
 }
 ```
-
-*This setting is also available as a build setting.*
 
 ## JavaScripts
 
@@ -547,8 +531,6 @@ You can insert links to the JavaScript files in the layout using the `{{ javascr
 
 As this is available as a build setting, you can easily add JavaScript files to some builds, while keeping other builds static.
 
-*This setting is also available as a build setting.*
-
 ### Destination
 
 It is also possible to control where these JavaScript files are stored in the build. You can specify a custom destination folder by using the `destination` property. It defaults to `assets`.
@@ -560,8 +542,6 @@ It is also possible to control where these JavaScript files are stored in the bu
   }
 }
 ```
-
-*This setting is also available as a build setting.*
 
 ### Compress
 
@@ -575,8 +555,6 @@ The `compress` property will remove whitespace from the JavaScript files using U
 }
 ```
 
-*This setting is also available as a build setting.*
-
 ### Bundle
 
 The `bundle` option will combine all the files in the `javascripts` array into a single JS file in the output. This, combined with the `compress` option, is recommended to improve the loading speed of a production website. You can set it to `true` or the desired name of the bundle.
@@ -589,8 +567,6 @@ The `bundle` option will combine all the files in the `javascripts` array into a
 }
 ```
 
-*This setting is also available as a build setting.*
-
 ### Digest
 
 The `digest` option will add the md5 checksum of the file content to the filename, to allow you to set long caching headers for a production website.
@@ -602,8 +578,6 @@ The `digest` option will add the md5 checksum of the file content to the filenam
   }
 }
 ```
-
-*This setting is also available as a build setting.*
 
 ## Fonts
 
@@ -634,8 +608,6 @@ You can change where `magicbook` looks for fonts by supplying an array of globs,
 }
 ```
 
-*This setting is also available as a build setting.*
-
 ### Destination folder
 
 By default, fonts will end up in the  `assets` folder in each build. You can change this destination by using the `destination` property. The `font-path()` SCSS helper will automatically update the relative URL to the font.
@@ -647,8 +619,6 @@ By default, fonts will end up in the  `assets` folder in each build. You can cha
   }
 }
 ```
-
-*This setting is also available as a build setting.*
 
 ## Table of Contents
 
@@ -713,8 +683,6 @@ To specify a layout to use, you can use the `layout` property in the JSON config
 
 Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
 
-*This setting is also available as a build setting.*
-
 ## Liquid
 
 It is also possible to use Liquid templating in your source files. By default, each file has access to the following variables:
@@ -765,8 +733,6 @@ You can change where `magicbook` looks for includes with the `includes` configur
 
 This makes it possible to either have different includes for each format, or have a single include for all formats where the `format` liquid variable is used to generate specific template markup.
 
-*This setting is also available as a build setting.*
-
 ## YAML Frontmatter
 
 You can specify YAML frontmatter in each file, and make those variables available as liquid variables in the file content. Here's a quick example of how this works.
@@ -781,7 +747,7 @@ name: Rune Madsen
 The author, {{ name }}, was born in Denmark.
 ```
 
-The YAML Frontmatter also allows you to override some configuration for each file. For example, you can specify a custom layout for a file. This will override any settings in the configuration file.
+The YAML Frontmatter also allows you to override some configuration for each file. For example, you can specify a custom layout for a file. This will override any settings in the configuration file. You can set the layout to `none` if you wish to disable layouts for a single file.
 
 ```markdown
 ---

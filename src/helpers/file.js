@@ -7,7 +7,7 @@ var helpers = {
   // Check whether a vinyl file is a markdown file
   // Returns: boolean
   isMarkdown: function(file) {
-    return file.path.match(/\.md$/) || file.path.match(/\.markdown$/);
+    return file.history[0].match(/\.md$/) || file.history[0].match(/\.markdown$/);
   },
 
   // Check whether a vinyl file is a scss file

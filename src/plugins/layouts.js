@@ -20,7 +20,7 @@ Plugin.prototype = {
       var layout = _.get(file, "layoutLocals.page.layout") || config.layout;
       var includes = _.get(file, "layoutLocals.page.includes") || config.liquid.includes;
 
-      if(layout) {
+      if(layout && layout != 'none') {
 
         // create the object to pass into liquid for this file
         var locals = {
@@ -36,8 +36,13 @@ Plugin.prototype = {
         // if the cache has not been loaded, load the file
         // and create a template from it.
         if(!that.layouts[layout]) {
-          var layoutContent = fs.readFileSync(layout);
-          that.layouts[layout] = tinyliquid.compile(layoutContent.toString());
+          try {
+            var layoutContent = fs.readFileSync(layout);
+            that.layouts[layout] = tinyliquid.compile(layoutContent.toString());
+          } catch(e) {
+            return cb(new Error('Layout not found: ' + layout));
+          }
+
         }
 
         // then render the layout
