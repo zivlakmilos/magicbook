@@ -22,7 +22,12 @@ Plugin.prototype = {
         config: config
       }
 
-      // add extra liquid locals from the build pipeline
+      // Add locals set globally
+      if(extras.pageLocals) {
+        _.assign(locals, extras.pageLocals);
+      }
+
+      // Add locals set on the file
       if(file.pageLocals) {
         _.assign(locals, file.pageLocals);
       }

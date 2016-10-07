@@ -18,11 +18,8 @@ Plugin.prototype = {
     extras.md.use(markdownitFootnotes);
 
     // insert placeholder in {{ footnotes }}
-    stream = stream.pipe(through.obj(function(file, enc, cb) {
-      _.set(file, "pageLocals.footnotes", '<div data-placeholder-footnotes></div>');
-      _.set(file, "layoutLocals.footnotes", '<div data-placeholder-footnotes></div>');
-      cb(null, file);
-    }));
+    _.set(extras, "pageLocals.footnotes", '<div data-placeholder-footnotes></div>');
+    _.set(extras, "layoutLocals.footnotes", '<div data-placeholder-footnotes></div>');
 
     callback(null, config, stream, extras);
   },

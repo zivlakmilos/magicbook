@@ -94,13 +94,8 @@ Plugin.prototype = {
   // markdown conversion. So in a later hook, we generate the TOC and insert
   // the TOC instead of the placeholder.
   insertPlaceholders: function(config, stream, extras, callback) {
-
-    stream = stream.pipe(through.obj(function(file, enc, cb) {
-      _.set(file, "pageLocals.toc", placeHolder);
-      _.set(file, "layoutLocals.toc", placeHolder);
-      cb(null, file);
-    }));
-
+    _.set(extras, "pageLocals.toc", placeHolder);
+    _.set(extras, "layoutLocals.toc", placeHolder);
     callback(null, config, stream, extras);
   },
 

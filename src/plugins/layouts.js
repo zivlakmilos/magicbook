@@ -29,6 +29,12 @@ Plugin.prototype = {
           config: config
         }
 
+        // Add locals set globally
+        if(extras.layoutLocals) {
+          _.assign(locals, extras.layoutLocals);
+        }
+
+        // Add locals set on file
         if(file.layoutLocals) {
           _.assign(locals, file.layoutLocals);
         }
