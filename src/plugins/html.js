@@ -11,6 +11,7 @@ Plugin.prototype = {
     if(config.format == "html") {
       stream = stream.pipe(vfs.dest(extras.destination));
       stream.on('finish', function() {
+        console.log('-> HTML build finished');
         callback(null, config, stream, extras);
       });
     }

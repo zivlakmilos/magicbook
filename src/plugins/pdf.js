@@ -50,6 +50,7 @@ Plugin.prototype = {
         .output(path.join(extras.destination, "consolidated.pdf"))
         .execute()
         .then(function () {
+          console.log('-> PDF build finished');
           callback(null, config, stream, extras);
         }, function (error) {
           console.log("Prince XML error")
