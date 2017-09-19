@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.13
+
+- Bumping version of prince package
+
 ## 0.1.12
 
 - Speeding up liquid rendering by not adding liquid locals to each file where it's not needed.

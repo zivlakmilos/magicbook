@@ -1,18 +1,21 @@
 # The Magic Book Project
 
-*This project is still working towards a 0.1.0 release, which means that the API is in active development. EPUB and MOBI formats are still not supported. We encourage developers to try the releases and report any issues in the issue tracker.*
+*This project is still working towards a 1.0.0 release, which means that the API is in active development. EPUB and MOBI formats are still not supported. We encourage developers to try the releases and report any issues in the issue tracker.*
 
 The Magic Book Project is an open source project funded by New York University's Interactive Telecommunications Program. It aims to be the best free tool for creating print and digital books from a single source.
 
 This project is for you, if:
 
-- You want to write your book in plain text (Markdown or HTML)
-- You want to export to many different formats (static website, pdf, epub, mobi)
-- You want your source to be free of format-specific hacks
-- You want to use CSS to design the look of your book
-- You want to use JavaScript to add interactivity to digital formats
-- You want to use a command-line tool for all of this
-- You want that command-line tool be be written in Node-only. No more XSLT.
+- [X] You want to write your book in plain text (Markdown or HTML)
+- [X] You want to export to a static website
+- [X] You want to export to a printable PDF
+- [ ] You want to export to EPUB (Kindle, etc)
+- [ ] You want to export to MOBI (iBooks)
+- [X] You want your source to be free of format-specific hacks
+- [X] You want to use CSS to design the look of your book
+- [X] You want to use JavaScript to add interactivity to digital formats
+- [X] You want to use a command-line tool for all of this
+- [X] You want that command-line tool be be written in Node-only. No more XSLT.
 
 Although a small number of open source publishing frameworks already exists, it's hard to find any that are flexible enough to create modern, interactive books for the web while also doing print-ready PDF export.
 
