@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.14
+
+- Fixing bug where cross references weren't working from files in subfolders
+- Fixing bug where cross references weren't working with permalinks
+
 ## 0.1.13
 
 - Bumping version of prince package

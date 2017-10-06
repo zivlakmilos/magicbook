@@ -62,10 +62,15 @@ Plugin.prototype = {
             // find the first id that matches
             var inFilename = ids[needId];
             if (inFilename) {
+              var relDir = path.relative(
+                path.dirname(file.relative),
+                path.dirname(inFilename)
+              );
+
               changed = true;
               link.attr(
                 'href',
-                path.relative(file.relative, inFilename) + href
+                path.join(relDir, path.basename(inFilename)) + href
               );
             } else {
               console.log(
