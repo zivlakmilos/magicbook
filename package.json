@@ -2,12 +2,14 @@
   "repository": "https://github.com/magicbookproject/magicbook.git",
   "version": "0.1.13",
   "name": "magicbook",
-  "description": "The magic book project is an open source framework for creating digital and print books",
+  "description":
+    "The magic book project is an open source framework for creating digital and print books",
   "author": "magicbookproject",
   "license": "MIT",
   "scripts": {
-    "test": "jasmine",
-    "benchmark": "cd example && node --prof ../src/index.js build && node --prof-process \"$(ls isolate*.log)\" > processed.txt && atom processed.txt"
+    "test": "./node_modules/.bin/jasmine",
+    "benchmark":
+      "cd example && node --prof ../src/index.js build && node --prof-process \"$(ls isolate*.log)\" > processed.txt && atom processed.txt"
   },
   "dependencies": {
     "async": "^1.5.2",
