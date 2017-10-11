@@ -67,7 +67,10 @@ var helpers = {
   makeHtmlBook: function(html) {
 
     var $ = cheerio.load(html);
-    var children = $.root()[0].childNodes;
+
+    // Cheerio seems to add a full HTMl doc,
+    // so we reach into body to get the elements back.
+    var children = $('body')[0].childNodes;
     var newChildren = [];
 
     // find all internal links and add data-type to them

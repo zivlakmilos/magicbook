@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.15
+
+- Updating cheerio to rc2
+- Removing unnecessary dependencies
+
 ## 0.1.14
 
 - Fixing bug where cross references weren't working from files in subfolders

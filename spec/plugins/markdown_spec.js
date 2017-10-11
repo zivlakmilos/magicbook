@@ -25,7 +25,7 @@ describe("Markdown", function() {
         finish: function() {
           var content = buildContent(uid, "build1/sections.html").toString();
           var $ = cheerio.load(content);
-          var root = $.root().children()[0];
+          var root = $('body').children()[0];
           var children = $(root).children();
           expect(dt(root)).toEqual('chapter');
             expect(children[0].name).toEqual('h1')
@@ -50,7 +50,7 @@ describe("Markdown", function() {
         finish: function() {
           var content = buildContent(uid, "build1/sections_header.html").toString();
           var $ = cheerio.load(content);
-          var root = $.root().children()[0];
+          var root = $('body').children()[0];
           var children = $(root).children();
           expect(dt(root)).toEqual('chapter');
             expect(children[0].name).toEqual('header')

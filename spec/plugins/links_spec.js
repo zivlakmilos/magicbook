@@ -35,7 +35,7 @@ describe('Links plugin', function() {
       });
     });
 
-    fit('should work with permalinks', function(done) {
+    it('should work with permalinks', function(done) {
       var uid = triggerBuild({
         builds: [
           {
