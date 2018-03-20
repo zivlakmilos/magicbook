@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/magicbookproject/magicbook.git",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "name": "magicbook",
   "description":
     "The magic book project is an open source framework for creating digital and print books",
@@ -25,8 +25,8 @@
     "markdown-it": "^6.0.0",
     "mkdirp": "^0.5.1",
     "modify-filename": "^1.1.0",
-    "node-sass": "^3.4.2",
-    "prince": "^1.4.3",
+    "node-sass": "^4.7.2",
+    "prince": "^1.4.7",
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
     "slug": "^0.9.1",
