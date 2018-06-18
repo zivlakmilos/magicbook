@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.17
+
+* Fixing problem with HTML builds having two nested `<html>` tags.
+
 ## 0.1.16
 
 * Updating `node-sass` to work on newest OSX

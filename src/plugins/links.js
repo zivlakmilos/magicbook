@@ -1,18 +1,18 @@
-var through = require('through2');
-var cheerio = require('cheerio');
-var path = require('path');
-var _ = require('lodash');
-var fileHelpers = require('../helpers/file');
-var streamHelpers = require('../helpers/stream');
+var through = require("through2");
+var cheerio = require("cheerio");
+var path = require("path");
+var _ = require("lodash");
+var fileHelpers = require("../helpers/file");
+var streamHelpers = require("../helpers/stream");
 
 var Plugin = function(registry) {
-  registry.after('markdown:convert', 'links', this.parseLinks);
+  registry.after("markdown:convert", "links", this.parseLinks);
 };
 
 Plugin.prototype = {
   parseLinks: function(config, stream, extras, callback) {
     // don't do anything for PDF
-    if (config.format == 'pdf') {
+    if (config.format == "pdf") {
       callback(null, config, stream, extras);
       return;
     }
@@ -30,8 +30,8 @@ Plugin.prototype = {
 
         // loop through anything with an id and add the id
         // as key and the filename as value
-        file.$el('[id]').each(function(i, elem) {
-          ids[file.$el(this).attr('id')] = file.relative;
+        file.$el("[id]").each(function(i, elem) {
+          ids[file.$el(this).attr("id")] = file.relative;
         });
 
         cb(null, file);
@@ -54,7 +54,7 @@ Plugin.prototype = {
           // find all internal links in file
           file.$el("a[data-type='xref']").each(function(i) {
             var link = file.$el(this);
-            var href = link.attr('href');
+            var href = link.attr("href");
 
             // remove # from id name
             var needId = href.substring(1);
@@ -69,23 +69,23 @@ Plugin.prototype = {
 
               changed = true;
               link.attr(
-                'href',
+                "href",
                 path.join(relDir, path.basename(inFilename)) + href
               );
             } else {
               console.log(
-                'Link in ' +
+                "Link in " +
                   file.path +
-                  ' points to ID (#' +
+                  " points to ID (#" +
                   needId +
-                  ') that no longer exists'
+                  ") that no longer exists"
               );
             }
           });
 
           if (changed) {
             // add cheerio html back to file contents
-            file.contents = new Buffer(file.$el.html());
+            file.contents = new Buffer(file.$el("body").html());
           }
 
           cb(null, file);
