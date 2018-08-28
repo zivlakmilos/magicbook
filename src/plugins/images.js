@@ -62,7 +62,7 @@ function replaceSrc(imageMap) {
 
     // only if we find an image, replace contents in file
     if (changed) {
-      file.contents = new Buffer(file.$el("body").html());
+      file.contents = new Buffer(file.$el.root().html());
     }
 
     cb(null, file);
