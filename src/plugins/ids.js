@@ -56,7 +56,7 @@ Plugin.prototype = {
           }
         });
 
-        file.contents = new Buffer(file.$el("body").html());
+        file.contents = new Buffer(file.$el.root().html());    
 
         cb(null, file);
       })
