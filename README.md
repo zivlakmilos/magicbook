@@ -388,7 +388,7 @@ or
 <img src="myimage.jpg" alt="This is an image" />
 ```
 
-During the build process, `magicbook` will transfer all files located in `images` to the asset folder of each build and replace the image src attribute appropriately.
+During the build process, `magicbook` will transfer all files located in `images` to the `asset` folder of each build and replace the image src attribute appropriately.
 
 ### Source files
 
@@ -663,7 +663,7 @@ You can use the liquid `navigation` variable to create links that guides the rea
 
 ## Layouts
 
-Like most web frameworks, magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
+Like most web frameworks, `magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
 
 ```html
 <html>
