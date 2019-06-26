@@ -663,7 +663,7 @@ You can use the liquid `navigation` variable to create links that guides the rea
 
 ## Layouts
 
-Like most web frameworks, `magicbook has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
+Like most web frameworks, `magicbook` has the ability to wrap your content in a layout file. The liquid templating language is used for this, and this is what a layout file might look like:
 
 ```html
 <html>
