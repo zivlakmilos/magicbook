@@ -19,7 +19,7 @@
     "gulp-uglify": "^3.0.2",
     "gulp-util": "^3.0.8",
     "hashids": "^1.2.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "markdown-it": "^8.4.2",
     "mkdirp": "^0.5.1",
     "modify-filename": "^1.1.0",
