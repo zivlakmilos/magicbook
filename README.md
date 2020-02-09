@@ -1,21 +1,21 @@
 # The Magic Book Project
 
-*This project is still working towards a 1.0.0 release, which means that the API is in active development. EPUB and MOBI formats are still not supported. We encourage developers to try the releases and report any issues in the issue tracker.*
+_This project is still working towards a 1.0.0 release, which means that the API is in active development. EPUB and MOBI formats are still not supported. We encourage developers to try the releases and report any issues in the issue tracker._
 
 The Magic Book Project is an open source project funded by New York University's Interactive Telecommunications Program. It aims to be the best free tool for creating print and digital books from a single source.
 
 This project is for you, if:
 
-- [X] You want to write your book in plain text (Markdown or HTML)
-- [X] You want to export to a static website
-- [X] You want to export to a printable PDF
+- [x] You want to write your book in plain text (Markdown or HTML)
+- [x] You want to export to a static website
+- [x] You want to export to a printable PDF
 - [ ] You want to export to EPUB (Kindle, etc)
 - [ ] You want to export to MOBI (iBooks)
-- [X] You want your source to be free of format-specific hacks
-- [X] You want to use CSS to design the look of your book
-- [X] You want to use JavaScript to add interactivity to digital formats
-- [X] You want to use a command-line tool for all of this
-- [X] You want that command-line tool be be written in Node-only. No more XSLT.
+- [x] You want your source to be free of format-specific hacks
+- [x] You want to use CSS to design the look of your book
+- [x] You want to use JavaScript to add interactivity to digital formats
+- [x] You want to use a command-line tool for all of this
+- [x] You want that command-line tool be be written in Node-only. No more XSLT.
 
 Although a small number of open source publishing frameworks already exists, it's hard to find any that are flexible enough to create modern, interactive books for the web while also doing print-ready PDF export.
 
@@ -75,9 +75,7 @@ If you chose to write your book in Markdown, `magicbook` will automatically conv
   <h1>Chapter Title</h1>
   <section data-type="sect1">
     <h1>Sect 1</h1>
-    <section data-type="sect2">
-      <h2>Sect 2</h2>
-    </section>
+    <section data-type="sect2"><h2>Sect 2</h2></section>
   </section>
 </section>
 ```
@@ -94,7 +92,7 @@ You can set the files property to be a single glob.
 
 ```json
 {
-  "files" : "content/*.md"
+  "files": "content/*.md"
 }
 ```
 
@@ -102,10 +100,7 @@ You can set the files property to be an array of globs.
 
 ```json
 {
-  "files" : [
-    "content/chapter1/*.md",
-    "content/chapter2/*.md"
-  ]
+  "files": ["content/chapter1/*.md", "content/chapter2/*.md"]
 }
 ```
 
@@ -113,7 +108,7 @@ Using an array, you can also specify each of the files you want to build.
 
 ```json
 {
-  "files" : [
+  "files": [
     "content/first-file.md",
     "content/second-file.md",
     "content/third-file.md"
@@ -136,9 +131,7 @@ contents/
 
 ```json
 {
-  "files" : [
-    "contents/**/*.md"
-  ]
+  "files": ["contents/**/*.md"]
 }
 ```
 
@@ -159,21 +152,15 @@ You can use a special object syntax to group your files into parts and sub-parts
 
 ```json
 {
-  "files" : [
+  "files": [
     "introduction.md",
     {
-      "label" : "Part 1",
-      "files" : [
-        "first-chapter.md",
-        "second-chapter.md"
-      ]
+      "label": "Part 1",
+      "files": ["first-chapter.md", "second-chapter.md"]
     },
     {
-      "label" : "Part 2",
-      "files" : [
-        "third-chapter.md",
-        "fourth-chapter.md"
-      ]
+      "label": "Part 2",
+      "files": ["third-chapter.md", "fourth-chapter.md"]
     }
   ]
 }
@@ -183,16 +170,14 @@ You can also have sub-parts, which is demonstrated in the following:
 
 ```json
 {
-  "files" : [
+  "files": [
     {
-      "label" : "Part",
-      "files" : [
+      "label": "Part",
+      "files": [
         "first-chapter.md",
         {
-          "label" : "Sub Part",
-          "files" : [
-            "second-chapter.md"
-          ]
+          "label": "Sub Part",
+          "files": ["second-chapter.md"]
         }
       ]
     }
@@ -215,9 +200,7 @@ If you add extra properties to a part, it will be accessible as a liquid variabl
 ```
 
 ```html
-This is my file.
-
-{{ part.myVariable }}
+This is my file. {{ part.myVariable }}
 ```
 
 ## Builds
@@ -226,9 +209,7 @@ You must add a `builds` array to your configuration that as a minimum defines th
 
 ```json
 {
-  "builds" : [
-    { "format" : "html" }
-  ]
+  "builds": [{ "format": "html" }]
 }
 ```
 
@@ -236,18 +217,18 @@ The `builds` array is a very powerful concept, as it allows you to specify setti
 
 ```json
 {
-  "builds" : [
+  "builds": [
     {
-      "format" : "pdf",
-      "files" : [
+      "format": "pdf",
+      "files": [
         "content/print-introduction.md",
         "content/chapter-1.md",
         "content/chapter-2.md"
       ]
     },
     {
-      "format" : "html",
-      "files" : [
+      "format": "html",
+      "files": [
         "content/web-introduction.md",
         "content/chapter-1.md",
         "content/chapter-2.md"
@@ -267,7 +248,7 @@ You can change this setting in your configuration file.
 
 ```json
 {
-  "destination" : "my/custom/folder/:build"
+  "destination": "my/custom/folder/:build"
 }
 ```
 
@@ -287,9 +268,9 @@ You can define settings for Prince XML.
 
 ```json
 {
-  "prince" : {
-    "log" : "myfile.txt",
-    "timeout" : 300000
+  "prince": {
+    "log": "myfile.txt",
+    "timeout": 300000
   }
 }
 ```
@@ -304,7 +285,7 @@ You can use the `permalink` setting to override the default glob-controlled buil
 
 ```json
 {
-  "permalink" : "chapters/:title/index.html"
+  "permalink": "chapters/:title/index.html"
 }
 ```
 
@@ -350,24 +331,23 @@ Denmark has 5 million people.^[I made that up]
 
 ... or HTML
 
-```html
-<p>Denmark has 5 million people.<span data-type="footnote">I made that up</span></p>
-``
-
-Then add a liquid variable where ever you want your compiled footnotes to appear.
-
-```liquid
-{{ footnotes }}
-```
+````html
+<p>
+  Denmark has 5 million people.<span data-type="footnote">I made that up</span>
+</p>
+`` Then add a liquid variable where ever you want your compiled footnotes to
+appear. ```liquid {{ footnotes }}
+````
 
 As liquid templates are evaluated before markdown conversion, and the footnotes are compiled after markdown conversion, `magicbook` will first insert a placeholder string during the liquid processing, and then later in the build process replace this placeholder with the output of a special include named `footnotes.html`. To generate a footnotes, you must have this include in your includes folder. The include will have access to the following array of footnotes:
 
-
 ```js
-[{
-  id: "fn1",
-  label: "Text of footnotes",
-}]
+[
+  {
+    id: "fn1",
+    label: "Text of footnotes"
+  }
+];
 ```
 
 All projects created with `magicbook new` will have a `footnotes.html` include, and that's a good reference to see what's possible.
@@ -396,8 +376,8 @@ You can change where `magicbook` looks for images by supplying an array of globs
 
 ```json
 {
-  "images" : {
-    "files" : "custom/images/folder/**/*.jpg"
+  "images": {
+    "files": "custom/images/folder/**/*.jpg"
   }
 }
 ```
@@ -408,8 +388,8 @@ It is also possible to control where the images are stored in the build. You can
 
 ```json
 {
-  "images" : {
-    "destination" : "custom/assets/folder"
+  "images": {
+    "destination": "custom/assets/folder"
   }
 }
 ```
@@ -420,8 +400,8 @@ The `digest` option will add a md5 checksum of the image content to the filename
 
 ```json
 {
-  "images" : {
-    "digest" : true
+  "images": {
+    "digest": true
   }
 }
 ```
@@ -432,11 +412,8 @@ You can style all your builds using CSS or SCSS. The `stylesheets` configuration
 
 ```json
 {
-  "stylesheets" : {
-    "files" : [
-      "css/first.css",
-      "css/second.scss",
-    ]
+  "stylesheets": {
+    "files": ["css/first.css", "css/second.scss"]
   }
 }
 ```
@@ -462,8 +439,8 @@ It is also possible to control where these stylesheets are stored in the build. 
 
 ```json
 {
-  "stylesheets" : {
-    "destination" : "customfolder"
+  "stylesheets": {
+    "destination": "customfolder"
   }
 }
 ```
@@ -474,8 +451,8 @@ The `compress` property will remove whitespace from the CSS file, resulting in m
 
 ```json
 {
-  "stylesheets" : {
-    "compress" : true
+  "stylesheets": {
+    "compress": true
   }
 }
 ```
@@ -486,8 +463,8 @@ The `bundle` option will combine all the files in the `stylesheets` array into a
 
 ```json
 {
-  "stylesheets" : {
-    "bundle" : "mybundle.css"
+  "stylesheets": {
+    "bundle": "mybundle.css"
   }
 }
 ```
@@ -498,8 +475,8 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 
 ```json
 {
-  "stylesheets" : {
-    "digest" : true
+  "stylesheets": {
+    "digest": true
   }
 }
 ```
@@ -510,11 +487,8 @@ The `javascripts` configuration allows you to specify an array of `.js` files to
 
 ```json
 {
-  "javascripts" : {
-    "files" : [
-      "css/first.js",
-      "css/second.js",
-    ]
+  "javascripts": {
+    "files": ["css/first.js", "css/second.js"]
   }
 }
 ```
@@ -540,8 +514,8 @@ It is also possible to control where these JavaScript files are stored in the bu
 
 ```json
 {
-  "javascripts" : {
-    "destination" : "customfolder"
+  "javascripts": {
+    "destination": "customfolder"
   }
 }
 ```
@@ -552,8 +526,8 @@ The `compress` property will remove whitespace from the JavaScript files using U
 
 ```json
 {
-  "javascripts" : {
-    "compress" : true
+  "javascripts": {
+    "compress": true
   }
 }
 ```
@@ -564,8 +538,8 @@ The `bundle` option will combine all the files in the `javascripts` array into a
 
 ```json
 {
-  "javascripts" : {
-    "bundle" : "mybundle.js"
+  "javascripts": {
+    "bundle": "mybundle.js"
   }
 }
 ```
@@ -576,8 +550,8 @@ The `digest` option will add the md5 checksum of the file content to the filenam
 
 ```json
 {
-  "javascripts" : {
-    "digest" : true
+  "javascripts": {
+    "digest": true
   }
 }
 ```
@@ -588,12 +562,13 @@ When you want to use webfonts, simply create a folder called `fonts` in your boo
 
 ```css
 @font-face {
-  font-family: 'MyFont';
-  src: font-path('MyFont.eot');
-  src: font-path('MyFont.eot?#iefix') format('embedded-opentype'),
-       font-path('MyFont.woff') format('woff'),
-       font-path('MyFont.ttf') format('truetype'),
-       font-path('MyFont.svg#robotobold') format('svg');
+  font-family: "MyFont";
+  src: font-path("MyFont.eot");
+  src: font-path("MyFont.eot?#iefix") format("embedded-opentype"), font-path(
+        "MyFont.woff"
+      ) format("woff"), font-path("MyFont.ttf") format("truetype"), font-path(
+        "MyFont.svg#robotobold"
+      ) format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -605,20 +580,20 @@ You can change where `magicbook` looks for fonts by supplying an array of globs,
 
 ```json
 {
-  "fonts" : {
-    "files" : "custom/fonts/folder/**/*.ttf"
+  "fonts": {
+    "files": "custom/fonts/folder/**/*.ttf"
   }
 }
 ```
 
 ### Destination folder
 
-By default, fonts will end up in the  `assets` folder in each build. You can change this destination by using the `destination` property. The `font-path()` SCSS helper will automatically update the relative URL to the font.
+By default, fonts will end up in the `assets` folder in each build. You can change this destination by using the `destination` property. The `font-path()` SCSS helper will automatically update the relative URL to the font.
 
 ```json
 {
-  "fonts" : {
-    "destination" : "custom/assets/folder"
+  "fonts": {
+    "destination": "custom/assets/folder"
   }
 }
 ```
@@ -634,7 +609,6 @@ There are often big limitations to auto-generated TOC markup, so instead of tryi
 ```
 
 As liquid templates are evaluated before markdown conversion, and the table of contents structure is generated after markdown conversion, `magicbook` will first insert a placeholder string during the liquid processing, and then later in the build process replace this placeholder with the output of a special include named `toc.html`. To generate a table of contents, you must have this include in your includes folder. The include will have access to the following object tree:
-
 
 ```js
 {
@@ -680,11 +654,11 @@ To specify a layout to use, you can use the `layout` property in the JSON config
 
 ```json
 {
-  "layout" : "layouts/main.html"
+  "layout": "layouts/main.html"
 }
 ```
 
-Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin.
+Layouts support the use of liquid includes (even when the `liquid` plugin has been disabled). See more information under the `liquid` plugin. You can also control the layout per file via YAML frontmatter as explained below.
 
 ## Liquid
 
@@ -698,9 +672,9 @@ Using these variables, you can create books that have different markup in the di
 
 ```md
 {% if format == 'pdf' %}
-  Here's some text for the PDF
+Here's some text for the PDF
 {% else %}
-  Here's some text for all the other formats
+Here's some text for all the other formats
 {% endif %}
 ```
 
@@ -728,8 +702,8 @@ You can change where `magicbook` looks for includes with the `includes` configur
 
 ```json
 {
-  "liquid" : {
-    "includes" : "my/include/folder"
+  "liquid": {
+    "includes": "my/include/folder"
   }
 }
 ```
@@ -773,7 +747,7 @@ It's easy to write custom plugins for your book. You can place a file in your bo
 
 ```json
 {
-  "addPlugins" : ["plugins/myplugin"]
+  "addPlugins": ["plugins/myplugin"]
 }
 ```
 
@@ -781,7 +755,7 @@ You can also create plugins as NPM packages, simply using the name of the packag
 
 ```json
 {
-  "addPlugins" : ["mypackage"]
+  "addPlugins": ["mypackage"]
 }
 ```
 
@@ -795,7 +769,7 @@ If you want to remove native plugins, you can use the `disablePlugins` property.
 
 ```json
 {
-  "disablePlugins" : ["markdown"]
+  "disablePlugins": ["markdown"]
 }
 ```
 
@@ -805,7 +779,7 @@ If you want complete control over all plugins and their order, you can use the `
 
 ```json
 {
-  "plugins" : []
+  "plugins": []
 }
 ```
 
@@ -838,7 +812,6 @@ To see extra debug info, use the `--verbose` flag.
 ```bash
 magicbook build --verbose
 ```
-
 
 ## Running the tests
 

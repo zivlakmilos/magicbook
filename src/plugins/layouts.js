@@ -19,7 +19,7 @@ Plugin.prototype = {
         var includes =
           _.get(file, "layoutLocals.page.includes") || config.liquid.includes;
 
-        if (layout && layout != "none") {
+        if (layout && layout !== "none") {
           // create the object to pass into liquid for this file
           var locals = {
             content: file.contents.toString(),
