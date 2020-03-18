@@ -14,7 +14,7 @@ Plugin.prototype = {
         var parsed = yamlFront.loadFront(file.contents);
 
         // set main content back to file
-        file.contents = new Buffer(parsed.__content);
+        file.contents = Buffer.from(parsed.__content);
 
         // delete content from the parsed frontmatter
         delete parsed.__content;

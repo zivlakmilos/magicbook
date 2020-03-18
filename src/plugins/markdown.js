@@ -43,7 +43,7 @@ Plugin.prototype = {
           var sectionHTML = htmlbookHelpers.makeHtmlBook(fileHTML);
 
           // put that back into the file
-          file.contents = new Buffer(sectionHTML);
+          file.contents = Buffer.from(sectionHTML);
           file.path = gutil.replaceExtension(file.path, ".html");
         }
         cb(null, file);

@@ -38,7 +38,7 @@ Plugin.prototype = {
           err,
           data
         ) {
-          file.contents = new Buffer(data);
+          file.contents = Buffer.from(data);
           file.$el = undefined;
           cb(err, file);
         });

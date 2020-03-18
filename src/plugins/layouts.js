@@ -56,7 +56,7 @@ Plugin.prototype = {
             locals,
             includes,
             function(err, data) {
-              file.contents = new Buffer(data);
+              file.contents = Buffer.from(data);
               file.$el = undefined;
               cb(err, file);
             }

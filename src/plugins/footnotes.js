@@ -66,7 +66,7 @@ Plugin.prototype = {
             data
           ) {
             placeholder.replaceWith(data.toString());
-            file.contents = new Buffer(file.$el("body").html());
+            file.contents = Buffer.from(file.$el("body").html());
             cb(err, file);
           });
         } else {

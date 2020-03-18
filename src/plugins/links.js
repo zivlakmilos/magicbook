@@ -85,7 +85,7 @@ Plugin.prototype = {
 
           if (changed) {
             // add cheerio html back to file contents
-            file.contents = new Buffer(file.$el("body").html());
+            file.contents = Buffer.from(file.$el("body").html());
           }
 
           cb(null, file);
