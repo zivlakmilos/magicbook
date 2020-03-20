@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:load');
 var vfs = require('vinyl-fs');
 var through = require('through2');
 var StreamQueue = require('streamqueue');
@@ -34,6 +35,8 @@ function treeToStreams(parent, streams) {
 
         // save the file in vinyls array for TOC.
         parent.vinyls.push(file);
+
+        debug(file.path, file.contents.toString().substring(0, 20));
 
         cb(null, file);
 

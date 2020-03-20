@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:frontmatter');
 var through = require("through2");
 var yamlFront = require("yaml-front-matter");
 var _ = require("lodash");
@@ -14,7 +15,7 @@ Plugin.prototype = {
         var parsed = yamlFront.loadFront(file.contents);
 
         // set main content back to file
-        file.contents = new Buffer(parsed.__content);
+        file.contents = Buffer.from(parsed.__content);
 
         // delete content from the parsed frontmatter
         delete parsed.__content;
@@ -25,6 +26,8 @@ Plugin.prototype = {
           _.set(file, "pageLocals.page", parsed);
           _.set(file, "layoutLocals.page", parsed);
         }
+
+        debug(file.path, file.contents.toString().substring(0, 20));
 
         // pass file through the chain
         cb(null, file);

@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:links');
 var through = require("through2");
 var cheerio = require("cheerio");
 var path = require("path");
@@ -33,6 +34,8 @@ Plugin.prototype = {
         file.$el("[id]").each(function(i, elem) {
           ids[file.$el(this).attr("id")] = file.relative;
         });
+
+        debug(file.path, file.contents.toString().substring(0, 20));
 
         cb(null, file);
       })
@@ -85,8 +88,10 @@ Plugin.prototype = {
 
           if (changed) {
             // add cheerio html back to file contents
-            file.contents = new Buffer(file.$el("body").html());
+            file.contents = Buffer.from(file.$el("body").html());
           }
+
+          debug(file.path, file.contents.toString().substring(0, 20));
 
           cb(null, file);
         })

@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:layouts');
 var through = require("through2");
 var fs = require("fs");
 var tinyliquid = require("tinyliquid");
@@ -56,12 +57,18 @@ Plugin.prototype = {
             locals,
             includes,
             function(err, data) {
-              file.contents = new Buffer(data);
+              file.contents = Buffer.from(data);
               file.$el = undefined;
+
+              debug('Finished', file.path);
+
               cb(err, file);
             }
           );
         } else {
+
+          debug('Skipped', file.path);
+
           cb(null, file);
         }
       })

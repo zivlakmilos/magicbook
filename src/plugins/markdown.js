@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:markdown');
 var through = require("through2");
 var fileHelpers = require("../helpers/file");
 var htmlbookHelpers = require("../helpers/htmlbook");
@@ -43,9 +44,12 @@ Plugin.prototype = {
           var sectionHTML = htmlbookHelpers.makeHtmlBook(fileHTML);
 
           // put that back into the file
-          file.contents = new Buffer(sectionHTML);
+          file.contents = Buffer.from(sectionHTML);
           file.path = gutil.replaceExtension(file.path, ".html");
         }
+
+        debug(file.path, file.contents.toString().substring(0, 20));
+
         cb(null, file);
       })
     );

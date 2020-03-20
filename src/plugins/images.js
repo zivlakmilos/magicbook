@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:images');
 var fs = require("fs");
 var path = require("path");
 var _ = require("lodash");
@@ -62,8 +63,10 @@ function replaceSrc(imageMap) {
 
     // only if we find an image, replace contents in file
     if (changed) {
-      file.contents = new Buffer(file.$el("body").html());
+      file.contents = Buffer.from(file.$el("body").html());
     }
+
+    debug(file.path, file.contents.toString().substring(0, 20));
 
     cb(null, file);
   });
