@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:footnotes');
 var through = require("through2");
 var cheerio = require("cheerio");
 var _ = require("lodash");
@@ -27,12 +28,15 @@ Plugin.prototype = {
       "<div data-placeholder-footnotes></div>"
     );
 
+    debug('insertPlaceholders');
+
     callback(null, config, stream, extras);
   },
 
   insertFootnotes: function(config, stream, extras, callback) {
     stream = stream.pipe(
       through.obj(function(file, enc, cb) {
+
         file.$el = file.$el || cheerio.load(file.contents.toString());
 
         var footnotes = [];
@@ -66,10 +70,16 @@ Plugin.prototype = {
             data
           ) {
             placeholder.replaceWith(data.toString());
-            file.contents = Buffer.from(file.$el("body").html());
+            file.contents = Buffer.from(file.$el.html());
+
+            debug(file.path, file.contents.toString().substring(0, 20));
+
             cb(err, file);
           });
         } else {
+
+          debug(file.path, file.contents.toString().substring(0, 20));
+
           cb(null, file);
         }
       })

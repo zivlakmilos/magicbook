@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:toc');
 var fs = require("fs");
 var through = require("through2");
 var cheerio = require("cheerio");
@@ -128,6 +129,8 @@ Plugin.prototype = {
           sections: getSections(file.$el, root, file.relative)
         });
 
+        debug(file.path, file.contents.toString().substring(0, 20));
+
         cb(null, file);
       })
     );
@@ -239,9 +242,14 @@ Plugin.prototype = {
               );
               file.$el = undefined;
 
+              debug('Finished', file.path);
+
               cb(err, file);
             });
           } else {
+
+            debug('Skipped', file.path);
+
             cb(null, file);
           }
         })

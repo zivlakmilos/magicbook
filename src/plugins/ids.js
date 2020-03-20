@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:ids');
 var through = require("through2");
 var cheerio = require("cheerio");
 var Hashids = require("hashids");
@@ -57,6 +58,8 @@ Plugin.prototype = {
         });
 
         file.contents = Buffer.from(file.$el("body").html());
+
+        debug(file.path, file.contents.toString().substring(0, 20));
 
         cb(null, file);
       })

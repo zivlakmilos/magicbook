@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:liquid');
 var through = require("through2");
 var tinyliquid = require("tinyliquid");
 var helpers = require("../helpers/helpers");
@@ -40,6 +41,9 @@ Plugin.prototype = {
         ) {
           file.contents = Buffer.from(data);
           file.$el = undefined;
+
+          debug(file.path, file.contents.toString().substring(0, 20));
+
           cb(err, file);
         });
       })

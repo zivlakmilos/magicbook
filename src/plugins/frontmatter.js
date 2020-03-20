@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:frontmatter');
 var through = require("through2");
 var yamlFront = require("yaml-front-matter");
 var _ = require("lodash");
@@ -25,6 +26,8 @@ Plugin.prototype = {
           _.set(file, "pageLocals.page", parsed);
           _.set(file, "layoutLocals.page", parsed);
         }
+
+        debug(file.path, file.contents.toString().substring(0, 20));
 
         // pass file through the chain
         cb(null, file);

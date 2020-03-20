@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:stylesheets');
 var _ = require("lodash");
 var vfs = require("vinyl-fs");
 var gutil = require("gulp-util");
@@ -50,10 +51,16 @@ function scss(config) {
           if (err) console.log("Error parsing SCSS", err);
           file.contents = result.css;
           file.path = gutil.replaceExtension(file.path, ".css");
+
+          debug('Finished');
+
           cb(err, file);
         }
       );
     } else {
+
+      debug('Skipped');
+
       cb(null, file);
     }
   });

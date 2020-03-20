@@ -36,4 +36,22 @@ describe("Footnotes plugin", function() {
     });
   });
 
+  it("should not strip the HTML layout", function(done) {
+    var uid = triggerBuild({
+      builds: [{ format: "html" }],
+      layout: "spec/support/book/layouts/container.html",
+      liquid: {
+        includes: "spec/support/book/includes"
+      },
+      files: [
+        "spec/support/book/content/footnotes.md"
+      ],
+      finish: function() {
+        var content = buildContent(uid, "build1/footnotes.html").toString();
+        expect(content).toMatch('DOCTYPE')
+        done();
+      }
+    });
+  });
+
 });

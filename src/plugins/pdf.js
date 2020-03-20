@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:pdf');
 var vfs = require('vinyl-fs');
 var concat = require('gulp-concat');
 var Prince = require("prince");
@@ -26,6 +27,9 @@ Plugin.prototype = {
 
     // Do not run for other formats than PDF
     if(config.format !== 'pdf') {
+
+      debug('Skipped');
+
       return callback(null, config, stream, extras);
     }
 
@@ -56,6 +60,8 @@ Plugin.prototype = {
           console.log("Prince XML error")
           callback(error);
         });
+
+      debug('Finished');
     });
   }
 };

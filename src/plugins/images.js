@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:images');
 var fs = require("fs");
 var path = require("path");
 var _ = require("lodash");
@@ -64,6 +65,8 @@ function replaceSrc(imageMap) {
     if (changed) {
       file.contents = Buffer.from(file.$el("body").html());
     }
+
+    debug(file.path, file.contents.toString().substring(0, 20));
 
     cb(null, file);
   });

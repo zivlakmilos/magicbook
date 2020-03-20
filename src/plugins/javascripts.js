@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:javascripts');
 var _ = require('lodash');
 var vfs = require('vinyl-fs');
 var gutil = require('gulp-util');
@@ -55,6 +56,8 @@ Plugin.prototype = {
         cb(null, file);
       }));
 
+      debug('Finished');
+
       // finish
       jsStream
         .pipe(vfs.dest(jsFolderAbsolute))
@@ -63,6 +66,9 @@ Plugin.prototype = {
         });
 
     } else {
+
+      debug('Skipped');
+
       callback(null, config, extras);
     }
   },
@@ -81,6 +87,8 @@ Plugin.prototype = {
 
       file.layoutLocals = file.layoutLocals || {};
       file.layoutLocals.javascripts = scripts;
+
+      debug(file.path, file.contents.toString().substring(0, 20));
 
       cb(null, file);
     }));

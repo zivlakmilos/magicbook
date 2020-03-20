@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:navigation');
 var cheerio = require("cheerio");
 var through = require("through2");
 var _ = require("lodash");
@@ -88,6 +89,8 @@ Plugin.prototype = {
           file.contents = Buffer.from(contents);
           file.$el = undefined;
         }
+
+        debug(file.path, file.contents.toString().substring(0, 20));
 
         cb(null, file);
       })

@@ -1,3 +1,4 @@
+var debug = require('debug')('magicbook:permalinks');
 var through = require('through2');
 var path = require('path');
 var slug = require('slug');
@@ -39,6 +40,8 @@ Plugin.prototype = {
 
         file.path = path.join(file.base, permalink);
       }
+
+      debug(file.path, file.contents.toString().substring(0, 20));
 
       cb(null, file);
 
