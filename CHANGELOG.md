@@ -1,8 +1,18 @@
 # Changelog
 
+## 0.1.19
+
+* Added ability to debug via `DEBUG=magicbook:* magicbook build`
+* Fixed a problem where footnotes would remove layouts
+* Added test and README related to disabling layouts
+
+## 0.1.18
+
+* Updating dependencies
+
 ## 0.1.17
 
-* Fixing problem with HTML builds having two nested `<html>` tags.
+* Fixing problem with HTML builds having two nested `<html>` tags
 
 ## 0.1.16
 
@@ -25,8 +35,8 @@
 
 ## 0.1.12
 
-* Speeding up liquid rendering by not adding liquid locals to each file where it's not needed.
+* Speeding up liquid rendering by not adding liquid locals to each file where it's not needed
 
 ## 0.1.11
 
-* Fixed table of contents generation so all links are relative to the file the toc is inserted into.
+* Fixed table of contents generation so all links are relative to the file the toc is inserted into
