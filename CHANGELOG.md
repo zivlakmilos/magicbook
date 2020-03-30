@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.20
+
+* Fixing path issues on Windows
+* Bumping `prince` and `lodash` dependencies
+
 ## 0.1.19
 
 * Added ability to debug via `DEBUG=magicbook:* magicbook build`
