@@ -43,6 +43,13 @@ function replaceSrc(imageMap) {
       var jel = file.$el(this);
       var src = jel.attr("src");
 
+      //make sure to convert the src attribute to the specific OS format, so they are correctly matched in the imageMap
+      //e.g. on windows slashes are converted to backslashes like for instance images/fig01.png -> images\fig01.png
+      if (src && !src.match(/^http/)) {
+        src = path.normalize(src)
+      }
+
+
       // if this image exists in source folder,
       // replace src with new source
       if (imageMap[src]) {
