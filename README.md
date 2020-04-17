@@ -9,8 +9,8 @@ This project is for you, if:
 - [x] You want to write your book in plain text (Markdown or HTML)
 - [x] You want to export to a static website
 - [x] You want to export to a printable PDF
-- [ ] You want to export to EPUB (Kindle, etc)
-- [ ] You want to export to MOBI (iBooks)
+- [ ] You want to export to EPUB (Apple Books, etc)
+- [ ] You want to export to MOBI (Kindle)
 - [x] You want your source to be free of format-specific hacks
 - [x] You want to use CSS to design the look of your book
 - [x] You want to use JavaScript to add interactivity to digital formats
