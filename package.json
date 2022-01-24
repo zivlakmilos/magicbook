@@ -1,9 +1,9 @@
 {
-  "repository": "https://github.com/magicbookproject/magicbook.git",
-  "version": "0.1.20",
-  "name": "magicbook",
+  "repository": "https://github.com/zivlakmilos/magicbook.git",
+  "version": "0.2.0",
+  "name": "magicbook-improved",
   "description": "The magic book project is an open source framework for creating digital and print books",
-  "author": "magicbookproject",
+  "author": "magicbookproject zivlakmilos",
   "license": "MIT",
   "scripts": {
     "test": "./node_modules/.bin/jasmine",
@@ -24,7 +24,7 @@
     "markdown-it": "^8.4.2",
     "mkdirp": "^0.5.1",
     "modify-filename": "^1.1.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.1",
     "prince": "^1.6.3",
     "rev-hash": "^3.0.0",
     "rev-path": "^2.0.0",

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+* Upgrade dependency for node-sass from 4.12.0 to 7.0.1
+
 ## 0.1.20
 
 * Fixing path issues on Windows
